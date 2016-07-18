@@ -6,6 +6,9 @@
 CSprite2d CFont::ChsSprite;
 CSprite2d CFont::ChsSlantSprite;
 void *CFont::fpPrintChar;
+void *CFont::fpParseToken;
+CFontDetails *CFont::Details;
+CFontSizes *CFont::Size;
 
 float CFont::GetCharacterWidth(unsigned __int16 arg_char)
 {
@@ -222,9 +225,9 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 
 	__int16 numSpaces = 0;
 
-	unsigned __int16 *strbeg = arg_text, *strend;
+	unsigned __int16 *strbeg = arg_text;
 
-	if (arg_text[0] == '*')
+	if (*arg_text == '*')
 	{
 		return;
 	}
@@ -263,8 +266,8 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 
 		if (((xBound + strWidth) <= widthLimit) || emptyLine)
 		{
-			xBound += strWidth;
 			arg_text = GetNextSpace(arg_text);
+			xBound += strWidth;
 
 			if (*arg_text != 0)
 			{
@@ -288,12 +291,10 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 
 				emptyLine = false;
 
-				print_x = xBound;
+				var_24 = xBound;
 			}
 			else
 			{
-				xBound += strWidth;
-
 				if (Details->Centre)
 				{
 					print_x = arg_x - xBound * 0.5f;
@@ -357,7 +358,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 
 unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text, unsigned __int16 *useless)
 {
-	((unsigned __int16(__cdecl *)(unsigned __int16 *, unsigned __int16 *))(fpParseToken))(arg_text, useless);
+	return ((unsigned __int16 *(__cdecl *)(unsigned __int16 *, unsigned __int16 *))(fpParseToken))(arg_text, useless);
 }
 
 void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
@@ -396,7 +397,7 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 
 	CSprite2d::SetVertices(vertices, rect, Details->Color, Details->Color, Details->Color, Details->Color, u1, v1, u2, v2, u3, v3, u4, v4);
 
-	if (Details->FontStyle == 2)
+	if (Details->FontStyle == 0)
 	{
 		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)(ChsSlantSprite.GetRwTexture()));
 	}
@@ -415,7 +416,7 @@ void CFont::PrintStringPart(float arg_x, float arg_y, unsigned __int16 *strbeg, 
 {
 	while (strbeg < strend)
 	{
-		if (*strbeg = '~')
+		if (*strbeg == '~')
 		{
 			strbeg = ParseToken(strbeg, nullptr);
 		}
@@ -452,5 +453,5 @@ void CFont::GetAddresses()
 	Size = *hook::pattern("0F BF 1C 5D ? ? ? ?").get(0).get<CFontSizes *>(4);
 	fpParseToken = ParseTokenPattern.get(0).get();
 	Details = *ParseTokenPattern.get(0).get<CFontDetails *>(13);
-	fpPrintChar = hook::pattern("53 56 55 83 EC 28 8B 74 24 40").get(0).get();
+	fpPrintChar = hook::pattern("8B 15 ? ? ? ? 53 83 EC 48").get(0).get();
 }

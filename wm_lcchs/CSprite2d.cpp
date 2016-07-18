@@ -2,9 +2,9 @@
 #include "rwFunc.h"
 #include "../include/hooking/Hooking.Patterns.h"
 
-void *CSprite2d::fpAddSpriteToBank;
 void *CSprite2d::fpDelete;
 void *CSprite2d::fpDrawRect;
+void *CSprite2d::fpSetVertices;
 
 void CSprite2d::Delete()
 {

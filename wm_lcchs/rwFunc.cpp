@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include "../include/hooking/Hooking.Patterns.h"
-#include "../include/injector/calling.hpp"
 
 #pragma comment(lib, "zlib.lib")
 #pragma comment(lib, "libpng16.lib")

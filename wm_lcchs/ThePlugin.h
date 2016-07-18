@@ -1,19 +1,20 @@
 #pragma once
 #include <windows.h>
 
-namespace ThePlugin
+class ThePlugin
 {
-	extern char texturePath[];
-	extern char slantTexturePath[];
-	extern char textPath[];
+public:
+	static char texturePath[];
+	static char slantTexturePath[];
+	static char textPath[];
 
-	extern const wchar_t *MessageboxTitle;
+	static const wchar_t *MessageboxTitle;
 
-	extern bool CheckResourceFile(HMODULE hPlugin);
-	extern bool CheckGameVersion();
+	static bool CheckResourceFile(HMODULE hPlugin);
+	static bool CheckGameVersion();
 
-	extern void __cdecl LoadCHSTexture();
-	extern void __cdecl UnloadCHSTexture(int slot);
+	static void __cdecl LoadCHSTexture();
+	static void __cdecl UnloadCHSTexture(int slot);
 
-	extern void PatchGame();
-}
+	static void PatchGame();
+};
