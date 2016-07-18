@@ -1,0 +1,108 @@
+#pragma once
+
+struct RwTexture;
+struct RwRaster;
+
+#define RWFORCEENUMSIZEINT ((__int32)((~((unsigned __int32)0))>>1))
+
+struct RwRGBA
+{
+	unsigned __int8 red;
+	unsigned __int8 green;
+	unsigned __int8 blue;
+	unsigned __int8 alpha;
+};
+
+struct RwImage
+{
+	__int32 flags;
+	__int32 width;
+	__int32 height;
+	__int32 depth;
+	__int32 stride;
+	unsigned __int8 *cpPixels;
+	RwRGBA *palette;
+};
+
+enum RwRenderState
+{
+	rwRENDERSTATENARENDERSTATE = 0,
+	rwRENDERSTATETEXTURERASTER,
+	rwRENDERSTATETEXTUREADDRESS,
+	rwRENDERSTATETEXTUREADDRESSU,
+	rwRENDERSTATETEXTUREADDRESSV,
+	rwRENDERSTATETEXTUREPERSPECTIVE,
+	rwRENDERSTATEZTESTENABLE,
+	rwRENDERSTATESHADEMODE,
+	rwRENDERSTATEZWRITEENABLE,
+	rwRENDERSTATETEXTUREFILTER,
+	rwRENDERSTATESRCBLEND,
+	rwRENDERSTATEDESTBLEND,
+	rwRENDERSTATEVERTEXALPHAENABLE,
+	rwRENDERSTATEBORDERCOLOR,
+	rwRENDERSTATEFOGENABLE,
+	rwRENDERSTATEFOGCOLOR,
+	rwRENDERSTATEFOGTYPE,
+	rwRENDERSTATEFOGDENSITY,
+	rwRENDERSTATECULLMODE = 20,
+	rwRENDERSTATESTENCILENABLE,
+	rwRENDERSTATESTENCILFAIL,
+	rwRENDERSTATESTENCILZFAIL,
+	rwRENDERSTATESTENCILPASS,
+	rwRENDERSTATESTENCILFUNCTION,
+	rwRENDERSTATESTENCILFUNCTIONREF,
+	rwRENDERSTATESTENCILFUNCTIONMASK,
+	rwRENDERSTATESTENCILFUNCTIONWRITEMASK,
+	rwRENDERSTATEFORCEENUMSIZEINT = RWFORCEENUMSIZEINT
+};
+
+enum RwPrimitiveType
+{
+	rwPRIMTYPENAPRIMTYPE = 0,
+	rwPRIMTYPELINELIST = 1,
+	rwPRIMTYPEPOLYLINE = 2,
+	rwPRIMTYPETRILIST = 3,
+	rwPRIMTYPETRISTRIP = 4,
+	rwPRIMTYPETRIFAN = 5,
+	rwPRIMTYPEPOINTLIST = 6,
+	rwPRIMITIVETYPEFORCEENUMSIZEINT = RWFORCEENUMSIZEINT
+};
+
+struct RwD3D8Vertex
+{
+	float x;
+	float y;
+	float z;
+	float rhw;
+	unsigned __int32 emissiveColor;
+	float u;
+	float v;
+};
+
+class CVector2D
+{
+public:
+	float x, y;
+};
+
+class CRGBA
+{
+public:
+	unsigned __int8 red, green, blue, alpha;
+};
+
+class CRect
+{
+public:
+	float x1, y1, x2, y2;
+
+	CRect()
+	{
+		x1 = 1000000.0f;
+		y1 = -1000000.0f;
+		x2 = -1000000.0f;
+		y2 = 1000000.0f;
+	}
+};
+
+
