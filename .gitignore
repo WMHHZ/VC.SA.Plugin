@@ -192,8 +192,15 @@ ModelManifest.xml
 /LCGXTBuilder/wm_lcchs.gxt
 /LCGXTBuilder/TABLE.txt
 /LCGXTBuilder/CHARACTERS.txt
-/SAGXTBuilder/wm_sachs.gxt
-/VCGXTBuilder/wm_vcchs.gxt
+/LCGXTBuilder/GTA3.txt
 /LCGXTBuilder/LCGXT
+/SAGXTBuilder/wm_sachs.gxt
+/SAGXTBuilder/TABLE.txt
+/SAGXTBuilder/CHARACTERS.txt
+/SAGXTBuilder/GTASA.txt
 /SAGXTBuilder/SAGXT
+/VCGXTBuilder/wm_vcchs.gxt
+/VCGXTBuilder/TABLE.txt
+/VCGXTBuilder/CHARACTERS.txt
+/VCGXTBuilder/GTAVC.txt
 /VCGXTBuilder/VCGXT
