@@ -1,12 +1,16 @@
 #include "rwFunc.h"
-#include <png.h>
+#include "../include/hooking/Hooking.Patterns.h"
+#include "../depends/lpng1622/include/png.h"
+
 #include <csetjmp>
 #include <cstdio>
 #include <cstdlib>
-#include "../include/hooking/Hooking.Patterns.h"
 
 #pragma comment(lib, "zlib.lib")
 #pragma comment(lib, "libpng16.lib")
+
+__int32 *rwFunc::RsGlobalW;
+__int32 *rwFunc::RsGlobalH;
 
 void *rwFunc::fpRwRenderStateSet;
 void *rwFunc::fpRwImageCreate;
@@ -18,9 +22,6 @@ void *rwFunc::fpRwRasterCreate;
 void *rwFunc::fpRwRasterSetFromImage;
 void *rwFunc::fpRwTextureCreate;
 void *rwFunc::fpRwIm2DRenderPrimitive;
-
-__int32 *rwFunc::RsGlobalW;
-__int32 *rwFunc::RsGlobalH;
 
 __int32 rwFunc::RwRenderStateSet(RwRenderState state, void *value)
 {
@@ -177,7 +178,7 @@ RwImage *rwFunc::RtPNGImageRead(const char *filename)
 		return nullptr;
 	}
 
-	buffer = malloc(height * 4);
+	buffer = std::malloc(height * 4);
 	if (!buffer)
 	{
 		RwImageFreePixels(image);
@@ -305,5 +306,5 @@ void rwFunc::GetAddresses()
 	fpRwRasterSetFromImage = hook::pattern("A1 ? ? ? ? 56 8B 74 24 08 57 8B 7C 24 10 6A 00 57 56 FF 50 64").get(0).get();
 	fpRwTextureCreate = hook::pattern("A1 ? ? ? ? 8B 0D ? ? ? ? 56 8B 54 01 08 52 FF 90 40 01 00 00").get(0).get();
 
-	fpRwIm2DRenderPrimitive = hook::pattern("A1 28 12 66 00 FF 60 30").get(0).get();
+	fpRwIm2DRenderPrimitive = hook::pattern("A1 ? ? ? ? FF 60 30").get(0).get();
 }

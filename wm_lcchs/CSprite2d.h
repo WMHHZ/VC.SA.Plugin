@@ -2,6 +2,7 @@
 #include "game.h"
 
 struct RwTexture;
+struct RwD3D8Vertex;
 
 class CSprite2d
 {

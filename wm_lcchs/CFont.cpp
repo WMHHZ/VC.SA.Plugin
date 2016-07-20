@@ -219,7 +219,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 {
 	CRect textBoxRect;
 
-	float xBound, yBound = arg_y, var_24 = 0.0f, print_x = 0.0f, strWidth, widthLimit, justifyWrap;
+	float xBound, yBound = arg_y, var_24 = 0.0f, print_x, strWidth, widthLimit, justifyWrap;
 
 	bool emptyLine = true;
 
@@ -237,7 +237,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 		GetTextRect(&textBoxRect, arg_x, arg_y, arg_text);
 		CSprite2d::DrawRect(textBoxRect, Details->BackgroundColor);
 	}
-
+	
 	if (Details->Centre || Details->RightJustify)
 	{
 		xBound = 0.0f;
@@ -397,7 +397,7 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 
 	CSprite2d::SetVertices(vertices, rect, Details->Color, Details->Color, Details->Color, Details->Color, u1, v1, u2, v2, u3, v3, u4, v4);
 
-	if (Details->FontStyle == 0)
+	if (Details->FontStyle == 1)
 	{
 		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)(ChsSlantSprite.GetRwTexture()));
 	}

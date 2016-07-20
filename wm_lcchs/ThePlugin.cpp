@@ -100,15 +100,20 @@ void ThePlugin::PatchGame()
 	std::memcpy(FET_LAN_Entry + 0x14, FET_LAN_Entry + 0x28, 0x14);
 	std::memset(FET_LAN_Entry + 0x28, 0, 0x14);
 
-	//injector::MakeCALL(hook::pattern("68 00 00 04 00 56 50").get(0).get(), LoadCHSGXT);
+	hook::pattern pagerColorPattern("68 CD 00 00 00 6A 42 68 A2 00 00 00 6A 20");
+	injector::WriteMemory<unsigned __int32>(pagerColorPattern.get(0).get(1), 255, true);
+	injector::WriteMemory<unsigned __int8>(pagerColorPattern.get(0).get(6), 0, true);
+	injector::WriteMemory<unsigned __int32>(pagerColorPattern.get(0).get(8), 0, true);
+	injector::WriteMemory<unsigned __int8>(pagerColorPattern.get(0).get(13), 0, true);
 
-	//injector::MakeCALL(hook::pattern("53 83 EC 08 68 ? ? ? ?").get(0).get(0x147), LoadCHSTexture);
-	//injector::MakeCALL(hook::pattern("B9 ? ? ? ? E8 ? ? ? ? 68 ? ? ? ? E8 ? ? ? ? 59 50 E8 ? ? ? ?").get(0).get(0x16), UnloadCHSTexture);
+	injector::WriteMemory<__int16>(hook::pattern("66 C7 01 08 00").get(0).get(3), 4, true);
 
-	injector::MakeJMP(hook::pattern("89 04 24 DB 04 24 D8 0D ? ? ? ? DD D9 83 C4 08 C3").get(0).get(-0x45), CFont::GetCharacterSize);
+	injector::MakeCALL(hook::pattern("68 00 00 04 00 56 50").get(0).get(), LoadCHSGXT);
+
+	injector::MakeCALL(hook::pattern("53 83 EC 08 68 ? ? ? ?").get(0).get(0x147), LoadCHSTexture);
+	injector::MakeCALL(hook::pattern("B9 ? ? ? ? E8 ? ? ? ? 68 ? ? ? ? E8 ? ? ? ? 59 50 E8 ? ? ? ?").get(0).get(0x16), UnloadCHSTexture);
+
 	injector::MakeJMP(hook::pattern("0F BF 15 ? ? ? ? 53 56 83 EC 08").get(0).get(), CFont::GetStringWidth);
-	injector::MakeJMP(hook::pattern("8B 44 24 04 EB 1F").get(0).get(), CFont::GetNextSpace);
 	injector::MakeJMP(hook::pattern("53 56 55 31 ED 83 EC 10 80 3D ? ? ? ? 01").get(0).get(), CFont::GetNumberLines);
-	injector::MakeJMP(hook::pattern("53 56 57 55 31 ED 83 EC 20 31 F6 80").get(0).get(), CFont::GetTextRect);
 	injector::MakeJMP(hook::pattern("53 56 57 55 83 EC 38 8D 4C 24 28").get(0).get(), CFont::PrintString);
 }
