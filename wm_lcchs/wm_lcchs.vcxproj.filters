@@ -18,13 +18,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CFont.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThePlugin.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="rwFunc.cpp">
@@ -39,15 +33,15 @@
     <ClCompile Include="CCharTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WMLC.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\selector\AddressSelector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\hooking\Hooking.Patterns.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CFont.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThePlugin.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="rwFunc.h">
@@ -63,6 +57,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CCharTable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WMLC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\selector\AddressSelector.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

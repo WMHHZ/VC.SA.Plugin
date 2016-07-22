@@ -1,14 +1,14 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 
-class ThePlugin
+#define WMVERSIONSTRING u8"《侠盗猎车手3》汉化补丁 v1.0 Build2016XXXX"
+#define WMVERSIONWSTRING L"《侠盗猎车手3》汉化补丁 v1.0 Build2016XXXX"
+
+class WMLC
 {
 public:
 	static char texturePath[];
-	static char slantTexturePath[];
 	static char textPath[];
-
-	static const wchar_t *MessageboxTitle;
 
 	static bool CheckResourceFile(HMODULE hPlugin);
 	static bool CheckGameVersion();

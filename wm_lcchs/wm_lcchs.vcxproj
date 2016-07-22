@@ -121,7 +121,7 @@
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,7 +129,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\depends\lpng1622\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -152,24 +152,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp" />
+    <ClCompile Include="..\include\selector\AddressSelector.cpp" />
     <ClCompile Include="CCharTable.cpp" />
     <ClCompile Include="CFont.cpp" />
     <ClCompile Include="CSprite2d.cpp" />
     <ClCompile Include="CTxdStore.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="rwFunc.cpp" />
-    <ClCompile Include="ThePlugin.cpp" />
+    <ClCompile Include="WMLC.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\hooking\Hooking.Patterns.h" />
+    <ClInclude Include="..\include\selector\AddressSelector.h" />
     <ClInclude Include="CCharTable.h" />
     <ClInclude Include="CFont.h" />
     <ClInclude Include="CSprite2d.h" />
     <ClInclude Include="CTxdStore.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="rwFunc.h" />
-    <ClInclude Include="ThePlugin.h" />
+    <ClInclude Include="WMLC.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

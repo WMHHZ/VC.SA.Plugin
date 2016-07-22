@@ -46,7 +46,6 @@ public:
 	static CSprite2d ChsSprite;
 	static CSprite2d ChsSlantSprite;
 
-	static float GetCharacterWidth(unsigned __int16 arg_char);
 	static float __cdecl GetCharacterSize(unsigned __int16 arg_char);
 
 	static float __cdecl GetStringWidth(unsigned __int16 *arg_text, bool bGetAll);
@@ -55,13 +54,9 @@ public:
 	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_text);
 	static void __cdecl GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int16 *arg_text);
 
-	static unsigned __int16 *ParseToken(unsigned __int16 *arg_text, unsigned __int16 *useless);
-
-	static void __cdecl PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text);
 	static void PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char);
 	static void PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char);
-
-	static void __cdecl PrintStringPart(float arg_x, float arg_y, unsigned __int16 *strbeg, unsigned __int16 *strend, float justifywrap);
+	static void __cdecl PrintCharDispatcher(float arg_x, float arg_y, unsigned __int16 arg_char);
 
 	static void GetAddresses();
 
