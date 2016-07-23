@@ -1,5 +1,5 @@
 #include "rwFunc.h"
-#include <png.h>
+#include "../depends/lpng1622/include/png.h"
 #include <csetjmp>
 #include <cstdio>
 #include <cstdlib>

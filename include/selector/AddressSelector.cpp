@@ -1,3 +1,3 @@
 #include "AddressSelector.h"
 
-AddressSelectorBase::GameVersion AddressSelectorBase::m_gv = AddressSelectorBase::GameVersion::GVUNINITIALIZED;
+AddressSelectorBase::GameVersion AddressSelectorBase::ms_gv = AddressSelectorBase::GameVersion::GVUNINITIALIZED;

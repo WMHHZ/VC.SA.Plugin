@@ -8,7 +8,7 @@ public:
 	static void AddRef(int slot);
 	static void PushCurrentTxd();
 	static void PopCurrentTxd();
-	static void SetCurrentTxd();
+	static void SetCurrentTxd(int slot);
 	static int FindTxdSlot(const char *name);
 	static void RemoveTxdSlot(int slot);
 

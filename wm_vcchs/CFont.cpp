@@ -3,8 +3,8 @@
 #include "CTimer.h"
 #include "CCharTable.h"
 #include "rwFunc.h"
-#include "../include/hooking/Hooking.Patterns.h"
 #include "../include/injector/calling.hpp"
+#include "../include/hooking/Hooking.Patterns.h"
 
 const CharacterSize *CFont::Size;
 FontBufferPointer CFont::FontBuffer;

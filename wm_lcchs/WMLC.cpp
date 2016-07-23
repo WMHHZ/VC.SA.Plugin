@@ -31,7 +31,7 @@ bool WMLC::CheckResourceFile(HMODULE hPlugin)
 	{
 		MessageBoxW(NULL, L"afafaf", WMVERSIONWSTRING, MB_OK);
 		//资源文件不见了
-		return true;
+		return false;
 	}
 
 	return true;
@@ -41,7 +41,7 @@ bool WMLC::CheckGameVersion()
 {
 	auto &veref = injector::address_manager::singleton();
 
-	if (veref.IsIII())
+	if (veref.IsIII() && (veref.GetMinorVersion() == 0 || veref.IsSteam()))
 	{
 		CFont::GetAddresses();
 		CSprite2d::GetAddresses();
@@ -63,12 +63,20 @@ bool WMLC::CheckGameVersion()
 void WMLC::LoadCHSTexture()
 {
 	CTxdStore::PopCurrentTxd();
+	int slot = CTxdStore::AddTxdSlot("wm_lcchs");
+	CTxdStore::LoadTxd(slot, texturePath);
+	CTxdStore::AddRef(slot);
+	CTxdStore::PushCurrentTxd();
+	CTxdStore::SetCurrentTxd(slot);
+	CFont::ChsSprite.SetTexture("chs_normal", "chs_normal_mask");
+	CFont::ChsSlantSprite.SetTexture("chs_slant", "chs_slant_mask");
+	CTxdStore::PopCurrentTxd();
 }
 
-void WMLC::UnloadCHSTexture(int slot)
+void WMLC::UnloadCHSTexture(int dummy)
 {
-	CTxdStore::RemoveTxdSlot(slot);
-
+	CTxdStore::RemoveTxdSlot(dummy);
+	CTxdStore::RemoveTxdSlot(CTxdStore::FindTxdSlot("wm_lcchs"));
 	CFont::ChsSprite.Delete();
 	CFont::ChsSlantSprite.Delete();
 }
@@ -99,6 +107,15 @@ __declspec(naked) void Hook_PrintString()
 		jz ret1;
 		cmp ax, 0x20;
 		jz ret2;
+		xor bl, bl;
+		push 0;
+		push esi;
+		call CFont::GetStringWidth;
+		add esp, 8;
+		fadd dword ptr[esp + 8];
+		fst dword ptr[esp + 8];
+		fstp dword ptr[esp + 0x14];
+		mov esi, edi;
 		jmp jmpBack1.retAddr3;
 
 	ret1:
@@ -123,7 +140,7 @@ void WMLC::PatchGame()
 	injector::WriteMemory<unsigned __int32>(selector.SelectAddress<0x5082D6, 0x508346>(), 0, true);
 	injector::WriteMemory<unsigned __int8>(selector.SelectAddress<0x5082DB, 0x50834B>(), 0, true);
 
-	injector::WriteMemory<__int16>(selector.SelectAddress<0x52B737, 0x52B907>(), 4, true);
+	injector::WriteMemory<__int16>(selector.SelectAddress<0x52B73A, 0x52B90A>(), 4, true);
 
 	injector::MakeCALL(selector.SelectAddress<0x52C42F, 0x52C5FF>(), LoadCHSGXT);
 
@@ -136,7 +153,7 @@ void WMLC::PatchGame()
 	injector::MakeJMP(selector.SelectAddress<0x501960, 0x5019D0>(), CFont::GetNextSpace);
 	injector::MakeJMP(selector.SelectAddress<0x501840, 0x5018B0>(), CFont::GetCharacterSize);
 
-	injector::MakeCALL(selector.SelectAddress<0x500C30, 0x500CA0>(), CFont::PrintCharDispatcher);
+	injector::MakeCALL(selector.SelectAddress<0x50179F, 0x50180F>(), CFont::PrintCharDispatcher);
 
 	jmpBack1.retAddr1 = selector.SelectAddress<0x50117C, 0x5011EC>();
 	jmpBack1.retAddr2 = selector.SelectAddress<0x501167, 0x5011D7>();

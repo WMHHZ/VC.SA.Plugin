@@ -228,7 +228,17 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 
 	float u1, v1, u2, v2, u3, v3, u4, v4;
 
-	CharPos pos = CCharTable::GetCharPos(arg_char);
+	CharPos pos;
+
+	if (arg_x >= *rwFunc::RsGlobalW ||
+		arg_x <= 0.0f ||
+		arg_y <= 0.0f ||
+		arg_y >= *rwFunc::RsGlobalH)
+	{
+		return;
+	}
+
+	pos = CCharTable::GetCharPos(arg_char);
 
 	u1 = pos.columnIndex * rColumnsCount;
 	v1 = pos.rowIndex * rRowsCount;

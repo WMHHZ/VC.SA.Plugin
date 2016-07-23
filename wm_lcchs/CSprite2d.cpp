@@ -14,7 +14,7 @@ void CSprite2d::Delete()
 
 void CSprite2d::SetTexture(const char *texturename, const char *maskname)
 {
-	((void(__cdecl *)(const char *, const char *))(fpSetTexture))(texturename, maskname);
+	((void(__thiscall *)(CSprite2d *, const char *, const char *))(fpSetTexture))(this, texturename, maskname);
 }
 
 RwTexture *CSprite2d::GetRwTexture()

@@ -17,7 +17,7 @@ int CTxdStore::AddTxdSlot(const char *name)
 
 void CTxdStore::LoadTxd(int slot, const char *filename)
 {
-	((void(__cdecl *)(const char *))(fpLoadTxd))(filename);
+	((void(__cdecl *)(int, const char *))(fpLoadTxd))(slot, filename);
 }
 
 void CTxdStore::AddRef(int slot)
@@ -35,9 +35,9 @@ void CTxdStore::PopCurrentTxd()
 	((void(__cdecl *)())(fpPopCurrentTxd))();
 }
 
-void CTxdStore::SetCurrentTxd()
+void CTxdStore::SetCurrentTxd(int slot)
 {
-	((void(__cdecl *)())(fpSetCurrentTxd))();
+	((void(__cdecl *)(int))(fpSetCurrentTxd))(slot);
 }
 
 int CTxdStore::FindTxdSlot(const char *name)

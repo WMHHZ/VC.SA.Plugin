@@ -4,7 +4,7 @@
 
 class AddressSelectorBase
 {
-protected:
+public:
 	enum class GameVersion
 	{
 		GVUNINITIALIZED,
@@ -13,7 +13,8 @@ protected:
 		GVUNK,
 	};
 
-	static GameVersion m_gv;
+protected:
+	static GameVersion ms_gv;
 };
 
 template <std::uintptr_t __EP10, std::uintptr_t __EPSTEAMENC, std::uintptr_t __EPSTEAMDEC>
@@ -22,7 +23,7 @@ class AddressSelector :public AddressSelectorBase
 public:
 	AddressSelector()
 	{
-		if (m_gv == GameVersion::GVUNINITIALIZED)
+		if (ms_gv == GameVersion::GVUNINITIALIZED)
 		{
 			std::uintptr_t base = (std::uintptr_t)GetModuleHandleW(NULL);
 			IMAGE_DOS_HEADER *dos = (IMAGE_DOS_HEADER *)(base);
@@ -31,27 +32,27 @@ public:
 			switch (nt->OptionalHeader.AddressOfEntryPoint + 0x400000)
 			{
 			case __EP10:
-				m_gv = GameVersion::GV10;
+				ms_gv = GameVersion::GV10;
 				break;
 			case __EPSTEAMENC:
 			case __EPSTEAMDEC:
-				m_gv = GameVersion::GVSTEAM;
+				ms_gv = GameVersion::GVSTEAM;
 				break;
 			default:
-				m_gv = GameVersion::GVUNK;
+				ms_gv = GameVersion::GVUNK;
 				break;
 			}
 		}
 	}
 
 	template <std::uintptr_t __Addr10, std::uintptr_t __AddrSteam, typename __DestType = void>
-	__DestType *SelectAddress()
+	__DestType *SelectAddress() const
 	{
-		if (m_gv == GameVersion::GV10)
+		if (ms_gv == GameVersion::GV10)
 		{
 			return ((__DestType *)__Addr10);
 		}
-		else if (m_gv == GameVersion::GVSTEAM)
+		else if (ms_gv == GameVersion::GVSTEAM)
 		{
 			return ((__DestType *)__AddrSteam);
 		}

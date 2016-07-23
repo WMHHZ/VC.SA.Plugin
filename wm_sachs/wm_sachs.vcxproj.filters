@@ -45,9 +45,6 @@
     <ClCompile Include="rwFunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCharTable.h">
@@ -81,9 +78,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\hooking\Hooking.Patterns.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
