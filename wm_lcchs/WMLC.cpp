@@ -29,7 +29,7 @@ bool WMLC::CheckResourceFile(HMODULE hPlugin)
 
 	if (!PathFileExistsA(texturePath) || !PathFileExistsA(textPath))
 	{
-		MessageBoxW(NULL, L"afafaf", WMVERSIONWSTRING, MB_OK);
+		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_lcchs文件夹！", WMVERSIONWSTRING, MB_ICONWARNING);
 		//资源文件不见了
 		return false;
 	}
@@ -53,6 +53,7 @@ bool WMLC::CheckGameVersion()
 	}
 	else
 	{
+		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0美版：2383872字节", WMVERSIONWSTRING, MB_ICONWARNING);
 		//不支持的游戏版本
 		return false;
 	}
