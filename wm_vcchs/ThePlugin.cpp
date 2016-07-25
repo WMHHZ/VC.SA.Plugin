@@ -18,7 +18,7 @@
 char ThePlugin::texturePath[MAX_PATH];
 char ThePlugin::textPath[MAX_PATH];
 
-const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 v1.0 Build2016XXXX";
+const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 Koishi(1.0) Build20160725";
 
 bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
 {
