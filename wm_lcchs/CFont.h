@@ -41,6 +41,9 @@ static_assert(sizeof(CFontDetails) == 0x44, "Class CFontDetails is wrong.");
 class CFont
 {
 public:
+	static char texturePath[];
+	static char textPath[];
+
 	static CFontSizes *Size;
 	static CFontDetails *Details;
 	static CSprite2d ChsSprite;
@@ -57,6 +60,9 @@ public:
 	static void PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char);
 	static void PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char);
 	static void __cdecl PrintCharDispatcher(float arg_x, float arg_y, unsigned __int16 arg_char);
+
+	static void __cdecl LoadCHSTexture();
+	static void __cdecl UnloadCHSTexture(int dummy);
 
 	static void GetAddresses();
 
