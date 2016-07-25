@@ -6,14 +6,8 @@
 class WMLC
 {
 public:
-	static char texturePath[];
-	static char textPath[];
-
 	static bool CheckResourceFile(HMODULE hPlugin);
 	static bool CheckGameVersion();
-
-	static void __cdecl LoadCHSTexture();
-	static void __cdecl UnloadCHSTexture(int dummy);
 
 	static void PatchGame();
 };

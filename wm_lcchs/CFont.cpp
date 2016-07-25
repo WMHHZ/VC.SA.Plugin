@@ -1,7 +1,11 @@
 #include "CFont.h"
+#include "CTxdStore.h"
 #include "CCharTable.h"
 #include "rwFunc.h"
 #include "../include/selector/AddressSelector.h"
+
+char CFont::texturePath[MAX_PATH];
+char CFont::textPath[MAX_PATH];
 
 CSprite2d CFont::ChsSprite;
 CSprite2d CFont::ChsSlantSprite;
@@ -9,6 +13,27 @@ void *CFont::fpPrintChar;
 void *CFont::fpParseToken;
 CFontDetails *CFont::Details;
 CFontSizes *CFont::Size;
+
+void CFont::LoadCHSTexture()
+{
+	CTxdStore::PopCurrentTxd();
+	int slot = CTxdStore::AddTxdSlot("wm_lcchs");
+	CTxdStore::LoadTxd(slot, texturePath);
+	CTxdStore::AddRef(slot);
+	CTxdStore::PushCurrentTxd();
+	CTxdStore::SetCurrentTxd(slot);
+	CFont::ChsSprite.SetTexture("chs_normal", "chs_normal_mask");
+	CFont::ChsSlantSprite.SetTexture("chs_slant", "chs_slant_mask");
+	CTxdStore::PopCurrentTxd();
+}
+
+void CFont::UnloadCHSTexture(int dummy)
+{
+	CTxdStore::RemoveTxdSlot(dummy);
+	CTxdStore::RemoveTxdSlot(CTxdStore::FindTxdSlot("wm_lcchs"));
+	CFont::ChsSprite.Delete();
+	CFont::ChsSlantSprite.Delete();
+}
 
 float CFont::GetCharacterSize(unsigned __int16 arg_char)
 {
@@ -27,7 +52,7 @@ float CFont::GetCharacterSize(unsigned __int16 arg_char)
 	}
 	else
 	{
-		iCharWidth = 32;
+		iCharWidth = 26;
 	}
 
 	return (iCharWidth * Details->Scale.x);
@@ -256,13 +281,13 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 
 	CSprite2d::SetVertices(vertices, rect, Details->Color, Details->Color, Details->Color, Details->Color, u1, v1, u2, v2, u3, v3, u4, v4);
 
-	if (Details->FontStyle == 1)
+	if (Details->FontStyle == 0)
 	{
-		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)(ChsSlantSprite.GetRwTexture()));
+		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)ChsSlantSprite.GetRwTexture());
 	}
 	else
 	{
-		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)(ChsSprite.GetRwTexture()));
+		rwFunc::RwRenderStateSet(rwRENDERSTATETEXTURERASTER, *(RwRaster **)ChsSprite.GetRwTexture());
 	}
 
 	rwFunc::RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);

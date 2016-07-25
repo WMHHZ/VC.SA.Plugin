@@ -3,7 +3,7 @@
 #include "CTxdStore.h"
 #include "rwFunc.h"
 #include "CCharTable.h"
-
+#include "CFont.h"
 #include "../include/injector/injector.hpp"
 #include "../include/injector/hooking.hpp"
 
@@ -14,23 +14,20 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
-char WMLC::texturePath[MAX_PATH];
-char WMLC::textPath[MAX_PATH];
 
 bool WMLC::CheckResourceFile(HMODULE hPlugin)
 {
 	char pluginPath[MAX_PATH];
 
 	GetModuleFileNameA(hPlugin, pluginPath, MAX_PATH);
-	std::strcpy(texturePath, pluginPath);
-	std::strcpy(textPath, pluginPath);
-	std::strcpy(std::strrchr(texturePath, '.'), "\\wm_lcchs.txd");
-	std::strcpy(std::strrchr(textPath, '.'), "\\wm_lcchs.gxt");
+	std::strcpy(CFont::texturePath, pluginPath);
+	std::strcpy(CFont::textPath, pluginPath);
+	std::strcpy(std::strrchr(CFont::texturePath, '.'), "\\wm_lcchs.txd");
+	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_lcchs.gxt");
 
-	if (!PathFileExistsA(texturePath) || !PathFileExistsA(textPath))
+	if (!PathFileExistsA(CFont::texturePath) || !PathFileExistsA(CFont::textPath))
 	{
 		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_lcchs文件夹！", WMVERSIONWSTRING, MB_ICONWARNING);
-		//资源文件不见了
 		return false;
 	}
 
@@ -53,33 +50,11 @@ bool WMLC::CheckGameVersion()
 	}
 	else
 	{
-		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0美版：2383872字节", WMVERSIONWSTRING, MB_ICONWARNING);
-		//不支持的游戏版本
+		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0：2383872字节\nSteam：2801664字节", WMVERSIONWSTRING, MB_ICONWARNING);
 		return false;
 	}
 
 	return true;
-}
-
-void WMLC::LoadCHSTexture()
-{
-	CTxdStore::PopCurrentTxd();
-	int slot = CTxdStore::AddTxdSlot("wm_lcchs");
-	CTxdStore::LoadTxd(slot, texturePath);
-	CTxdStore::AddRef(slot);
-	CTxdStore::PushCurrentTxd();
-	CTxdStore::SetCurrentTxd(slot);
-	CFont::ChsSprite.SetTexture("chs_normal", "chs_normal_mask");
-	CFont::ChsSlantSprite.SetTexture("chs_slant", "chs_slant_mask");
-	CTxdStore::PopCurrentTxd();
-}
-
-void WMLC::UnloadCHSTexture(int dummy)
-{
-	CTxdStore::RemoveTxdSlot(dummy);
-	CTxdStore::RemoveTxdSlot(CTxdStore::FindTxdSlot("wm_lcchs"));
-	CFont::ChsSprite.Delete();
-	CFont::ChsSlantSprite.Delete();
 }
 
 __declspec(naked) void LoadCHSGXT()
@@ -90,7 +65,7 @@ __declspec(naked) void LoadCHSGXT()
 		add eax, 2;
 		push 0x40000;
 		push esi;
-		push offset WMLC::textPath;
+		push offset CFont::textPath;
 		jmp eax;
 	}
 }
@@ -141,12 +116,12 @@ void WMLC::PatchGame()
 	injector::WriteMemory<unsigned __int32>(selector.SelectAddress<0x5082D6, 0x508346>(), 0, true);
 	injector::WriteMemory<unsigned __int8>(selector.SelectAddress<0x5082DB, 0x50834B>(), 0, true);
 
-	injector::WriteMemory<__int16>(selector.SelectAddress<0x52B73A, 0x52B90A>(), 4, true);
+	injector::WriteMemory<__int16>(selector.SelectAddress<0x52B73A, 0x52B90A>(), 5, true);
 
 	injector::MakeCALL(selector.SelectAddress<0x52C42F, 0x52C5FF>(), LoadCHSGXT);
 
-	injector::MakeCALL(selector.SelectAddress<0x500B87, 0x500BF7>(), LoadCHSTexture);
-	injector::MakeCALL(selector.SelectAddress<0x500BCA, 0x500C3A>(), UnloadCHSTexture);
+	injector::MakeCALL(selector.SelectAddress<0x500B87, 0x500BF7>(), CFont::LoadCHSTexture);
+	injector::MakeCALL(selector.SelectAddress<0x500BCA, 0x500C3A>(), CFont::UnloadCHSTexture);
 
 	injector::MakeJMP(selector.SelectAddress<0x5018A0, 0x501910>(), CFont::GetStringWidth);
 	injector::MakeJMP(selector.SelectAddress<0x501260, 0x5012D0>(), CFont::GetNumberLines);
