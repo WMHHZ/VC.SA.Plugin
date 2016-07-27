@@ -64,7 +64,7 @@ public:
 	static void __cdecl LoadCHSTexture();
 	static void __cdecl UnloadCHSTexture(int dummy);
 
-	static void GetAddresses();
+	CFont();
 
 private:
 	static void *fpPrintChar;

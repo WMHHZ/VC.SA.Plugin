@@ -3031,3 +3031,11 @@ void CCharTable::InitTable()
 	m_Table[0xff1a] = { 46,62 };
 	m_Table[0xff1f] = { 46,63 };
 }
+
+
+CCharTable::CCharTable()
+{
+	InitTable();
+}
+
+static CCharTable instance;

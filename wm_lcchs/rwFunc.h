@@ -88,7 +88,7 @@ public:
 	static __int32 RwRenderStateSet(RwRenderState state, void *value);	
 	static __int32 RwIm2DRenderPrimitive(RwPrimitiveType primType, RwD3D8Vertex *vertices, __int32 numVertices);
 
-	static void GetAddresses();
+	rwFunc();
 
 private:
 	static void *fpRwRenderStateSet;

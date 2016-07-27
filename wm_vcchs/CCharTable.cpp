@@ -2,7 +2,7 @@
 
 CCharTable::CharPos CCharTable::m_Table[0x10000];
 
-CCharTable::CharPos CCharTable::GetCharPos(uint16_t chr)
+CCharTable::CharPos CCharTable::GetCharPos(unsigned __int16 chr)
 {
 	CharPos result;
 

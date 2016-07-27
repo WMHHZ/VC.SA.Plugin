@@ -12,7 +12,7 @@ public:
 	static int FindTxdSlot(const char *name);
 	static void RemoveTxdSlot(int slot);
 
-	static void GetAddresses();
+	CTxdStore();
 
 private:
 	static void *fpAddTxdSlot;

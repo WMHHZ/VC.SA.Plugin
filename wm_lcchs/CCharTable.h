@@ -13,6 +13,7 @@ public:
 	static CharPos GetCharPos(unsigned __int16 chr);
 
 	static void InitTable();
+	CCharTable();
 
 private:
 	static CharPos m_Table[];

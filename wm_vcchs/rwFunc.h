@@ -1,17 +1,16 @@
 #pragma once
-#include <cstdint>
 
 struct RwTexture;
 struct RwRaster;
 
-#define RWFORCEENUMSIZEINT ((__int32)((~((std::uint32_t)0))>>1))
+#define RWFORCEENUMSIZEINT ((__int32)((~((unsigned __int32)0))>>1))
 
 struct RwRGBA
 {
-	std::uint8_t red;
-	std::uint8_t green;
-	std::uint8_t blue;
-	std::uint8_t alpha;
+	unsigned __int8 red;
+	unsigned __int8 green;
+	unsigned __int8 blue;
+	unsigned __int8 alpha;
 };
 
 struct RwImage
@@ -21,7 +20,7 @@ struct RwImage
 	__int32 height;
 	__int32 depth;
 	__int32 stride;
-	std::uint8_t *cpPixels;
+	unsigned __int8 *cpPixels;
 	RwRGBA *palette;
 };
 

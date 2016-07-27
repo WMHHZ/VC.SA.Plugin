@@ -21,36 +21,36 @@ template <std::uintptr_t __EP10, std::uintptr_t __EPSTEAMENC, std::uintptr_t __E
 class AddressSelector :public AddressSelectorBase
 {
 public:
-	AddressSelector()
+	static void Init()
 	{
-		if (ms_gv == GameVersion::GVUNINITIALIZED)
+		std::uintptr_t base = (std::uintptr_t)GetModuleHandleW(NULL);
+		IMAGE_DOS_HEADER *dos = (IMAGE_DOS_HEADER *)(base);
+		IMAGE_NT_HEADERS *nt = (IMAGE_NT_HEADERS *)(base + dos->e_lfanew);
+
+		DWORD ep = nt->OptionalHeader.AddressOfEntryPoint + 0x400000;
+
+		if (ep == __EP10)
 		{
-			std::uintptr_t base = (std::uintptr_t)GetModuleHandleW(NULL);
-			IMAGE_DOS_HEADER *dos = (IMAGE_DOS_HEADER *)(base);
-			IMAGE_NT_HEADERS *nt = (IMAGE_NT_HEADERS *)(base + dos->e_lfanew);
-
-			DWORD ep = nt->OptionalHeader.AddressOfEntryPoint + 0x400000;
-
-			if (ep == __EP10)
-			{
-				ms_gv = GameVersion::GV10;
-			}
-			else if (ep == __EPSTEAMENC || ep == __EPSTEAMDEC)
-			{
-				ms_gv = GameVersion::GVSTEAM;
-			}
-			else
-			{
-				ms_gv = GameVersion::GVUNK;
-			}
+			ms_gv = GameVersion::GV10;
+		}
+		else if (ep == __EPSTEAMENC || ep == __EPSTEAMDEC)
+		{
+			ms_gv = GameVersion::GVSTEAM;
+		}
+		else
+		{
+			ms_gv = GameVersion::GVUNK;
 		}
 	}
 
-
-
 	template <std::uintptr_t __Addr10, std::uintptr_t __AddrSteam, typename __DestType = void>
-	__DestType *SelectAddress() const
+	static __DestType *SelectAddress()
 	{
+		if (ms_gv == GameVersion::GVUNINITIALIZED)
+		{
+			Init();
+		}
+
 		if (ms_gv == GameVersion::GV10)
 		{
 			return ((__DestType *)__Addr10);

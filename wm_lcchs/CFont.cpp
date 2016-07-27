@@ -308,11 +308,12 @@ void CFont::PrintCharDispatcher(float arg_x, float arg_y, unsigned __int16 arg_c
 	}
 }
 
-void CFont::GetAddresses()
+CFont::CFont()
 {
-	AddressSelectorLC selector;
-
-	Size = selector.SelectAddress<0x5FD120, 0x609F00, CFontSizes>();
-	Details = selector.SelectAddress<0x8F317C, 0x903370, CFontDetails>();
-	fpPrintChar = selector.SelectAddress<0x500C30, 0x500CA0>();
+	Size = AddressSelectorLC::SelectAddress<0x5FD120, 0x609F00, CFontSizes>();
+	Details = AddressSelectorLC::SelectAddress<0x8F317C, 0x903370, CFontDetails>();
+	fpPrintChar = AddressSelectorLC::SelectAddress<0x500C30, 0x500CA0>();
 }
+
+
+static CFont instance;

@@ -191,7 +191,7 @@ static void TransformPattern(const std::string& pattern, std::string& data, std:
 	std::stringstream dataStr;
 	std::stringstream maskStr;
 
-	uint8_t tempDigit = 0;
+	unsigned __int8 tempDigit = 0;
 	bool tempFlag = false;
 
 	for (auto& ch : pattern)

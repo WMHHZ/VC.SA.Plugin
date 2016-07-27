@@ -3,8 +3,12 @@
 #include "CTimer.h"
 #include "CCharTable.h"
 #include "rwFunc.h"
+#include "CTxdStore.h"
 #include "../include/injector/calling.hpp"
 #include "../include/hooking/Hooking.Patterns.h"
+
+char CFont::texturePath[MAX_PATH];
+char CFont::textPath[MAX_PATH];
 
 const CharacterSize *CFont::Size;
 FontBufferPointer CFont::FontBuffer;
@@ -18,27 +22,42 @@ void *CFont::fpParseTokenEPt;
 void *CFont::fpParseTokenEPtR5CRGBARbRb;
 void *CFont::fpPrintStringPart;
 
-uint16_t CFont::FindNewCharacter(uint16_t arg_char)
+void CFont::LoadCHSTexture()
 {
-	return injector::cstd<uint16_t(uint16_t)>::call(fpFindNewCharacter, arg_char);
+	CTxdStore::PopCurrentTxd();
+
+	CFont::Sprite[2].m_pRwTexture = rwFunc::LoadTextureFromPNG(texturePath);
 }
 
-uint16_t *CFont::ParseToken(uint16_t *arg_text)
+void CFont::UnloadCHSTexture(int dummy)
 {
-	return injector::cstd<uint16_t *(uint16_t *)>::call(fpParseTokenEPt, arg_text);
+	CTxdStore::RemoveTxdSlot(dummy);
+
+	CFont::Sprite[2].Delete();
 }
 
-uint16_t *CFont::ParseToken(uint16_t *arg_text, CRGBA &result_color, bool &result_bool1, bool &result_bool2)
+
+unsigned __int16 CFont::FindNewCharacter(unsigned __int16 arg_char)
 {
-	return injector::cstd<uint16_t *(uint16_t *, CRGBA &, bool &, bool &)>::call(fpParseTokenEPtR5CRGBARbRb, arg_text, result_color, result_bool1, result_bool2);
+	return injector::cstd<unsigned __int16(unsigned __int16)>::call(fpFindNewCharacter, arg_char);
 }
 
-void CFont::PrintStringPart(float arg_x, float arg_y, unsigned int useless, uint16_t *arg_strbeg, uint16_t *arg_strend, float justifywrap)
+unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text)
 {
-	return injector::cstd<void(float, float, unsigned int, uint16_t *, uint16_t *, float)>::call(fpPrintStringPart, arg_x, arg_y, useless, arg_strbeg, arg_strend, justifywrap);
+	return injector::cstd<unsigned __int16 *(unsigned __int16 *)>::call(fpParseTokenEPt, arg_text);
 }
 
-float CFont::GetCharacterSizeNormal(uint16_t arg_letter)
+unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text, CRGBA &result_color, bool &result_bool1, bool &result_bool2)
+{
+	return injector::cstd<unsigned __int16 *(unsigned __int16 *, CRGBA &, bool &, bool &)>::call(fpParseTokenEPtR5CRGBARbRb, arg_text, result_color, result_bool1, result_bool2);
+}
+
+void CFont::PrintStringPart(float arg_x, float arg_y, unsigned int useless, unsigned __int16 *arg_strbeg, unsigned __int16 *arg_strend, float justifywrap)
+{
+	return injector::cstd<void(float, float, unsigned int, unsigned __int16 *, unsigned __int16 *, float)>::call(fpPrintStringPart, arg_x, arg_y, useless, arg_strbeg, arg_strend, justifywrap);
+}
+
+float CFont::GetCharacterSizeNormal(unsigned __int16 arg_letter)
 {
 	__int16 charWidth;
 
@@ -117,7 +136,7 @@ float CFont::GetCharacterSizeNormal(uint16_t arg_letter)
 	return (charWidth * Details->LetterSize.x);
 }
 
-float CFont::GetCharacterSizeDrawing(uint16_t arg_letter)
+float CFont::GetCharacterSizeDrawing(unsigned __int16 arg_letter)
 {
 	__int16 charWidth;
 
@@ -197,7 +216,7 @@ float CFont::GetCharacterSizeDrawing(uint16_t arg_letter)
 }
 
 
-float CFont::GetStringWidth(uint16_t *arg_text, bool bGetAll)
+float CFont::GetStringWidth(unsigned __int16 *arg_text, bool bGetAll)
 {
 	float result = 0.0f;
 
@@ -244,9 +263,9 @@ float CFont::GetStringWidth(uint16_t *arg_text, bool bGetAll)
 	return result;
 }
 
-uint16_t *CFont::GetNextSpace(uint16_t *arg_pointer)
+unsigned __int16 *CFont::GetNextSpace(unsigned __int16 *arg_pointer)
 {
-	uint16_t *var_pointer = arg_pointer;
+	unsigned __int16 *var_pointer = arg_pointer;
 
 	bool succeeded = false;
 
@@ -279,7 +298,7 @@ uint16_t *CFont::GetNextSpace(uint16_t *arg_pointer)
 	return var_pointer;
 }
 
-__int16 CFont::GetNumberLines(float arg_x, float arg_y, uint16_t *arg_text)
+__int16 CFont::GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_text)
 {
 	__int16 result = 0;
 	float xBound;
@@ -342,7 +361,7 @@ __int16 CFont::GetNumberLines(float arg_x, float arg_y, uint16_t *arg_text)
 	return result;
 }
 
-void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, uint16_t *arg_text)
+void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int16 *arg_text)
 {
 	__int16 numLines = GetNumberLines(arg_x, arg_y, arg_text);
 
@@ -372,7 +391,7 @@ void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, uint16_t *arg_t
 	}
 }
 
-void CFont::PrintString(float arg_x, float arg_y, uint16_t *arg_text)
+void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 {
 	CRect textBoxRect;
 
@@ -383,8 +402,8 @@ void CFont::PrintString(float arg_x, float arg_y, uint16_t *arg_text)
 	float print_x;
 	float justifyWrap;
 
-	uint16_t *esi = arg_text;
-	uint16_t *strHead = arg_text;
+	unsigned __int16 *esi = arg_text;
+	unsigned __int16 *strHead = arg_text;
 
 	bool emptyLine = true;
 
@@ -532,7 +551,7 @@ void CFont::RenderFontBuffer()
 
 	CVector2D pos;
 
-	uint16_t bx;
+	unsigned __int16 bx;
 
 	FontBufferPointer esi;
 
@@ -643,7 +662,7 @@ void CFont::RenderFontBuffer()
 	FontBufferIter->addr = FontBuffer.addr;
 }
 
-void CFont::PrintChar(float arg_x, float arg_y, uint16_t arg_char)
+void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 {
 	static const float RowCountReciprocal = 1.0f / 12.8f ;
 	static const float ColumnCountReciprocal = 1.0f / 16.0f;

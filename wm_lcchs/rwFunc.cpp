@@ -17,13 +17,13 @@ __int32 rwFunc::RwIm2DRenderPrimitive(RwPrimitiveType primType, RwD3D8Vertex *ve
 	return ((__int32(__cdecl *)(RwPrimitiveType, RwD3D8Vertex *, __int32))(fpRwIm2DRenderPrimitive))(primType, vertices, numVertices);
 }
 
-void rwFunc::GetAddresses()
+rwFunc::rwFunc()
 {
-	AddressSelectorLC selector;
-
-	RsGlobalW = selector.SelectAddress<0x8F436C, 0x904560, __int32>();
+	RsGlobalW = AddressSelectorLC::SelectAddress<0x8F436C, 0x904560, __int32>();
 	RsGlobalH = RsGlobalW + 1;
 
-	fpRwRenderStateSet = selector.SelectAddress<0x5A43C0, 0x5A5360>();
-	fpRwIm2DRenderPrimitive = selector.SelectAddress<0x5A4430, 0x5A5410>();
+	fpRwRenderStateSet = AddressSelectorLC::SelectAddress<0x5A43C0, 0x5A5360>();
+	fpRwIm2DRenderPrimitive = AddressSelectorLC::SelectAddress<0x5A4430, 0x5A5410>();
 }
+
+static rwFunc instance;
