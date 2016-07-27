@@ -15,10 +15,6 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
-<<<<<<< HEAD
-char ThePlugin::texturePath[MAX_PATH];
-char ThePlugin::textPath[MAX_PATH];
-
 const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 Koishi(1.0) Build20160730";
 
 bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
