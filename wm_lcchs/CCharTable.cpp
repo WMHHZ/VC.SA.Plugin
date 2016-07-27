@@ -3038,3 +3038,9 @@ m_Table[0xff1f] = {47,4};
 }
 
 
+CCharTable::CCharTable()
+{
+	InitTable();
+}
+
+static CCharTable instance;

@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 class CVector2D
 {
@@ -10,7 +9,7 @@ public:
 class CRGBA
 {
 public:
-	uint8_t red, green, blue, alpha;
+	unsigned __int8 red, green, blue, alpha;
 };
 
 class CRect

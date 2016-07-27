@@ -40,12 +40,6 @@ bool WMLC::CheckGameVersion()
 
 	if (veref.IsIII() && (veref.GetMinorVersion() == 0 || veref.IsSteam()))
 	{
-		CFont::GetAddresses();
-		CSprite2d::GetAddresses();
-		CTxdStore::GetAddresses();
-		rwFunc::GetAddresses();
-
-		CCharTable::InitTable();
 		PatchGame();
 	}
 	else
@@ -104,35 +98,33 @@ __declspec(naked) void Hook_PrintString()
 
 void WMLC::PatchGame()
 {
-	AddressSelectorLC selector;
-
-	unsigned __int8 *FET_LAN_Entry = selector.SelectAddress<0x6157AC, 0x621F64, unsigned __int8>();
+	unsigned __int8 *FET_LAN_Entry = AddressSelectorLC::SelectAddress<0x6157AC, 0x621F64, unsigned __int8>();
 	std::memcpy(FET_LAN_Entry, FET_LAN_Entry + 0x14, 0x14);
 	std::memcpy(FET_LAN_Entry + 0x14, FET_LAN_Entry + 0x28, 0x14);
 	std::memset(FET_LAN_Entry + 0x28, 0, 0x14);
 
-	injector::WriteMemory<unsigned __int32>(selector.SelectAddress<0x5082CF, 0x50833F>(), 255, true);
-	injector::WriteMemory<unsigned __int8>(selector.SelectAddress<0x5082D4, 0x508344>(), 0, true);
-	injector::WriteMemory<unsigned __int32>(selector.SelectAddress<0x5082D6, 0x508346>(), 0, true);
-	injector::WriteMemory<unsigned __int8>(selector.SelectAddress<0x5082DB, 0x50834B>(), 0, true);
+	injector::WriteMemory<unsigned __int32>(AddressSelectorLC::SelectAddress<0x5082CF, 0x50833F>(), 255, true);
+	injector::WriteMemory<unsigned __int8>(AddressSelectorLC::SelectAddress<0x5082D4, 0x508344>(), 0, true);
+	injector::WriteMemory<unsigned __int32>(AddressSelectorLC::SelectAddress<0x5082D6, 0x508346>(), 0, true);
+	injector::WriteMemory<unsigned __int8>(AddressSelectorLC::SelectAddress<0x5082DB, 0x50834B>(), 0, true);
 
-	injector::WriteMemory<__int16>(selector.SelectAddress<0x52B73A, 0x52B90A>(), 5, true);
+	injector::WriteMemory<__int16>(AddressSelectorLC::SelectAddress<0x52B73A, 0x52B90A>(), 5, true);
 
-	injector::MakeCALL(selector.SelectAddress<0x52C42F, 0x52C5FF>(), LoadCHSGXT);
+	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x52C42F, 0x52C5FF>(), LoadCHSGXT);
 
-	injector::MakeCALL(selector.SelectAddress<0x500B87, 0x500BF7>(), CFont::LoadCHSTexture);
-	injector::MakeCALL(selector.SelectAddress<0x500BCA, 0x500C3A>(), CFont::UnloadCHSTexture);
+	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x500B87, 0x500BF7>(), CFont::LoadCHSTexture);
+	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x500BCA, 0x500C3A>(), CFont::UnloadCHSTexture);
 
-	injector::MakeJMP(selector.SelectAddress<0x5018A0, 0x501910>(), CFont::GetStringWidth);
-	injector::MakeJMP(selector.SelectAddress<0x501260, 0x5012D0>(), CFont::GetNumberLines);
-	injector::MakeJMP(selector.SelectAddress<0x5013B0, 0x501420>(), CFont::GetTextRect);
-	injector::MakeJMP(selector.SelectAddress<0x501960, 0x5019D0>(), CFont::GetNextSpace);
-	injector::MakeJMP(selector.SelectAddress<0x501840, 0x5018B0>(), CFont::GetCharacterSize);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x5018A0, 0x501910>(), CFont::GetStringWidth);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501260, 0x5012D0>(), CFont::GetNumberLines);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x5013B0, 0x501420>(), CFont::GetTextRect);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501960, 0x5019D0>(), CFont::GetNextSpace);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501840, 0x5018B0>(), CFont::GetCharacterSize);
 
-	injector::MakeCALL(selector.SelectAddress<0x50179F, 0x50180F>(), CFont::PrintCharDispatcher);
+	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x50179F, 0x50180F>(), CFont::PrintCharDispatcher);
 
-	jmpBack1.retAddr1 = selector.SelectAddress<0x50117C, 0x5011EC>();
-	jmpBack1.retAddr2 = selector.SelectAddress<0x501167, 0x5011D7>();
-	jmpBack1.retAddr3 = selector.SelectAddress<0x50123B, 0x5012AB>();
-	injector::MakeJMP(selector.SelectAddress<0x50115F, 0x5011CF>(), Hook_PrintString);
+	jmpBack1.retAddr1 = AddressSelectorLC::SelectAddress<0x50117C, 0x5011EC>();
+	jmpBack1.retAddr2 = AddressSelectorLC::SelectAddress<0x501167, 0x5011D7>();
+	jmpBack1.retAddr3 = AddressSelectorLC::SelectAddress<0x50123B, 0x5012AB>();
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x50115F, 0x5011CF>(), Hook_PrintString);
 }

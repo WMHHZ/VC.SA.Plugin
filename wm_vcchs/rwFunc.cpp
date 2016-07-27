@@ -153,14 +153,14 @@ namespace rwFunc
 
 		if (height > 0)
 		{
-			std::uint8_t *ecx = image->cpPixels;
+			unsigned __int8 *ecx = image->cpPixels;
 			__int32 esi = image->stride;
 
 			unsigned eax = 0;
 
 			do
 			{
-				((std::uint8_t **)buffer)[eax] = ecx;
+				((unsigned __int8 **)buffer)[eax] = ecx;
 				ecx += esi;
 				++eax;
 			} while (eax < height);
@@ -169,9 +169,9 @@ namespace rwFunc
 		RwRGBA *palette = image->palette;
 		if ((depth == 4 || depth == 8) && palette)
 		{
-			if ((1 << (std::uint8_t)depth) > 0)
+			if ((1 << (unsigned __int8)depth) > 0)
 			{
-				std::uint8_t al = 0;
+				unsigned __int8 al = 0;
 				RwRGBA *edx = palette;
 
 				do
@@ -182,7 +182,7 @@ namespace rwFunc
 					edx->alpha = 255;
 					++al;
 					++edx;
-				} while (al < (1 << (std::uint8_t)depth));
+				} while (al < (1 << (unsigned __int8)depth));
 			}
 
 			if (png_get_valid(read_structp, info_structp, 8) != 0)
@@ -194,8 +194,8 @@ namespace rwFunc
 
 				if (num_palette > 0)
 				{
-					std::uint8_t *eax = &colorp->blue;
-					std::uint8_t *ecx = &palette->blue;
+					unsigned __int8 *eax = &colorp->blue;
+					unsigned __int8 *ecx = &palette->blue;
 					int esi = num_palette;
 
 					do
@@ -219,7 +219,7 @@ namespace rwFunc
 
 				if (num_trans > 0)
 				{
-					std::uint8_t *ecx = &palette->alpha;
+					unsigned __int8 *ecx = &palette->alpha;
 					png_bytep edi = trans_alpha;
 					int eax = 0;
 

@@ -56,9 +56,6 @@
     <ClInclude Include="CCharTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CTxdStore.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="rwFunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\include\hooking\Hooking.Patterns.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CTxdStore.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
