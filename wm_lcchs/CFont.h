@@ -57,6 +57,8 @@ public:
 	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_text);
 	static void __cdecl GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int16 *arg_text);
 
+	static unsigned __int16 * __cdecl ParseToken(unsigned __int16 *arg_text, unsigned __int16 *useless);
+
 	static void PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char);
 	static void PrintCHSChar(float arg_x, float arg_y, unsigned __int16 arg_char);
 	static void __cdecl PrintCharDispatcher(float arg_x, float arg_y, unsigned __int16 arg_char);
