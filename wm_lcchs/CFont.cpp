@@ -308,12 +308,17 @@ void CFont::PrintCharDispatcher(float arg_x, float arg_y, unsigned __int16 arg_c
 	}
 }
 
+unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text, unsigned __int16 *useless)
+{
+	return ((unsigned __int16 *(__cdecl *)(unsigned __int16 *, unsigned __int16 *))(fpParseToken))(arg_text, useless);
+}
+
 CFont::CFont()
 {
 	Size = AddressSelectorLC::SelectAddress<0x5FD120, 0x609F00, CFontSizes>();
 	Details = AddressSelectorLC::SelectAddress<0x8F317C, 0x903370, CFontDetails>();
 	fpPrintChar = AddressSelectorLC::SelectAddress<0x500C30, 0x500CA0>();
+	fpParseToken = AddressSelectorLC::SelectAddress<0x5019A0, 0x501A10>();
 }
-
 
 static CFont instance;

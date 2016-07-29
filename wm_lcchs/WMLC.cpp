@@ -68,7 +68,7 @@ struct
 	void *retAddr1, *retAddr2, *retAddr3;
 }jmpBack1;
 
-__declspec(naked) void Hook_PrintString()
+__declspec(naked) void PrintStringFix()
 {
 	__asm
 	{
@@ -94,6 +94,16 @@ __declspec(naked) void Hook_PrintString()
 	ret2:
 		jmp jmpBack1.retAddr2;
 	}
+}
+
+unsigned __int16 *ContinousTokensFix(unsigned __int16 *arg_text, unsigned __int16 *useless)
+{
+	while (*arg_text == '~')
+	{
+		arg_text = CFont::ParseToken(arg_text, useless);
+	}
+
+	return arg_text;
 }
 
 void WMLC::PatchGame()
@@ -126,5 +136,14 @@ void WMLC::PatchGame()
 	jmpBack1.retAddr1 = AddressSelectorLC::SelectAddress<0x50117C, 0x5011EC>();
 	jmpBack1.retAddr2 = AddressSelectorLC::SelectAddress<0x501167, 0x5011D7>();
 	jmpBack1.retAddr3 = AddressSelectorLC::SelectAddress<0x50123B, 0x5012AB>();
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x50115F, 0x5011CF>(), Hook_PrintString);
+	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x50115F, 0x5011CF>(), PrintStringFix);
+
+	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x501751, 0x5017C1>(), ContinousTokensFix);
+
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F4EB, 0x58F6CB>(), 6);
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F4F3, 0x58F6D3>(), 1);
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F50D, 0x58F6ED>(), 1);
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F528, 0x58F708>(), 1);
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F52D, 0x58F70D>(), 6);
+	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F55D, 0x58F73D>(), 6);
 }

@@ -15,7 +15,7 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
-const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 v1.0 Build2016XXXX";
+const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 Koishi(1.0) Build20160730 by 无名汉化组";
 
 bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
 {
