@@ -2,7 +2,7 @@
 
 CCharTable::CharPos CCharTable::m_Table[0x10000];
 
-CCharTable::CharPos CCharTable::GetCharPos(unsigned __int16 chr)
+CCharTable::CharPos CCharTable::GetCharPos(CharType chr)
 {
 	CharPos result;
 
@@ -10,7 +10,7 @@ CCharTable::CharPos CCharTable::GetCharPos(unsigned __int16 chr)
 	{
 		if (CFont::RenderState->BaseCharset)
 		{
-			chr = CFont::FindNewCharacter(chr);
+			chr = CFont::fpFindNewCharacter(chr);
 
 			if (chr == 0xD0)
 			{
@@ -3023,3 +3023,10 @@ void CCharTable::InitTable()
 	m_Table[0xff1a] = { 46,45 };
 	m_Table[0xff1f] = { 46,46 };
 }
+
+CCharTable::CCharTable()
+{
+	InitTable();
+}
+
+static CCharTable instance;

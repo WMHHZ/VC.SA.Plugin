@@ -1,6 +1,8 @@
 #pragma once
+#include "../include/func_wrapper/func_wrapper.hpp"
 
 struct RwTexture;
+struct RwD3D8Vertex;
 
 class CRect;
 class CRGBA;
@@ -10,24 +12,27 @@ class CSprite2d
 public:
 	RwTexture *m_pRwTexture;
 
-public:
 	CSprite2d()
 	{
 		m_pRwTexture = nullptr;
 	}
 
-	static void (__cdecl *AddToBuffer)(const CRect &rect, const CRGBA &color, float a3, float a4, float a5, float a6, float a7, float a8, float a9, float a10);
+public:
 
-	void Delete();
-	static void *fpDelete;
+	static thiscall_func_wrapper<void()>
+		fpSetRenderState;
 
-	static void (__cdecl *DrawRect)(const CRect &rect, const CRGBA &color);
-	static void (__cdecl *RenderVertexBuffer)();
+	static thiscall_func_wrapper<void()>
+		fpDelete;
 
-	void SetRenderState();
-	static void *fpSetRenderState;
+	static cdecl_func_wrapper<void(const CRect &rect, const CRGBA &color)>
+		fpDrawRect;
 
-	static void GetAddresses();
+	static cdecl_func_wrapper<void(RwD3D8Vertex *vertices, const CRect &rect, const CRGBA &color1, const CRGBA &color2, const CRGBA &color3, const CRGBA &color4, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4)>
+		fpSetVertices;
 
-private:
+	static cdecl_func_wrapper<void()>
+		fpRenderVertexBuffer;
+
+	CSprite2d(int);
 };

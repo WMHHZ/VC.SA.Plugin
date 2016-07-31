@@ -36,10 +36,10 @@
     <ClCompile Include="rwFunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ThePlugin.cpp">
+    <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp">
+    <ClCompile Include="WMVC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +62,13 @@
     <ClInclude Include="game.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ThePlugin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\hooking\Hooking.Patterns.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CTxdStore.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WMVC.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

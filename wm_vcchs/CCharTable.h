@@ -10,9 +10,11 @@ public:
 		unsigned __int8 columnIndex;
 	};
 
-	static CharPos GetCharPos(unsigned __int16 chr);
+	static CharPos GetCharPos(CharType chr);
 
 	static void InitTable();
+
+	CCharTable();
 
 private:
 	static CharPos m_Table[];

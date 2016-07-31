@@ -52,7 +52,7 @@ float CFont::GetCharacterSize(unsigned __int16 arg_char)
 	}
 	else
 	{
-		iCharWidth = 26;
+		iCharWidth = 28;
 	}
 
 	return (iCharWidth * Details->Scale.x);
