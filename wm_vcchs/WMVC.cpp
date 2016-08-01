@@ -1,4 +1,4 @@
-﻿#include "ThePlugin.h"
+﻿#include "WMVC.h"
 #include "CFont.h"
 #include "CSprite2d.h"
 #include "CTimer.h"
@@ -15,9 +15,7 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
-const wchar_t *ThePlugin::MessageboxTitle = L"《侠盗猎车手：罪恶都市》汉化补丁 Koishi(1.0) Build20160730 by 无名汉化组";
-
-bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
+bool WMVC::CheckResourceFile(HMODULE hPlugin)
 {
 	char pluginPath[MAX_PATH];
 
@@ -29,7 +27,7 @@ bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
 
 	if (!PathFileExistsA(CFont::texturePath) || !PathFileExistsA(CFont::textPath))
 	{
-		MessageBoxW(NULL, L"afafaf", MessageboxTitle, MB_OK);
+		MessageBoxW(NULL, L"afafaf", WMVERSIONWSTRING, MB_OK);
 		//资源文件不见了
 		return false;
 	}
@@ -37,19 +35,12 @@ bool ThePlugin::CheckResourceFile(HMODULE hPlugin)
 	return true;
 }
 
-bool ThePlugin::CheckGameVersion()
+bool WMVC::CheckGameVersion()
 {
 	auto &veref = injector::address_manager::singleton();
 
 	if (veref.IsVC())
 	{
-		CFont::GetAddresses();
-		CSprite2d::GetAddresses();
-		CTimer::GetAddresses();
-		CTxdStore::GetAddresses();
-		rwFunc::GetAddresses();
-
-		CCharTable::InitTable();
 		PatchGame();
 	}
 	else
@@ -84,7 +75,7 @@ __declspec(naked) void Hook_LoadGxt2()
 }
 
 
-void ThePlugin::PatchGame()
+void WMVC::PatchGame()
 {
 	unsigned __int8 *FEO_LAN_Entry = *hook::pattern("B8 ? ? ? ? 01 C8 B9 ? ? ? ?").get(0).get<unsigned __int8 *>(1) + 0x1816;
 	memcpy(FEO_LAN_Entry, FEO_LAN_Entry + 0x12, 0x12);
@@ -108,4 +99,6 @@ void ThePlugin::PatchGame()
 	injector::MakeJMP(hook::pattern("53 56 55 83 EC 18 81 3D ? ? ? ? ? ? ? ?").get(0).get(), CFont::RenderFontBuffer);
 
 	injector::WriteMemory(*hook::pattern("D9 05 ? ? ? ? D8 44 24 10 50").get(0).get<float *>(2), 999.0f);
+
+
 }

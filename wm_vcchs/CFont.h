@@ -1,6 +1,9 @@
 #pragma once
 
 #include "game.h"
+#include "../include/func_wrapper/func_wrapper.hpp"
+
+typedef CharType CharType;
 
 class CSprite2d;
 
@@ -15,7 +18,7 @@ class CFontRenderState
 public:
 	__int32 Useless;
 	CVector2D Pos;
-	CVector2D LetterSize;
+	CVector2D Scale;
 	CRGBA Color;
 	float JustifyWrap;
 	float Slant;
@@ -30,7 +33,7 @@ static_assert(sizeof(CFontRenderState) == 0x30, "CFontRenderState is wrong.");
 union FontBufferPointer
 {
 	CFontRenderState *pdata;
-	unsigned __int16 *ptext;
+	CharType *ptext;
 	unsigned __int32 addr;
 };
 static_assert(sizeof(FontBufferPointer) == 4, "FontBufferPointer is wrong.");
@@ -38,8 +41,8 @@ static_assert(sizeof(FontBufferPointer) == 4, "FontBufferPointer is wrong.");
 class CFontDetails
 {
 public:
-	CRGBA LetterColor;
-	CVector2D LetterSize;
+	CRGBA Color;
+	CVector2D Scale;
 	float Slant;
 	CVector2D SlantRefPoint;
 	bool Justify;
@@ -77,7 +80,7 @@ public:
 	static char texturePath[];
 	static char textPath[];
 
-	static const CharacterSize *Size;
+	static CharacterSize *Size;
 
 	static FontBufferPointer FontBuffer;
 	static FontBufferPointer *FontBufferIter;
@@ -87,32 +90,38 @@ public:
 
 	static CFontDetails *Details;
 
-	static unsigned __int16 __cdecl FindNewCharacter(unsigned __int16 arg_char);
-	static unsigned __int16 *__cdecl ParseToken(unsigned __int16 *arg_text);
-	static unsigned __int16 *__cdecl ParseToken(unsigned __int16 *arg_text, CRGBA &result_color, bool &result_blip, bool &result_bold);
-	static void __cdecl PrintStringPart(float arg_x, float arg_y, unsigned int useless, unsigned __int16 *arg_strbeg, unsigned __int16 *arg_strend, float justifywrap);
+	static cdecl_func_wrapper<CharType(CharType arg_char)>
+		fpFindNewCharacter;
 
-	static float GetCharacterSizeNormal(unsigned __int16 arg_letter);
-	static float GetCharacterSizeDrawing(unsigned __int16 arg_letter);
+	static cdecl_func_wrapper<CharType *(CharType *)>
+		fpParseTokenEPt;
 
-	static float __cdecl GetStringWidth(unsigned __int16 *arg_text, bool arg_getall);
-	static unsigned __int16 *GetNextSpace(unsigned __int16 *arg_pointer);
+	static cdecl_func_wrapper<CharType *(CharType *arg_text, CRGBA &result_color, bool &result_blip, bool &result_bold)>
+		fpParseTokenEPtR5CRGBARbRb;
 
-	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_text);
-	static void __cdecl GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int16 *arg_text);
+	static cdecl_func_wrapper<void(float arg_x, float arg_y, CharType arg_char)>
+		fpPrintChar;
 
-	static void __cdecl PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text);
+	static cdecl_func_wrapper<void(float arg_x, float arg_y, unsigned int useless, CharType *arg_strbeg, CharType *arg_strend, float justifywrap)>
+		fpPrintStringPart;
+
+	static float GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseCharset, bool bProp, float fScaleX);
+	static float GetCharacterSizeNormal(CharType arg_char);
+	static float GetCharacterSizeDrawing(CharType arg_char);
+
+	static float __cdecl GetStringWidth(CharType *arg_text, bool arg_getall);
+	static CharType *GetNextSpace(CharType *arg_pointer);
+
+	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, CharType *arg_text);
+	static void __cdecl GetTextRect(CRect *result, float arg_x, float arg_y, CharType *arg_text);
+
+	static void __cdecl PrintString(float arg_x, float arg_y, CharType *arg_text);
 	static void __cdecl RenderFontBuffer();
-	static void __cdecl PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char);
+	static void __cdecl PrintCHSChar(float arg_x, float arg_y, CharType arg_char);
+	static void __cdecl PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char);
 
 	static void __cdecl LoadCHSTexture();
 	static void __cdecl UnloadCHSTexture(int dummy);
 
-	static void GetAddresses();
-
-private:
-	static void *fpFindNewCharacter;
-	static void *fpParseTokenEPt;
-	static void *fpParseTokenEPtR5CRGBARbRb;
-	static void *fpPrintStringPart;
+	CFont();
 };

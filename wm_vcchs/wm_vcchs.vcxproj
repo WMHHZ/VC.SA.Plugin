@@ -153,7 +153,7 @@
     <ClCompile Include="..\include\hooking\Hooking.Patterns.cpp" />
     <ClCompile Include="CCharTable.cpp" />
     <ClCompile Include="CFont.cpp" />
-    <ClCompile Include="ThePlugin.cpp" />
+    <ClCompile Include="WMVC.cpp" />
     <ClCompile Include="CSprite2d.cpp" />
     <ClCompile Include="CTimer.cpp" />
     <ClCompile Include="CTxdStore.cpp" />
@@ -166,7 +166,7 @@
     <ClInclude Include="CFont.h" />
     <ClInclude Include="CSprite2d.h" />
     <ClInclude Include="CTimer.h" />
-    <ClInclude Include="ThePlugin.h" />
+    <ClInclude Include="WMVC.h" />
     <ClInclude Include="CTxdStore.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="rwFunc.h" />

@@ -1,10 +1,14 @@
 #pragma once
+#include "../include/func_wrapper/func_wrapper.hpp"
 
 class CTxdStore
 {
 public:
-	static void(__cdecl *PopCurrentTxd)();
-	static void(__cdecl *RemoveTxdSlot)(int slot);
+	static cdecl_func_wrapper<void()>
+		fpPopCurrentTxd;
 
-	static void GetAddresses();
+	static cdecl_func_wrapper<void(int slot)>
+		fpRemoveTxdSlot;
+
+	CTxdStore();
 };

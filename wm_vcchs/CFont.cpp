@@ -4,66 +4,54 @@
 #include "CCharTable.h"
 #include "rwFunc.h"
 #include "CTxdStore.h"
-#include "../include/injector/calling.hpp"
 #include "../include/hooking/Hooking.Patterns.h"
 
 char CFont::texturePath[MAX_PATH];
 char CFont::textPath[MAX_PATH];
 
-const CharacterSize *CFont::Size;
+CharacterSize *CFont::Size;
 FontBufferPointer CFont::FontBuffer;
 FontBufferPointer *CFont::FontBufferIter;
 CFontRenderState *CFont::RenderState;
 CSprite2d *CFont::Sprite;
 CFontDetails *CFont::Details;
 
-void *CFont::fpFindNewCharacter;
-void *CFont::fpParseTokenEPt;
-void *CFont::fpParseTokenEPtR5CRGBARbRb;
-void *CFont::fpPrintStringPart;
+cdecl_func_wrapper<CharType(CharType arg_char)>
+CFont::fpFindNewCharacter;
+
+cdecl_func_wrapper<CharType *(CharType *)>
+CFont::fpParseTokenEPt;
+
+cdecl_func_wrapper<CharType *(CharType *arg_text, CRGBA &result_color, bool &result_blip, bool &result_bold)>
+CFont::fpParseTokenEPtR5CRGBARbRb;
+
+cdecl_func_wrapper<void(float arg_x, float arg_y, CharType arg_char)>
+CFont::fpPrintChar;
+
+cdecl_func_wrapper<void(float arg_x, float arg_y, unsigned int useless, CharType *arg_strbeg, CharType *arg_strend, float justifywrap)>
+CFont::fpPrintStringPart;
 
 void CFont::LoadCHSTexture()
 {
-	CTxdStore::PopCurrentTxd();
+	CTxdStore::fpPopCurrentTxd();
 
 	CFont::Sprite[2].m_pRwTexture = rwFunc::LoadTextureFromPNG(texturePath);
 }
 
 void CFont::UnloadCHSTexture(int dummy)
 {
-	CTxdStore::RemoveTxdSlot(dummy);
+	CTxdStore::fpRemoveTxdSlot(dummy);
 
-	CFont::Sprite[2].Delete();
+	CSprite2d::fpDelete(&CFont::Sprite[2]);
 }
 
-
-unsigned __int16 CFont::FindNewCharacter(unsigned __int16 arg_char)
-{
-	return injector::cstd<unsigned __int16(unsigned __int16)>::call(fpFindNewCharacter, arg_char);
-}
-
-unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text)
-{
-	return injector::cstd<unsigned __int16 *(unsigned __int16 *)>::call(fpParseTokenEPt, arg_text);
-}
-
-unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text, CRGBA &result_color, bool &result_bool1, bool &result_bool2)
-{
-	return injector::cstd<unsigned __int16 *(unsigned __int16 *, CRGBA &, bool &, bool &)>::call(fpParseTokenEPtR5CRGBARbRb, arg_text, result_color, result_bool1, result_bool2);
-}
-
-void CFont::PrintStringPart(float arg_x, float arg_y, unsigned int useless, unsigned __int16 *arg_strbeg, unsigned __int16 *arg_strend, float justifywrap)
-{
-	return injector::cstd<void(float, float, unsigned int, unsigned __int16 *, unsigned __int16 *, float)>::call(fpPrintStringPart, arg_x, arg_y, useless, arg_strbeg, arg_strend, justifywrap);
-}
-
-float CFont::GetCharacterSizeNormal(unsigned __int16 arg_letter)
+float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseCharset, bool bProp, float fScaleX)
 {
 	__int16 charWidth;
 
-	if (arg_letter >= 0x60)
+	if (arg_char >= 0x60)
 	{
-		switch (arg_letter + 0x20)
+		switch (arg_char + 0x20)
 		{
 		case L'·':
 			charWidth = 24;
@@ -118,105 +106,35 @@ float CFont::GetCharacterSizeNormal(unsigned __int16 arg_letter)
 	}
 	else
 	{
-		if (Details->BaseCharset)
+		if (bBaseCharset)
 		{
-			arg_letter = FindNewCharacter(arg_letter);
+			arg_char = fpFindNewCharacter(arg_char);
 		}
 
-		if (Details->Prop)
+		if (bProp)
 		{
-			charWidth = Size[Details->FontStyle].PropValues[arg_letter];
+			charWidth = Size[nFontStyle].PropValues[arg_char];
 		}
 		else
 		{
-			charWidth = Size[Details->FontStyle].UnpropValue;
+			charWidth = Size[nFontStyle].UnpropValue;
 		}
 	}
 
-	return (charWidth * Details->LetterSize.x);
+	return (charWidth * fScaleX);
 }
 
-float CFont::GetCharacterSizeDrawing(unsigned __int16 arg_letter)
+float CFont::GetCharacterSizeNormal(CharType arg_char)
 {
-	__int16 charWidth;
-
-	if (arg_letter >= 0x60)
-	{
-		switch (arg_letter + 0x20)
-		{
-		case L'·':
-			charWidth = 24;
-			break;
-		case L'—':
-			charWidth = 32;
-			break;
-		case L'“':
-			charWidth = 16;
-			break;
-		case L'”':
-			charWidth = 16;
-			break;
-		case L'…':
-			charWidth = 24;
-			break;
-		case L'←':
-			charWidth = 24;
-			break;
-		case L'→':
-			charWidth = 24;
-			break;
-		case L'。':
-			charWidth = 14;
-			break;
-		case L'！':
-			charWidth = 10;
-			break;
-		case L'（':
-			charWidth = 16;
-			break;
-		case L'）':
-			charWidth = 16;
-			break;
-		case L'，':
-			charWidth = 12;
-			break;
-		case L'／':
-			charWidth = 18;
-			break;
-		case L'：':
-			charWidth = 10;
-			break;
-		case L'？':
-			charWidth = 18;
-			break;
-
-		default:
-			charWidth = 26;
-			break;
-		}
-	}
-	else
-	{
-		if (RenderState->BaseCharset)
-		{
-			arg_letter = FindNewCharacter(arg_letter);
-		}
-
-		if (RenderState->Prop)
-		{
-			charWidth = Size[RenderState->FontStyle].PropValues[arg_letter];
-		}
-		else
-		{
-			charWidth = Size[RenderState->FontStyle].UnpropValue;
-		}
-	}
-
-	return (charWidth * RenderState->LetterSize.x);
+	return GetCharacterSize(arg_char, Details->FontStyle, Details->BaseCharset, Details->Prop, Details->Scale.x);
 }
 
+float CFont::GetCharacterSizeDrawing(CharType arg_char)
+{
+	return GetCharacterSize(arg_char, RenderState->FontStyle, RenderState->BaseCharset, RenderState->Prop, RenderState->Scale.x);
+}
 
-float CFont::GetStringWidth(unsigned __int16 *arg_text, bool bGetAll)
+float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 {
 	float result = 0.0f;
 
@@ -263,9 +181,9 @@ float CFont::GetStringWidth(unsigned __int16 *arg_text, bool bGetAll)
 	return result;
 }
 
-unsigned __int16 *CFont::GetNextSpace(unsigned __int16 *arg_pointer)
+CharType *CFont::GetNextSpace(CharType *arg_pointer)
 {
-	unsigned __int16 *var_pointer = arg_pointer;
+	CharType *var_pointer = arg_pointer;
 
 	bool succeeded = false;
 
@@ -298,7 +216,7 @@ unsigned __int16 *CFont::GetNextSpace(unsigned __int16 *arg_pointer)
 	return var_pointer;
 }
 
-__int16 CFont::GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_text)
+__int16 CFont::GetNumberLines(float arg_x, float arg_y, CharType *arg_text)
 {
 	__int16 result = 0;
 	float xBound;
@@ -354,14 +272,14 @@ __int16 CFont::GetNumberLines(float arg_x, float arg_y, unsigned __int16 *arg_te
 			}
 
 			++result;
-			yBound += Details->LetterSize.y * 18.0f;
+			yBound += Details->Scale.y * 18.0f;
 		}
 	}
 
 	return result;
 }
 
-void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int16 *arg_text)
+void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, CharType *arg_text)
 {
 	__int16 numLines = GetNumberLines(arg_x, arg_y, arg_text);
 
@@ -371,14 +289,14 @@ void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int1
 		{
 			result->x1 = arg_x - 4.0f;
 			result->x2 = arg_x + 4.0f;
-			result->y1 = (18.0f * Details->LetterSize.y) * numLines + arg_y + 2.0f;
+			result->y1 = (18.0f * Details->Scale.y) * numLines + arg_y + 2.0f;
 			result->y2 = arg_y - 2.0f;
 		}
 		else
 		{
 			result->x1 = arg_x - (Details->CentreSize * 0.5f) - 4.0f;
 			result->x2 = arg_x + (Details->CentreSize * 0.5f) + 4.0f;
-			result->y1 = arg_y + (18.0f * Details->LetterSize.y * numLines) + 2.0f;
+			result->y1 = arg_y + (18.0f * Details->Scale.y * numLines) + 2.0f;
 			result->y2 = arg_y - 2.0f;
 		}
 	}
@@ -387,11 +305,11 @@ void CFont::GetTextRect(CRect *result, float arg_x, float arg_y, unsigned __int1
 		result->x1 = arg_x - 4.0f;
 		result->x2 = Details->WrapX;
 		result->y1 = arg_y;
-		result->y2 = (18.0f * Details->LetterSize.y) * numLines + arg_y + 4.0f;
+		result->y2 = (18.0f * Details->Scale.y) * numLines + arg_y + 4.0f;
 	}
 }
 
-void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
+void CFont::PrintString(float arg_x, float arg_y, CharType *arg_text)
 {
 	CRect textBoxRect;
 
@@ -402,8 +320,8 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 	float print_x;
 	float justifyWrap;
 
-	unsigned __int16 *esi = arg_text;
-	unsigned __int16 *strHead = arg_text;
+	CharType *ptext = arg_text;
+	CharType *strHead = arg_text;
 
 	bool emptyLine = true;
 
@@ -421,7 +339,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 	if (Details->Background)
 	{
 		GetTextRect(&textBoxRect, arg_x, arg_y, arg_text);
-		CSprite2d::DrawRect(textBoxRect, Details->BackgroundColor);
+		CSprite2d::fpDrawRect(textBoxRect, Details->BackgroundColor);
 	}
 
 	if (Details->Centre || Details->RightJustify)
@@ -433,9 +351,9 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 		xBound = arg_x;
 	}
 
-	while (*esi != 0)
+	while (*ptext != 0)
 	{
-		strWidth = GetStringWidth(esi, false);
+		strWidth = GetStringWidth(ptext, false);
 
 		if (Details->Centre)
 		{
@@ -452,16 +370,16 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 
 		if (((xBound + strWidth) <= widthLimit) || emptyLine)
 		{
-			esi = GetNextSpace(esi);
+			ptext = GetNextSpace(ptext);
 			xBound += strWidth;
 
-			if (*esi != 0)
+			if (*ptext != 0)
 			{
-				if (*esi == ' ')
+				if (*ptext == ' ')
 				{
-					if (*(esi + 1) == 0)
+					if (*(ptext + 1) == 0)
 					{
-						*esi = 0;
+						*ptext = 0;
 					}
 					else
 					{
@@ -471,7 +389,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 						}
 
 						xBound += GetCharacterSizeNormal(0);
-						++esi;
+						++ptext;
 					}
 				}
 
@@ -494,7 +412,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 					print_x = arg_x;
 				}
 
-				PrintStringPart(print_x, yBound, 0, strHead, esi, 0.0f);
+				fpPrintStringPart(print_x, yBound, 0, strHead, ptext, 0.0f);
 			}
 		}
 		else
@@ -521,9 +439,9 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 				print_x = arg_x;
 			}
 
-			PrintStringPart(print_x, yBound, 0, strHead, esi, justifyWrap);
+			fpPrintStringPart(print_x, yBound, 0, strHead, ptext, justifyWrap);
 		
-			strHead = esi;
+			strHead = ptext;
 
 			if (Details->Centre || Details->RightJustify)
 			{
@@ -534,7 +452,7 @@ void CFont::PrintString(float arg_x, float arg_y, unsigned __int16 *arg_text)
 				xBound = arg_x;
 			}
 
-			yBound += Details->LetterSize.y * 18.0f;
+			yBound += Details->Scale.y * 18.0f;
 			var_38 = 0.0f;
 			numSpaces = 0;
 			emptyLine = true;
@@ -551,9 +469,9 @@ void CFont::RenderFontBuffer()
 
 	CVector2D pos;
 
-	unsigned __int16 bx;
+	CharType var_char;
 
-	FontBufferPointer esi;
+	FontBufferPointer pbuffer;
 
 	if (FontBufferIter->addr == FontBuffer.addr)
 	{
@@ -565,36 +483,36 @@ void CFont::RenderFontBuffer()
 
 	pos = RenderState->Pos;
 
-	esi.addr = FontBuffer.addr + 0x30;
+	pbuffer.addr = FontBuffer.addr + 0x30;
 
-	while (esi.addr < FontBufferIter->addr)
+	while (pbuffer.addr < FontBufferIter->addr)
 	{
-		if (*(esi.ptext) == 0)
+		if (*(pbuffer.ptext) == 0)
 		{
-			++esi.ptext;
+			++pbuffer.ptext;
 
-			if (((esi.addr) & 3) != 0)
+			if (((pbuffer.addr) & 3) != 0)
 			{
-				++esi.ptext;
+				++pbuffer.ptext;
 			}
 
-			if (esi.addr >= FontBufferIter->addr)
+			if (pbuffer.addr >= FontBufferIter->addr)
 			{
 				break;
 			}
 
-			*RenderState = *esi.pdata;
+			*RenderState = *pbuffer.pdata;
 
 			var_14 = RenderState->Color;
 
 			pos = RenderState->Pos;
 
-			esi.addr += 0x30;
+			pbuffer.addr += 0x30;
 		}
 
-		if (*esi.ptext == '~')
+		if (*pbuffer.ptext == '~')
 		{
-			esi.ptext = ParseToken(esi.ptext, var_14, var_E, var_D);
+			pbuffer.ptext = fpParseTokenEPtR5CRGBARbRb(pbuffer.ptext, var_14, var_E, var_D);
 
 			if (var_E)
 			{
@@ -606,11 +524,11 @@ void CFont::RenderFontBuffer()
 
 				if (Details->IsBlip)
 				{
-					Details->LetterColor.alpha = 0;
+					Details->Color.alpha = 0;
 				}
 				else
 				{
-					Details->LetterColor.alpha = 255;
+					Details->Color.alpha = 255;
 				}
 			}
 
@@ -625,63 +543,45 @@ void CFont::RenderFontBuffer()
 			pos.y = (RenderState->SlantRefPoint.x - pos.x) * RenderState->Slant + RenderState->SlantRefPoint.y;
 		}
 
-		bx = *esi.ptext - 0x20;
+		var_char = *pbuffer.ptext - 0x20;
 
-		if (bx < 0x60)
-		{
-			Sprite[RenderState->FontStyle].SetRenderState();
-		}
-		else
-		{
-			Sprite[2].SetRenderState();
-		}
-
-		rwFunc::RwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
-
-		PrintChar(pos.x, pos.y, bx);
+		PrintCharDispatcher(pos.x, pos.y, var_char);
 
 		if (var_D)
 		{
-			PrintChar(pos.x + 1.0f, pos.y, bx);
-			PrintChar(pos.x + 2.0f, pos.y, bx);
+			PrintCharDispatcher(pos.x + 1.0f, pos.y, var_char);
+			PrintCharDispatcher(pos.x + 2.0f, pos.y, var_char);
 			pos.x += 2.0f;
 		}
 
-		CSprite2d::RenderVertexBuffer();
-
-		pos.x += GetCharacterSizeDrawing(bx);
+		pos.x += GetCharacterSizeDrawing(var_char);
 	
-		if (bx == 0)
+		if (var_char == 0)
 		{
 			pos.x += RenderState->JustifyWrap;
 		}
 	
-		++esi.ptext;
+		++pbuffer.ptext;
 	}
+
+	CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
+	rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
+	CSprite2d::fpRenderVertexBuffer();
 
 	FontBufferIter->addr = FontBuffer.addr;
 }
 
-void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
+void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 {
-	static const float RowCountReciprocal = 1.0f / 12.8f ;
-	static const float ColumnCountReciprocal = 1.0f / 16.0f;
-	static const float Fix_697200 = 0.0021f;
-	static const float Fix_6971FC = 0.001f;
-	static const float Fix_697208 = 0.015f;
-	static const float Fix_69720C = 0.01f;
-	static const float Fix_697210 = 0.009f;
-	static const float Fix_697214 = 0.00055f;
+	static const float rRowsCount = 1.0f / 51.2f;
+	static const float rColumnsCount = 1.0f / 64.0f;
 
-	static const float ScaleRatio = 4.0f;
-	static const float RowCountReciprocal_CHS = 1.0f / 12.8f / ScaleRatio;
-	static const float ColumnCountReciprocal_CHS = 1.0f / 16.0f / ScaleRatio;
-	static const float Fix_697200_CHS = 0.0021f / ScaleRatio;
-	static const float Fix_6971FC_CHS = 0.001f / ScaleRatio;
-	static const float Fix_697208_CHS = 0.015f / ScaleRatio;
-	static const float Fix_69720C_CHS = 0.01f / ScaleRatio;
-	static const float Fix_697210_CHS = 0.009f / ScaleRatio;
-	static const float Fix_697214_CHS = 0.00055f / ScaleRatio;
+	static const float Fix_697200_CHS = 0.0021f / 4.0f;
+	static const float Fix_6971FC_CHS = 0.001f / 4.0f;
+	static const float Fix_697208_CHS = 0.015f / 4.0f;
+	static const float Fix_69720C_CHS = 0.01f / 4.0f;
+	static const float Fix_697210_CHS = 0.009f / 4.0f;
+	static const float Fix_697214_CHS = 0.00055f / 4.0f;
 
 	CRect rect;
 
@@ -708,8 +608,8 @@ void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 		{
 			rect.x1 = arg_x;
 			rect.y2 = arg_y;
-			rect.x2 = RenderState->LetterSize.x * 32.0f + arg_x;
-			rect.y1 = RenderState->LetterSize.y * 20.0f + arg_y;
+			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
 			CSprite2d::AddToBuffer(rect, RenderState->Color,
 				cpos.columnIndex * ColumnCountReciprocal,
@@ -725,8 +625,8 @@ void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 		{
 			rect.x1 = arg_x;
 			rect.y2 = arg_y + 0.015f;
-			rect.x2 = RenderState->LetterSize.x * 32.0f + arg_x;
-			rect.y1 = RenderState->LetterSize.y * 20.0f + arg_y;
+			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
 			CSprite2d::AddToBuffer(rect, RenderState->Color,
 				cpos.columnIndex * ColumnCountReciprocal,
@@ -745,8 +645,8 @@ void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 		{
 			rect.x1 = arg_x;
 			rect.y2 = arg_y;
-			rect.x2 = RenderState->LetterSize.x * 32.0f + arg_x;
-			rect.y1 = RenderState->LetterSize.y * 20.0f + arg_y;
+			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
 			CSprite2d::AddToBuffer(rect, RenderState->Color,
 				cpos.columnIndex * ColumnCountReciprocal_CHS,
@@ -762,8 +662,8 @@ void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 		{
 			rect.x1 = arg_x;
 			rect.y2 = arg_y + 0.015f;
-			rect.x2 = RenderState->LetterSize.x * 32.0f + arg_x;
-			rect.y1 = RenderState->LetterSize.y * 20.0f + arg_y;
+			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
 			CSprite2d::AddToBuffer(rect, RenderState->Color,
 				cpos.columnIndex * ColumnCountReciprocal_CHS,
@@ -778,7 +678,29 @@ void CFont::PrintChar(float arg_x, float arg_y, unsigned __int16 arg_char)
 	}
 }
 
-void CFont::GetAddresses()
+void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
+{
+	if (arg_char < 0x60)
+	{
+		if (RenderState->BaseCharset)
+		{
+			arg_char = fpFindNewCharacter(arg_char);
+
+			if (arg_char == 0xD0)
+			{
+				arg_char = 0;
+			}
+		}
+
+		fpPrintChar(arg_x, arg_y, arg_char);
+	}
+	else
+	{
+		PrintCHSChar(arg_x, arg_y, arg_char);
+	}
+}
+
+CFont::CFont()
 {
 	hook::pattern ParseTokenPattern("8B 44 24 04 C6 05 ? ? ? ? 00 83 C0 02");
 	hook::pattern FontBufferPattern("81 3D ? ? ? ? ? ? ? ? 75 0E");
@@ -794,4 +716,7 @@ void CFont::GetAddresses()
 	fpParseTokenEPt = ParseTokenPattern.get(0).get();
 	fpParseTokenEPtR5CRGBARbRb = ParseTokenPattern.get(1).get();
 	fpPrintStringPart = hook::pattern("66 A1 ? ? ? ? 53 66 8B 0D ? ? ? ?").get(0).get();
+	fpPrintChar = hook::pattern("53 56 55 8B 2D ? ? ? ? 83 EC 48").get(0).get();
 }
+
+static CFont instance;
