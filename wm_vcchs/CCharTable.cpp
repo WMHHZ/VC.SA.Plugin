@@ -1,4 +1,4 @@
-#include "CCharTable.h"
+﻿#include "CCharTable.h"
 
 CCharTable::CharPos CCharTable::m_Table[0x10000];
 

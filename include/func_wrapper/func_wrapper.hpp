@@ -19,9 +19,9 @@ class cdecl_func_wrapper<__Ret(__Args...)>
 public:
 	cdecl_func_wrapper() :pfunction(nullptr) {}
 	cdecl_func_wrapper(void *pfunc) :pfunction(pfunc) {}
-	cdecl_func_wrapper(std::uintptr_t funcaddr) :pfunction((void *)funcaddr) {}
-	cdecl_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; }
-	cdecl_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = (void *)funcaddr; }
+	cdecl_func_wrapper(std::uintptr_t funcaddr) :pfunction(reinterpret_cast<void *>(funcaddr)) {}
+	cdecl_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; return *this; }
+	cdecl_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return *this; }
 
 	__Ret operator()(__Args ... args) const
 	{
@@ -37,9 +37,9 @@ class stdcall_func_wrapper<__Ret(__Args...)>
 public:
 	stdcall_func_wrapper() :pfunction(nullptr) {}
 	stdcall_func_wrapper(void *pfunc) :pfunction(pfunc) {}
-	stdcall_func_wrapper(std::uintptr_t funcaddr) :pfunction((void *)funcaddr) {}
-	stdcall_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; }
-	stdcall_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = (void *)funcaddr; }
+	stdcall_func_wrapper(std::uintptr_t funcaddr) :pfunction(reinterpret_cast<void *>(funcaddr)) {}
+	stdcall_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; return *this; }
+	stdcall_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return *this; }
 
 	__Ret operator()(__Args ... args) const
 	{
@@ -55,9 +55,9 @@ class thiscall_func_wrapper<__Ret(__Args...)>
 public:
 	thiscall_func_wrapper() :pfunction(nullptr) {}
 	thiscall_func_wrapper(void *pfunc) :pfunction(pfunc) {}
-	thiscall_func_wrapper(std::uintptr_t funcaddr) :pfunction((void *)funcaddr) {}
-	thiscall_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; }
-	thiscall_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = (void *)funcaddr; }
+	thiscall_func_wrapper(std::uintptr_t funcaddr) :pfunction(reinterpret_cast<void *>(funcaddr)) {}
+	thiscall_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; return *this; }
+	thiscall_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return *this; }
 
 	__Ret operator()(void *__this, __Args... args) const
 	{

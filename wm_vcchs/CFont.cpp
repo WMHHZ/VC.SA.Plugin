@@ -545,6 +545,17 @@ void CFont::RenderFontBuffer()
 
 		var_char = *pbuffer.ptext - 0x20;
 
+		if (var_char < 0x60)
+		{
+			CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
+		}
+		else
+		{
+			CSprite2d::fpSetRenderState(&Sprite[2]);
+		}
+
+		rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
+
 		PrintCharDispatcher(pos.x, pos.y, var_char);
 
 		if (var_D)
@@ -554,6 +565,8 @@ void CFont::RenderFontBuffer()
 			pos.x += 2.0f;
 		}
 
+		CSprite2d::fpRenderVertexBuffer();
+
 		pos.x += GetCharacterSizeDrawing(var_char);
 	
 		if (var_char == 0)
@@ -562,11 +575,7 @@ void CFont::RenderFontBuffer()
 		}
 	
 		++pbuffer.ptext;
-	}
-
-	CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
-	rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
-	CSprite2d::fpRenderVertexBuffer();
+	}	
 
 	FontBufferIter->addr = FontBuffer.addr;
 }
@@ -575,17 +584,17 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 {
 	static const float rRowsCount = 1.0f / 51.2f;
 	static const float rColumnsCount = 1.0f / 64.0f;
-
-	static const float Fix_697200_CHS = 0.0021f / 4.0f;
-	static const float Fix_6971FC_CHS = 0.001f / 4.0f;
-	static const float Fix_697208_CHS = 0.015f / 4.0f;
-	static const float Fix_69720C_CHS = 0.01f / 4.0f;
-	static const float Fix_697210_CHS = 0.009f / 4.0f;
-	static const float Fix_697214_CHS = 0.00055f / 4.0f;
+	static const float ufix = 0.001f / 4.0f;
+	static const float vfix = 0.0021f / 4.0f;
+	static const float vfix1_slant = 0.00055f / 4.0f;
+	static const float vfix2_slant = 0.01f / 4.0f;
+	static const float vfix3_slant = 0.009f / 4.0f;
 
 	CRect rect;
 
-	CCharTable::CharPos cpos;
+	float u1, v1, u2, v2, u3, v3, u4, v4;
+
+	CCharTable::CharPos pos;
 
 	if (arg_x >= *rwFunc::RsGlobalW ||
 		arg_x <= 0.0f ||
@@ -595,87 +604,42 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 		return;
 	}
 
-	if (arg_char == 0)
+	pos = CCharTable::GetCharPos(arg_char);
+
+	if (RenderState->Slant == 0.0f)
 	{
-		return;
-	}
+		rect.x1 = arg_x;
+		rect.y2 = arg_y;
+		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+		rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
-	cpos = CCharTable::GetCharPos(arg_char);
-
-	if (arg_char < 0x60)
-	{
-		if (RenderState->Slant == 0.0f)
-		{
-			rect.x1 = arg_x;
-			rect.y2 = arg_y;
-			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
-
-			CSprite2d::AddToBuffer(rect, RenderState->Color,
-				cpos.columnIndex * ColumnCountReciprocal,
-				Fix_697200 + cpos.rowIndex * RowCountReciprocal,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal - Fix_6971FC,
-				Fix_697200 + cpos.rowIndex * RowCountReciprocal,
-				cpos.columnIndex * ColumnCountReciprocal,
-				(cpos.rowIndex + 1) * RowCountReciprocal - Fix_697200,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal - Fix_6971FC,
-				(cpos.rowIndex + 1) * RowCountReciprocal - Fix_697200);
-		}
-		else
-		{
-			rect.x1 = arg_x;
-			rect.y2 = arg_y + 0.015f;
-			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
-
-			CSprite2d::AddToBuffer(rect, RenderState->Color,
-				cpos.columnIndex * ColumnCountReciprocal,
-				cpos.rowIndex * RowCountReciprocal + Fix_697214,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal - Fix_6971FC,
-				cpos.rowIndex * RowCountReciprocal + Fix_697200 + Fix_69720C,
-				cpos.columnIndex * ColumnCountReciprocal,
-				(cpos.rowIndex + 1) * RowCountReciprocal - Fix_697210,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal - Fix_6971FC,
-				(cpos.rowIndex + 1) * RowCountReciprocal + Fix_69720C - Fix_697200);
-		}
+		u1 = pos.columnIndex * rColumnsCount;
+		v1 = pos.rowIndex * rRowsCount;
+		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v2 = v1;
+		u3 = u1;
+		v3 = (pos.rowIndex + 1) * rRowsCount - vfix;
+		u4 = u2;
+		v4 = v3;
 	}
 	else
 	{
-		if (RenderState->Slant == 0.0f)
-		{
-			rect.x1 = arg_x;
-			rect.y2 = arg_y;
-			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
+		rect.x1 = arg_x;
+		rect.y2 = arg_y + 0.015f;
+		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+		rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
 
-			CSprite2d::AddToBuffer(rect, RenderState->Color,
-				cpos.columnIndex * ColumnCountReciprocal_CHS,
-				Fix_697200_CHS + cpos.rowIndex * RowCountReciprocal_CHS,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal_CHS - Fix_6971FC_CHS,
-				Fix_697200_CHS + cpos.rowIndex * RowCountReciprocal_CHS,
-				cpos.columnIndex * ColumnCountReciprocal_CHS,
-				(cpos.rowIndex + 1) * RowCountReciprocal_CHS - Fix_697200_CHS,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal_CHS - Fix_6971FC_CHS,
-				(cpos.rowIndex + 1) * RowCountReciprocal_CHS - Fix_697200_CHS);
-		}
-		else
-		{
-			rect.x1 = arg_x;
-			rect.y2 = arg_y + 0.015f;
-			rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-			rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
-
-			CSprite2d::AddToBuffer(rect, RenderState->Color,
-				cpos.columnIndex * ColumnCountReciprocal_CHS,
-				cpos.rowIndex * RowCountReciprocal_CHS + Fix_697214_CHS,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal_CHS - Fix_6971FC_CHS,
-				cpos.rowIndex * RowCountReciprocal_CHS + Fix_697200_CHS + Fix_69720C_CHS,
-				cpos.columnIndex * ColumnCountReciprocal_CHS,
-				(cpos.rowIndex + 1) * RowCountReciprocal_CHS - Fix_697210_CHS,
-				(cpos.columnIndex + 1) * ColumnCountReciprocal_CHS - Fix_6971FC_CHS,
-				(cpos.rowIndex + 1) * RowCountReciprocal_CHS + Fix_69720C_CHS - Fix_697200_CHS);
-		}
+		u1 = pos.columnIndex * rColumnsCount;
+		v1 = pos.rowIndex * rRowsCount + vfix1_slant;
+		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v2 = pos.rowIndex * rRowsCount + vfix + vfix2_slant;
+		u3 = pos.columnIndex * rColumnsCount;
+		v3 = (pos.rowIndex + 1) * rRowsCount - vfix3_slant;
+		u4 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v4 = (pos.rowIndex + 1) * rRowsCount + vfix2_slant - vfix;
 	}
+
+	CSprite2d::fpAddToBuffer(rect, RenderState->Color, u1, v1, u2, v2, u3, v3, u4, v4);
 }
 
 void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)

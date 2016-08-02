@@ -118,7 +118,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_VCCHS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
@@ -129,7 +128,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\depends\lpng1622\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
