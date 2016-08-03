@@ -30,6 +30,12 @@ public:
 };
 static_assert(sizeof(CFontRenderState) == 0x30, "CFontRenderState is wrong.");
 
+struct FontBufferEntry
+{
+	CFontRenderState data;
+	CharType text[1];
+};
+
 union FontBufferPointer
 {
 	CFontRenderState *pdata;
