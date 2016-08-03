@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <windows.h>
 
-#define WMVERSIONWSTRING L"《侠盗猎车手3》汉化补丁 Satori(1.0) Build20160730 by 无名汉化组"
+#define WMVERSIONWSTRING L"《侠盗猎车手3》汉化补丁 Satori(1.0) Build20160803 by 无名汉化组"
 
 class WMLC
 {
