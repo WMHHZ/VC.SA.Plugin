@@ -3,7 +3,7 @@
 #include "game.h"
 #include "../include/func_wrapper/func_wrapper.hpp"
 
-typedef CharType CharType;
+typedef unsigned __int16 CharType;
 
 class CSprite2d;
 

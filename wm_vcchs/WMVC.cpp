@@ -1,16 +1,11 @@
 ﻿#include "WMVC.h"
 #include "CFont.h"
-#include "CSprite2d.h"
-#include "CTimer.h"
-#include "CTxdStore.h"
-#include "CCharTable.h"
-#include "rwFunc.h"
-#include "../include/hooking/Hooking.Patterns.h"
 
 #include <cstring>
 
 #include "../include/injector/injector.hpp"
 #include "../include/injector/hooking.hpp"
+#include "../include/hooking/Hooking.Patterns.h"
 
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
@@ -57,6 +52,7 @@ __declspec(naked) void Hook_LoadGxt1()
 	__asm
 	{
 		pop eax;
+		add eax, 3;
 		push offset CFont::textPath;
 		jmp eax;
 	}
@@ -68,12 +64,12 @@ __declspec(naked) void Hook_LoadGxt2()
 	__asm
 	{
 		pop eax;
+		add eax, 5;
 		push offset aRb;
 		push offset CFont::textPath;
 		jmp eax;
 	}
 }
-
 
 void WMVC::PatchGame()
 {
@@ -82,12 +78,8 @@ void WMVC::PatchGame()
 	memcpy(FEO_LAN_Entry + 0x12, FEO_LAN_Entry + 0x24, 0x12);
 	memset(FEO_LAN_Entry + 0x24, 0, 0x12);
 
-	void *LoadGXTPattern1 = hook::pattern("8D 04 40 8B 5C 85 34 8D 84 24 80 00 00 00 50").get(0).get(7);
-	void *LoadGXTPattern2 = hook::pattern("8D 44 24 14 68 ? ? ? ? 50").get(0).get();
-	injector::MakeNOP(LoadGXTPattern1, 8);
-	injector::MakeCALL(LoadGXTPattern1, Hook_LoadGxt1);
-	injector::MakeNOP(LoadGXTPattern2, 10);
-	injector::MakeCALL(LoadGXTPattern2, Hook_LoadGxt2);
+	injector::MakeCALL(hook::pattern("8D 04 40 8B 5C 85 34 8D 84 24 80 00 00 00 50").get(0).get(7), Hook_LoadGxt1);
+	injector::MakeCALL(hook::pattern("8D 44 24 14 68 ? ? ? ? 50").get(0).get(), Hook_LoadGxt2);
 
 	injector::MakeCALL(hook::pattern("DB 05 ? ? ? ? 8D 4C 24 08").get(0).get(0xF8), CFont::LoadCHSTexture);
 	injector::MakeCALL(hook::pattern("B9 ? ? ? ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 68 ? ? ? ? E8 ? ? ? ? 59 50 E8 ? ? ? ? 59 C3").get(0).get(0x20), CFont::UnloadCHSTexture);
@@ -99,6 +91,4 @@ void WMVC::PatchGame()
 	injector::MakeJMP(hook::pattern("53 56 55 83 EC 18 81 3D ? ? ? ? ? ? ? ?").get(0).get(), CFont::RenderFontBuffer);
 
 	injector::WriteMemory(*hook::pattern("D9 05 ? ? ? ? D8 44 24 10 50").get(0).get<float *>(2), 999.0f);
-
-
 }

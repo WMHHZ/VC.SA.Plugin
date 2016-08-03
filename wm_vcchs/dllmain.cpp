@@ -1,5 +1,4 @@
 #include <windows.h>
-
 #include "WMVC.h"
 
 BOOL WINAPI DllMain(HMODULE hDllHandle, DWORD dwReason, LPVOID lpreserved)
