@@ -45,6 +45,9 @@
     <ClCompile Include="rwFunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\selector\AddressSelector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCharTable.h">
@@ -78,6 +81,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\selector\AddressSelector.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

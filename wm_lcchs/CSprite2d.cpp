@@ -28,9 +28,9 @@ void CSprite2d::SetVertices(RwD3D8Vertex *pVertices, const CRect &rect, const CR
 
 CSprite2d::CSprite2d(int)
 {
-	fpDelete = AddressSelectorLC::SelectAddress<0x51EA00, 0x51EBC0>();
-	fpSetVertices = AddressSelectorLC::SelectAddress<0x51F720, 0x51F8E0>();
-	fpSetTexture = AddressSelectorLC::SelectAddress<0x51EA70, 0x51EC30>();
+	fpDelete = AddressSelectorLC::SelectAddress<0x51EA00, 0x0, 0x51EBC0>();
+	fpSetVertices = AddressSelectorLC::SelectAddress<0x51F720, 0x0, 0x51F8E0>();
+	fpSetTexture = AddressSelectorLC::SelectAddress<0x51EA70, 0x0, 0x51EC30>();
 }
 
 static CSprite2d instance(0);

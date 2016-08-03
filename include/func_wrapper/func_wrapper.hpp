@@ -20,8 +20,8 @@ public:
 	cdecl_func_wrapper() :pfunction(nullptr) {}
 	cdecl_func_wrapper(void *pfunc) :pfunction(pfunc) {}
 	cdecl_func_wrapper(std::uintptr_t funcaddr) :pfunction(reinterpret_cast<void *>(funcaddr)) {}
-	cdecl_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; return *this; }
-	cdecl_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return *this; }
+	cdecl_func_wrapper &operator=(void *pfunc) { pfunction = pfunc; return (*this); }
+	cdecl_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return (*this); }
 
 	__Ret operator()(__Args ... args) const
 	{

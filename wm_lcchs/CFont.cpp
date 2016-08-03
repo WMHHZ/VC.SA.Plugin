@@ -315,10 +315,10 @@ unsigned __int16 *CFont::ParseToken(unsigned __int16 *arg_text, unsigned __int16
 
 CFont::CFont()
 {
-	Size = AddressSelectorLC::SelectAddress<0x5FD120, 0x609F00, CFontSizes>();
-	Details = AddressSelectorLC::SelectAddress<0x8F317C, 0x903370, CFontDetails>();
-	fpPrintChar = AddressSelectorLC::SelectAddress<0x500C30, 0x500CA0>();
-	fpParseToken = AddressSelectorLC::SelectAddress<0x5019A0, 0x501A10>();
+	Size = AddressSelectorLC::SelectAddress<0x5FD120, 0x0, 0x609F00, CFontSizes>();
+	Details = AddressSelectorLC::SelectAddress<0x8F317C, 0x0, 0x903370, CFontDetails>();
+	fpPrintChar = AddressSelectorLC::SelectAddress<0x500C30, 0x0, 0x500CA0>();
+	fpParseToken = AddressSelectorLC::SelectAddress<0x5019A0, 0x0, 0x501A10>();
 }
 
 static CFont instance;

@@ -19,11 +19,11 @@ __int32 rwFunc::RwIm2DRenderPrimitive(RwPrimitiveType primType, RwD3D8Vertex *ve
 
 rwFunc::rwFunc()
 {
-	RsGlobalW = AddressSelectorLC::SelectAddress<0x8F436C, 0x904560, __int32>();
+	RsGlobalW = AddressSelectorLC::SelectAddress<0x8F436C, 0x0, 0x904560, __int32>();
 	RsGlobalH = RsGlobalW + 1;
 
-	fpRwRenderStateSet = AddressSelectorLC::SelectAddress<0x5A43C0, 0x5A5360>();
-	fpRwIm2DRenderPrimitive = AddressSelectorLC::SelectAddress<0x5A4430, 0x5A5410>();
+	fpRwRenderStateSet = AddressSelectorLC::SelectAddress<0x5A43C0, 0x0, 0x5A5360>();
+	fpRwIm2DRenderPrimitive = AddressSelectorLC::SelectAddress<0x5A4430, 0x0, 0x5A5410>();
 }
 
 static rwFunc instance;

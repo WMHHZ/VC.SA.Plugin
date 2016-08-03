@@ -132,6 +132,4 @@ public:
 
 	static void Init10U();
 	static void InitSteam();
-
-
 };

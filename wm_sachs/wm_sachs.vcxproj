@@ -89,6 +89,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\selector\AddressSelector.h" />
     <ClInclude Include="CCharTable.h" />
     <ClInclude Include="CFont.h" />
     <ClInclude Include="game.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="rw\RenderWareTypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\include\selector\AddressSelector.cpp" />
     <ClCompile Include="CCharTable.cpp" />
     <ClCompile Include="CFont.cpp" />
     <ClCompile Include="rwFunc.cpp" />
