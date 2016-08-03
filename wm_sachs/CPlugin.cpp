@@ -14,7 +14,7 @@
 char CPlugin::texturePath[MAX_PATH];
 char CPlugin::textPath[MAX_PATH];
 
-const wchar_t *CPlugin::MessageboxTitle = L"《侠盗猎车手：圣安地列斯》汉化补丁 Kokoro(2.2) Build160724 by 无名汉化组";
+const wchar_t *CPlugin::MessageboxTitle = L"《侠盗猎车手：圣安地列斯》汉化补丁 Kokoro(2.2) Build160728 by 无名汉化组";
 
 char aRb[] = "rb";
 __declspec(naked) void Hook_LoadGxt()
