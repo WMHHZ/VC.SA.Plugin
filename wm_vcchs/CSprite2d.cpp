@@ -16,6 +16,8 @@ CSprite2d::fpAddToBuffer;
 cdecl_func_wrapper<void()>
 CSprite2d::fpRenderVertexBuffer;
 
+CSprite2d::CSprite2d() :m_pRwTexture(nullptr) {}
+
 CSprite2d::CSprite2d(int)
 {
 	fpAddToBuffer = hook::pattern("8B 15 ? ? ? ? 8B 4C 24 08 8B 44 24 04").get(0).get();
@@ -23,6 +25,16 @@ CSprite2d::CSprite2d(int)
 	fpDrawRect = hook::pattern("8B 44 24 04 53 8B 5C 24 0C 53 53 53 53").get(0).get();
 	fpRenderVertexBuffer = hook::pattern("83 3D ? ? ? ? 00 7E 3F 6A 02 6A 09").get(0).get();
 	fpSetRenderState = hook::pattern("8B 11 85 D2 75 0A").get(0).get();
+}
+
+void CSprite2d::SetRwTexture(RwTexture *texture)
+{
+	if (m_pRwTexture)
+	{
+		fpDelete(this);
+	}
+
+	m_pRwTexture = texture;
 }
 
 static CSprite2d instance(0);

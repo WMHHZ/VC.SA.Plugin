@@ -1,6 +1,5 @@
 #include "CTxdStore.h"
 #include "../include/hooking/Hooking.Patterns.h"
-#include "../include/injector/injector.hpp"
 
 cdecl_func_wrapper<void()>
 CTxdStore::fpPopCurrentTxd;

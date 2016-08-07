@@ -34,14 +34,12 @@ CFont::fpPrintStringPart;
 void CFont::LoadCHSTexture()
 {
 	CTxdStore::fpPopCurrentTxd();
-
-	CFont::Sprite[2].m_pRwTexture = rwFunc::LoadTextureFromPNG(texturePath);
+	CFont::Sprite[2].SetRwTexture(rwFunc::LoadTextureFromPNG(texturePath));
 }
 
 void CFont::UnloadCHSTexture(int dummy)
 {
 	CTxdStore::fpRemoveTxdSlot(dummy);
-
 	CSprite2d::fpDelete(&CFont::Sprite[2]);
 }
 
@@ -674,7 +672,7 @@ CFont::CFont()
 	FontBuffer.pdata = *FontBufferPattern.get(0).get<CFontRenderState *>(6);
 	RenderState = *hook::pattern("A3 ? ? ? ? A0 ? ? ? ? D9 1D ? ? ? ?").get(0).get<CFontRenderState *>(1);
 	Sprite = *hook::pattern("8D 0C 8D 00 00 00 00 81 C1 ? ? ? ? E8 1D 61 02 00").get(0).get<CSprite2d *>(9);
-	Details = *hook::pattern("8A 13 88 15 ? ? ? ?").get(2).get<CFontDetails *>(4);
+	Details = *hook::pattern("C6 05 ? ? ? ? 1B").get(0).get<CFontDetails *>(2);
 	
 	fpFindNewCharacter = hook::pattern("8B 44 24 04 66 83 F8 10").get(0).get();
 	fpParseTokenEPt = ParseTokenPattern.get(0).get();

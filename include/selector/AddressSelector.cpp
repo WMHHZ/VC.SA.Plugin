@@ -1,7 +1,9 @@
 #include "AddressSelector.h"
 
-AddressSelectorBase::GameVersion AddressSelectorBase::ms_gv;
+AddressSelectorBase::GameVersion AddressSelectorLC::ms_gv;
+AddressSelectorBase::GameVersion AddressSelectorVC::ms_gv;
+AddressSelectorBase::GameVersion AddressSelectorSAUS::ms_gv;
 
 static AddressSelectorLC lcinstance;
 static AddressSelectorVC vcinstance;
-static AddressSelectorSAUS sainstance;
+static AddressSelectorSAUS sausinstance;

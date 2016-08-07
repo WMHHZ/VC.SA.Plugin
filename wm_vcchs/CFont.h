@@ -119,12 +119,12 @@ public:
 	static CharType *GetNextSpace(CharType *arg_pointer);
 
 	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, CharType *arg_text);
-	static void __cdecl GetTextRect(CRect *result, float arg_x, float arg_y, CharType *arg_text);
+	static void GetTextRect(CRect *result, float arg_x, float arg_y, CharType *arg_text);
 
 	static void __cdecl PrintString(float arg_x, float arg_y, CharType *arg_text);
 	static void __cdecl RenderFontBuffer();
-	static void __cdecl PrintCHSChar(float arg_x, float arg_y, CharType arg_char);
-	static void __cdecl PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char);
+	static void PrintCHSChar(float arg_x, float arg_y, CharType arg_char);
+	static void PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char);
 
 	static void __cdecl LoadCHSTexture();
 	static void __cdecl UnloadCHSTexture(int dummy);

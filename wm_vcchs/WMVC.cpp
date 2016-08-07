@@ -3,7 +3,7 @@
 
 #include <cstring>
 
-#include "../include/injector/injector.hpp"
+#include "../include/injector/gvm/gvm.hpp"
 #include "../include/injector/hooking.hpp"
 #include "../include/hooking/Hooking.Patterns.h"
 
@@ -92,3 +92,4 @@ void WMVC::PatchGame()
 
 	injector::WriteMemory(*hook::pattern("D9 05 ? ? ? ? D8 44 24 10 50").get(0).get<float *>(2), 999.0f);
 }
+ 

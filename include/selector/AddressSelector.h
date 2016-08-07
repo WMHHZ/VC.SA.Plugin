@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <cstdint>
 
-template <std::uintptr_t ...__Addresses>
+template <std::uintptr_t... __Addresses>
 struct AddressesList {};
 
 class AddressSelectorBase
@@ -16,23 +16,24 @@ public:
 		GVSTEAM,
 		GVUNK,
 	};
-
-protected:
-	static GameVersion ms_gv;
 };
 
-template <typename ...>
+template <typename...>
 class AddressSelector;
 
-template <std::uintptr_t ...__EP10, std::uintptr_t ...__EP11, std::uintptr_t ...__EPSTEAM>
+template <std::uintptr_t... __EP10, std::uintptr_t... __EP11, std::uintptr_t... __EPSTEAM>
 class AddressSelector<AddressesList<__EP10...>, AddressesList<__EP11...>, AddressesList<__EPSTEAM...> > :public AddressSelectorBase
 {
+private:
+	static GameVersion ms_gv;
+
+private:
 	static bool ListContainsAddress(std::uintptr_t address, AddressesList<>)
 	{
 		return false;
 	}
 
-	template <std::uintptr_t __First, std::uintptr_t ...__Rest>
+	template <std::uintptr_t __First, std::uintptr_t...__Rest>
 	static bool ListContainsAddress(std::uintptr_t address, AddressesList<__First, __Rest...>)
 	{
 		return ((address == __First) || (ListContainsAddress(address, AddressesList<__Rest...>())));
