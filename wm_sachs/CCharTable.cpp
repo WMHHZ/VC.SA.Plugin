@@ -2,7 +2,7 @@
 
 CCharTable::CharPos CCharTable::m_Table[0x10000];
 
-CCharTable::CharPos CCharTable::GetCharPos(uint32_t chr)
+CCharTable::CharPos CCharTable::GetCharPos(unsigned __int32 chr)
 {
 	CharPos result;
 
@@ -3002,5 +3002,3 @@ m_Table[0xff1b] = {46,23};
 m_Table[0xff1f] = {46,24};
 m_Table[0xff5e] = {46,25};
 }
-
-

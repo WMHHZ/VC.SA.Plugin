@@ -1,4 +1,5 @@
 #pragma once
+#include "../include/func_wrapper/func_wrapper.hpp"
 
 class CTxdStore
 {

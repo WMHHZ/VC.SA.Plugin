@@ -5,7 +5,7 @@
 
 #include "../include/injector/gvm/gvm.hpp"
 #include "../include/injector/hooking.hpp"
-#include "../include/hooking/Hooking.Patterns.h"
+#include "../include/selector/AddressSelector.h"
 
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
@@ -17,7 +17,7 @@ bool WMVC::CheckResourceFile(HMODULE hPlugin)
 	GetModuleFileNameA(hPlugin, pluginPath, MAX_PATH);
 	strcpy(CFont::texturePath, pluginPath);
 	strcpy(CFont::textPath, pluginPath);
-	strcpy(strrchr(CFont::texturePath, '.'), "\\wm_vcchs.png");
+	strcpy(strrchr(CFont::texturePath, '.'), "\\wm_vcchs.txd");
 	strcpy(strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
 
 	if (!PathFileExistsA(CFont::texturePath) || !PathFileExistsA(CFont::textPath))
@@ -34,7 +34,7 @@ bool WMVC::CheckGameVersion()
 {
 	auto &veref = injector::address_manager::singleton();
 
-	if (veref.IsVC())
+	if (veref.IsVC() && (veref.GetMinorVersion() != 1))
 	{
 		PatchGame();
 	}
@@ -73,23 +73,33 @@ __declspec(naked) void Hook_LoadGxt2()
 
 void WMVC::PatchGame()
 {
-	unsigned __int8 *FEO_LAN_Entry = *hook::pattern("B8 ? ? ? ? 01 C8 B9 ? ? ? ?").get(0).get<unsigned __int8 *>(1) + 0x1816;
+	unsigned __int8 *FEO_LAN_Entry = AddressSelectorVC::SelectAddress<0x6DA386, 0x0, 0x6D9356, unsigned __int8>();
 	memcpy(FEO_LAN_Entry, FEO_LAN_Entry + 0x12, 0x12);
 	memcpy(FEO_LAN_Entry + 0x12, FEO_LAN_Entry + 0x24, 0x12);
 	memset(FEO_LAN_Entry + 0x24, 0, 0x12);
 
-	injector::MakeCALL(hook::pattern("8D 04 40 8B 5C 85 34 8D 84 24 80 00 00 00 50").get(0).get(7), Hook_LoadGxt1);
-	injector::MakeCALL(hook::pattern("8D 44 24 14 68 ? ? ? ? 50").get(0).get(), Hook_LoadGxt2);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5852A0, 0x0, 0x5850D0>(), Hook_LoadGxt1);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5855EE, 0x0, 0x58541E>(), Hook_LoadGxt2);
 
-	injector::MakeCALL(hook::pattern("DB 05 ? ? ? ? 8D 4C 24 08").get(0).get(0xF8), CFont::LoadCHSTexture);
-	injector::MakeCALL(hook::pattern("B9 ? ? ? ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 68 ? ? ? ? E8 ? ? ? ? 59 50 E8 ? ? ? ? 59 C3").get(0).get(0x20), CFont::UnloadCHSTexture);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552461, 0x0, 0x552351>(), CFont::LoadCHSTexture);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552300, 0x0, 0x5521F0>(), CFont::UnloadCHSTexture);
 
-	injector::MakeJMP(hook::pattern("D9 05 ? ? ? ? 53 56 83 EC 10").get(0).get(), CFont::GetStringWidth);
-	injector::MakeJMP(hook::pattern("D9 05 ? ? ? ? 53 56 57 55 31 ED").get(0).get(), CFont::GetTextRect);
-	injector::MakeJMP(hook::pattern("53 56 55 31 ED 83 EC 20").get(0).get(), CFont::GetNumberLines);
-	injector::MakeJMP(hook::pattern("53 56 57 55 83 EC 38 8B 74 24 54").get(0).get(), CFont::PrintString);
-	injector::MakeJMP(hook::pattern("53 56 55 83 EC 18 81 3D ? ? ? ? ? ? ? ?").get(0).get(), CFont::RenderFontBuffer);
+	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x550650, 0x0, 0x550540>(), CFont::GetStringWidth);
+	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x550720, 0x0, 0x550610>(), CFont::GetTextRect);
+	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x550C70, 0x0, 0x550B60>(), CFont::GetNumberLines);
 
-	injector::WriteMemory(*hook::pattern("D9 05 ? ? ? ? D8 44 24 10 50").get(0).get<float *>(2), 999.0f);
+	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x551040, 0x0, 0x550F30>(), CFont::PrintString);
+	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x551A30, 0x0, 0x551920>(), CFont::RenderFontBuffer);
+
+	injector::WriteMemory(AddressSelectorVC::SelectAddress<0x68FD58, 0x0, 0x68ED60, float>(), 999.0f);
+
+	unsigned __int8 *SpaceAddInstr = AddressSelectorVC::SelectAddress<0x6161BB, 0x0, 0x615D50, unsigned __int8>();
+	injector::MakeNOP(SpaceAddInstr, 6);
+	injector::MakeNOP(SpaceAddInstr + 8);
+	injector::MakeNOP(SpaceAddInstr + 0x22);
+	injector::MakeNOP(SpaceAddInstr + 0x3D);
+	injector::MakeNOP(SpaceAddInstr + 0x42, 6);
+	injector::WriteMemory<unsigned __int8>(SpaceAddInstr + 0x65, 1, true);
+	injector::MakeNOP(SpaceAddInstr + 0x72, 6);
 }
  

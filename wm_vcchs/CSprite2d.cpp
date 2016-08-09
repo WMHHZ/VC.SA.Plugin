@@ -1,5 +1,8 @@
 #include "CSprite2d.h"
-#include "../include/hooking/Hooking.Patterns.h"
+#include "../include/selector/AddressSelector.h"
+
+thiscall_func_wrapper<void(const char *, const char *)>
+CSprite2d::fpSetTexture;
 
 thiscall_func_wrapper<void()>
 CSprite2d::fpSetRenderState;
@@ -20,21 +23,12 @@ CSprite2d::CSprite2d() :m_pRwTexture(nullptr) {}
 
 CSprite2d::CSprite2d(int)
 {
-	fpAddToBuffer = hook::pattern("8B 15 ? ? ? ? 8B 4C 24 08 8B 44 24 04").get(0).get();
-	fpDelete = hook::pattern("53 89 CB 8B 03 85 C0").get(0).get();
-	fpDrawRect = hook::pattern("8B 44 24 04 53 8B 5C 24 0C 53 53 53 53").get(0).get();
-	fpRenderVertexBuffer = hook::pattern("83 3D ? ? ? ? 00 7E 3F 6A 02 6A 09").get(0).get();
-	fpSetRenderState = hook::pattern("8B 11 85 D2 75 0A").get(0).get();
-}
-
-void CSprite2d::SetRwTexture(RwTexture *texture)
-{
-	if (m_pRwTexture)
-	{
-		fpDelete(this);
-	}
-
-	m_pRwTexture = texture;
+	fpAddToBuffer = AddressSelectorVC::SelectAddress<0x578830, 0x0, 0x578720>();
+	fpDelete = AddressSelectorVC::SelectAddress<0x578A20, 0x0, 0x578910>();
+	fpDrawRect = AddressSelectorVC::SelectAddress<0x577B00, 0x0, 0x5779F0>();
+	fpRenderVertexBuffer = AddressSelectorVC::SelectAddress<0x5787E0, 0x0, 0x5786D0>();
+	fpSetRenderState = AddressSelectorVC::SelectAddress<0x577B90, 0x0, 0x577A80>();
+	fpSetTexture = AddressSelectorVC::SelectAddress<0x5789B0, 0x0, 0x5788A0>();
 }
 
 static CSprite2d instance(0);

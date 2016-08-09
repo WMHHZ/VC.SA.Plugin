@@ -6,6 +6,7 @@
 #include "rwFunc.h"
 #include "rw/RenderWare.h"
 #include "../include/injector/injector.hpp"
+#include "../include/utf8cpp/utf8.h"
 
 float CFont::fix_value_2;
 float CFont::fix_value_2_chs;
@@ -47,7 +48,7 @@ void(__cdecl *CFont::PrintKeyTokenFormat)(char *);
 void(__cdecl *CFont::RenderString)(float, float, const char *, const char *, float);
 void(__cdecl *CFont::SetColor)(CRGBA);
 
-float __cdecl CFont::GetScaledLetterWidthNormal(uint32_t arg_char)
+float __cdecl CFont::GetScaledLetterWidthNormal(unsigned __int32 arg_char)
 {
 	unsigned char charWidth;
 
@@ -80,7 +81,7 @@ float __cdecl CFont::GetScaledLetterWidthNormal(uint32_t arg_char)
 	return ((charWidth + *m_nFontOutlineSize) * m_fScale->x);
 }
 
-float CFont::GetScaledLetterWidthScript(uint32_t arg_char)
+float CFont::GetScaledLetterWidthScript(unsigned __int32 arg_char)
 {
 	CScriptTextDrawer &drawer = CScriptTextDrawer::m_TextDrawers[*CScriptTextDrawer::m_CurrentTextDrawerIndex];
 	
@@ -127,7 +128,7 @@ float CFont::GetScaledLetterWidthScript(uint32_t arg_char)
 	return ((charWidth + drawer.m_OutlineSize) * drawer.m_LetterScale.x);
 }
 
-float __cdecl CFont::GetScaledLetterWidthDrawing(uint32_t arg_char)
+float __cdecl CFont::GetScaledLetterWidthDrawing(unsigned __int32 arg_char)
 {
 	unsigned char charWidth;
 
@@ -177,7 +178,7 @@ float CFont::GetStringWidth(const char *arg_text, bool bGetAll, bool bScript)
 
 	while (true)
 	{
-		uint32_t code = utf8::unchecked::peek_next(bufIter);
+		unsigned __int32 code = utf8::unchecked::peek_next(bufIter);
 
 		if (code == '\0')
 		{
@@ -258,7 +259,7 @@ const char *CFont::GetNextSpace(const char *arg_pointer)
 
 	while (true)
 	{
-		uint32_t code = utf8::unchecked::peek_next(var_pointer);
+		unsigned __int32 code = utf8::unchecked::peek_next(var_pointer);
 
 		if (code == 0 || code == ' ' || code == '~')
 		{
@@ -476,7 +477,7 @@ void CFont::RenderFontBuffer()
 {
 	CRGBA var_color;
 	CVector2D pos;
-	uint32_t var_char;
+	unsigned __int32 var_char;
 
 	FontBufferPointer ebx;
 
@@ -553,9 +554,9 @@ void CFont::RenderFontBuffer()
 				m_ChsSprite.SetRenderState();
 			}
 
-			(*rwFunc::m_pRwEngineInstance)->dOpenDevice.fpRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
+			(*rwFunc::m_RwEngineInstance)->dOpenDevice.fpRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
 
-			PrintChar(pos.x, pos.y, var_char);
+			PrintCHSChar(pos.x, pos.y, var_char);
 			CSprite::FlushSpriteBuffer();
 			CSprite2d::RenderVertexBuffer();
 		}
@@ -587,7 +588,7 @@ void CFont::RenderFontBuffer()
 	m_FontBufferIter->pdata = m_FontBuffer;
 }
 
-void CFont::PrintChar(float arg_x, float arg_y, uint32_t arg_char)
+void CFont::PrintCHSChar(float arg_x, float arg_y, unsigned __int32 arg_char)
 {
 	CRect rect;
 	float row, column;

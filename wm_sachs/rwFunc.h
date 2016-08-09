@@ -1,16 +1,11 @@
 #pragma once
-
-struct RwTexture;
-struct RwImage;
-struct RwRaster;
-
-struct RwGlobals;
-struct RsGlobalType;
+#include "../include/func_wrapper/func_wrapper.hpp"
+#include "rw/RenderWareTypes.h"
 
 class rwFunc
 {
 public:
-	static RwGlobals **m_pRwEngineInstance;
+	static RwGlobals **m_RwEngineInstance;
 	static RsGlobalType *m_RsGlobal;
 
 	static RwImage *(__cdecl *RtPNGImageRead)(const char *filename);

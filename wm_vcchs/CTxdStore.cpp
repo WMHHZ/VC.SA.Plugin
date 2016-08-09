@@ -1,16 +1,40 @@
 #include "CTxdStore.h"
-#include "../include/hooking/Hooking.Patterns.h"
+#include "../include/selector/AddressSelector.h"
+
+cdecl_func_wrapper<int(const char *name)>
+CTxdStore::fpAddTxdSlot;
+
+cdecl_func_wrapper<void(int slot, const char *filename)>
+CTxdStore::fpLoadTxd;
+
+cdecl_func_wrapper<void(int slot)>
+CTxdStore::fpAddRef;
+
+cdecl_func_wrapper<void()>
+CTxdStore::fpPushCurrentTxd;
 
 cdecl_func_wrapper<void()>
 CTxdStore::fpPopCurrentTxd;
+
+cdecl_func_wrapper<void(int slot)>
+CTxdStore::fpSetCurrentTxd;
+
+cdecl_func_wrapper<int(const char *name)>
+CTxdStore::fpFindTxdSlot;
 
 cdecl_func_wrapper<void(int slot)>
 CTxdStore::fpRemoveTxdSlot;
 
 CTxdStore::CTxdStore()
 {
-	fpRemoveTxdSlot = hook::pattern("89 D8 8D 0C C0 8D 0C 49 01 C1 03 0E").get(0).get(-0x20);
-	fpPopCurrentTxd = hook::pattern("A1 ? ? ? ? 50 E8 ? ? ? ? C7 05 ? ? ? ? 00 00 00 00 59 C3").get(1).get();
+	fpAddTxdSlot = AddressSelectorVC::SelectAddress<0x580F00, 0x0, 0x580D30>();
+	fpLoadTxd = AddressSelectorVC::SelectAddress<0x580CD0, 0x0, 0x580B00>();
+	fpAddRef = AddressSelectorVC::SelectAddress<0x580A60, 0x0, 0x580890>();
+	fpPushCurrentTxd = AddressSelectorVC::SelectAddress<0x580AC0, 0x0, 0x5808F0>();
+	fpPopCurrentTxd = AddressSelectorVC::SelectAddress<0x580AA0, 0x0, 0x5808D0>();
+	fpSetCurrentTxd = AddressSelectorVC::SelectAddress<0x580AD0, 0x0, 0x580900>();
+	fpFindTxdSlot = AddressSelectorVC::SelectAddress<0x580D70, 0x0, 0x580BA0>();
+	fpRemoveTxdSlot = AddressSelectorVC::SelectAddress<0x580E90, 0x0, 0x580CC0>();
 }
 
 static CTxdStore instance;

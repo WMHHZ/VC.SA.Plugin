@@ -1,13 +1,12 @@
 #pragma once
-#include <cstdint>
 
 class CRGBA
 {
 public:
-	uint8_t red, green, blue, alpha;
+	unsigned __int8 red, green, blue, alpha;
 
 	CRGBA() = default;
-	CRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+	CRGBA(unsigned __int8 r, unsigned __int8 g, unsigned __int8 b, unsigned __int8 a)
 	{
 		red = r;
 		green = g;

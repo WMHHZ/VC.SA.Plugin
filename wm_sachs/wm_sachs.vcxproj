@@ -70,7 +70,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_SACHS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>

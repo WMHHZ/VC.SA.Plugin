@@ -7,7 +7,7 @@ typedef unsigned __int16 CharType;
 
 class CSprite2d;
 
-struct CharacterSize
+struct CFontSizes
 {
 	__int16 PropValues[209];
 	__int16 UnpropValue;
@@ -86,7 +86,7 @@ public:
 	static char texturePath[];
 	static char textPath[];
 
-	static CharacterSize *Size;
+	static CFontSizes *Size;
 
 	static FontBufferPointer FontBuffer;
 	static FontBufferPointer *FontBufferIter;

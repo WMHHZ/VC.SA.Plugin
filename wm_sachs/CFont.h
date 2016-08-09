@@ -1,13 +1,13 @@
 #pragma once
 #include "game.h"
-#include "../include/utf8cpp/utf8.h"
+#include "../include/func_wrapper/func_wrapper.hpp"
 
 class CSprite2d;
 
 struct LetterWidths
 {
-	uint8_t PropValues[209];
-	uint8_t UnpropValue;
+	unsigned __int8 PropValues[209];
+	unsigned __int8 UnpropValue;
 };
 
 class CFontRenderState
@@ -21,12 +21,12 @@ public:
 	float		Slant;
 	CVector2D	SlantRefPoint;
 	bool		IsBlip;
-	int8_t		FontStyle;
+	__int8		FontStyle;
 	bool		Prop;
-	int8_t		_pad1;
-	int16_t		TextureID;
-	int8_t		OutlineSize;
-	int8_t		_pad2;
+	__int8		_pad1;
+	__int16		TextureID;
+	__int8		OutlineSize;
+	__int8		_pad2;
 };
 static_assert(sizeof(CFontRenderState) == 0x30, "Class CFontRenderState is wrong.");
 
@@ -43,18 +43,18 @@ class CFontDetails
 	bool EnlargeBackground;
 	bool Prop;
 	bool IsBlip;
-	int8_t pad1;
+	__int8 pad1;
 	float Alpha;
 	CRGBA BackgroundColor;
 	float WrapX;
 	float CentreSize;
 	float RightJustifyWrap;
-	int8_t TextureID;
-	int8_t FontStyle;
-	int8_t Shadow;
+	__int8 TextureID;
+	__int8 FontStyle;
+	__int8 Shadow;
 	CRGBA DropColor;
-	int8_t OutlineSize;
-	int8_t pad2[3];
+	__int8 OutlineSize;
+	__int8 pad2[3];
 };
 static_assert(sizeof(CFontDetails) == 0x40, "Struct CFontDetails is wrong.");
 
@@ -62,7 +62,7 @@ union FontBufferPointer
 {
 	CFontRenderState *pdata;
 	const char *ptext;
-	uintptr_t addr;
+	unsigned __int32 addr;
 };
 static_assert(sizeof(FontBufferPointer) == 0x4, "Union FontBufferPointer is wrong.");
 
@@ -117,9 +117,9 @@ public:
 	static void(__cdecl *RenderString)(float, float, const char *, const char *, float);
 	static void(__cdecl *SetColor)(CRGBA);
 
-	static float GetScaledLetterWidthNormal(uint32_t);
-	static float GetScaledLetterWidthScript(uint32_t);
-	static float GetScaledLetterWidthDrawing(uint32_t);
+	static float GetScaledLetterWidthNormal(unsigned __int32);
+	static float GetScaledLetterWidthScript(unsigned __int32);
+	static float GetScaledLetterWidthDrawing(unsigned __int32);
 
 	static float GetStringWidth(const char *, bool, bool);
 	static const char *GetNextSpace(const char *);
@@ -128,8 +128,7 @@ public:
 
 	static void RenderFontBuffer();
 
-	static void PrintChar(float, float, uint32_t);
+	static void PrintCHSChar(float, float, unsigned __int32);
 
-	static void Init10U();
-	static void InitSteam();
+	CFont();
 };

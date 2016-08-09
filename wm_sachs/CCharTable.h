@@ -6,11 +6,11 @@ class CCharTable
 public:
 	struct CharPos
 	{
-		uint8_t rowIndex;
-		uint8_t columnIndex;
+		unsigned __int8 rowIndex;
+		unsigned __int8 columnIndex;
 	};
 
-	static CharPos GetCharPos(uint32_t chr);
+	static CharPos GetCharPos(unsigned __int32 chr);
 
 	static void InitTable();
 

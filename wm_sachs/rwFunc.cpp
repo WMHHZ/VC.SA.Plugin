@@ -1,7 +1,7 @@
 #include "rwFunc.h"
 #include "../include/injector/injector.hpp"
 
-RwGlobals **rwFunc::m_pRwEngineInstance;
+RwGlobals **rwFunc::m_RwEngineInstance;
 RsGlobalType *rwFunc::m_RsGlobal;
 
 RwImage *(__cdecl *rwFunc::RtPNGImageRead)(const char *filename);
@@ -13,7 +13,7 @@ RwTexture *(__cdecl *rwFunc::RwTextureCreate)(RwRaster *);
 
 void rwFunc::Init10U()
 {
-	m_pRwEngineInstance = injector::raw_ptr(0xC97B24).get();
+	m_RwEngineInstance = injector::raw_ptr(0xC97B24).get();
 	m_RsGlobal = injector::raw_ptr(0xC17040).get();
 
 	RtPNGImageRead = injector::raw_ptr(0x7CF9B0).get();
@@ -26,7 +26,7 @@ void rwFunc::Init10U()
 
 void rwFunc::InitSteam()
 {
-	m_pRwEngineInstance = injector::aslr_ptr(0xD23664).get();
+	m_RwEngineInstance = injector::aslr_ptr(0xD23664).get();
 	m_RsGlobal = injector::aslr_ptr(0xCA3DAC).get();
 
 	RtPNGImageRead = injector::aslr_ptr(0x8041C0).get();

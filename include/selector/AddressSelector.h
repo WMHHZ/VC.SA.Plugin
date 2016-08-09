@@ -10,23 +10,23 @@ class AddressSelectorBase
 public:
 	enum class GameVersion
 	{
-		GVUNINITIALIZED,
-		GV10,
-		GV11,
-		GVSTEAM,
-		GVUNK,
+		GV_UNINITIALIZED,
+		GV_10,
+		GV_11,
+		GV_STEAM,
+		GV_UNK,
 	};
+
+protected:
+	static GameVersion ms_gv;
 };
 
-template <typename...>
+template <typename __List10, typename __List11, typename __ListSTEAM>
 class AddressSelector;
 
 template <std::uintptr_t... __EP10, std::uintptr_t... __EP11, std::uintptr_t... __EPSTEAM>
 class AddressSelector<AddressesList<__EP10...>, AddressesList<__EP11...>, AddressesList<__EPSTEAM...> > :public AddressSelectorBase
 {
-private:
-	static GameVersion ms_gv;
-
 private:
 	static bool ListContainsAddress(std::uintptr_t address, AddressesList<>)
 	{
@@ -49,19 +49,19 @@ private:
 
 		if (ListContainsAddress(ep, AddressesList<__EP10...>()))
 		{
-			ms_gv = GameVersion::GV10;
+			ms_gv = GameVersion::GV_10;
 		}
 		else if (ListContainsAddress(ep, AddressesList<__EP11...>()))
 		{
-			ms_gv = GameVersion::GV11;
+			ms_gv = GameVersion::GV_11;
 		}
 		else if (ListContainsAddress(ep, AddressesList<__EPSTEAM...>()))
 		{
-			ms_gv = GameVersion::GVSTEAM;
+			ms_gv = GameVersion::GV_STEAM;
 		}
 		else
 		{
-			ms_gv = GameVersion::GVUNK;
+			ms_gv = GameVersion::GV_UNK;
 		}
 	}
 
@@ -69,15 +69,20 @@ public:
 	template <std::uintptr_t __Addr10, std::uintptr_t __Addr11, std::uintptr_t __AddrSteam, typename __DestType = void>
 	static __DestType *SelectAddress()
 	{
-		if (ms_gv == GameVersion::GV10)
+		if (ms_gv == GameVersion::GV_UNINITIALIZED)
+		{
+			Init();
+		}
+
+		if (ms_gv == GameVersion::GV_10)
 		{
 			return (reinterpret_cast<__DestType *>(__Addr10));
 		}
-		if (ms_gv == GameVersion::GV11)
+		if (ms_gv == GameVersion::GV_11)
 		{
 			return (reinterpret_cast<__DestType *>(__Addr11));
 		}
-		else if (ms_gv == GameVersion::GVSTEAM)
+		else if (ms_gv == GameVersion::GV_STEAM)
 		{
 			return (reinterpret_cast<__DestType *>(__AddrSteam));
 		}
@@ -85,11 +90,6 @@ public:
 		{
 			return nullptr;
 		}
-	}
-
-	AddressSelector()
-	{
-		Init();
 	}
 };
 

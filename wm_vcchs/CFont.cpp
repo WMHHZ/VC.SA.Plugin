@@ -4,12 +4,12 @@
 #include "CCharTable.h"
 #include "rwFunc.h"
 #include "CTxdStore.h"
-#include "../include/hooking/Hooking.Patterns.h"
+#include "../include/selector/AddressSelector.h"
 
 char CFont::texturePath[MAX_PATH];
 char CFont::textPath[MAX_PATH];
 
-CharacterSize *CFont::Size;
+CFontSizes *CFont::Size;
 FontBufferPointer CFont::FontBuffer;
 FontBufferPointer *CFont::FontBufferIter;
 CFontRenderState *CFont::RenderState;
@@ -34,7 +34,14 @@ CFont::fpPrintStringPart;
 void CFont::LoadCHSTexture()
 {
 	CTxdStore::fpPopCurrentTxd();
-	CFont::Sprite[2].SetRwTexture(rwFunc::LoadTextureFromPNG(texturePath));
+	CTxdStore::fpPopCurrentTxd();
+	int slot = CTxdStore::fpAddTxdSlot("wm_vcchs");
+	CTxdStore::fpLoadTxd(slot, texturePath);
+	CTxdStore::fpAddRef(slot);
+	CTxdStore::fpPushCurrentTxd();
+	CTxdStore::fpSetCurrentTxd(slot);
+	CSprite2d::fpSetTexture(&CFont::Sprite[2], "chs", "chs_mask");
+	CTxdStore::fpPopCurrentTxd();
 }
 
 void CFont::UnloadCHSTexture(int dummy)
@@ -664,21 +671,18 @@ void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
 
 CFont::CFont()
 {
-	hook::pattern ParseTokenPattern("8B 44 24 04 C6 05 ? ? ? ? 00 83 C0 02");
-	hook::pattern FontBufferPattern("81 3D ? ? ? ? ? ? ? ? 75 0E");
-
-	Size = *hook::pattern("0F BF 04 4D ? ? ? ? EB 17").get(0).get<CharacterSize *>(4);
-	FontBufferIter = *FontBufferPattern.get(0).get<FontBufferPointer *>(2);
-	FontBuffer.pdata = *FontBufferPattern.get(0).get<CFontRenderState *>(6);
-	RenderState = *hook::pattern("A3 ? ? ? ? A0 ? ? ? ? D9 1D ? ? ? ?").get(0).get<CFontRenderState *>(1);
-	Sprite = *hook::pattern("8D 0C 8D 00 00 00 00 81 C1 ? ? ? ? E8 1D 61 02 00").get(0).get<CSprite2d *>(9);
-	Details = *hook::pattern("C6 05 ? ? ? ? 1B").get(0).get<CFontDetails *>(2);
+	Size = AddressSelectorVC::SelectAddress<0x696BD8, 0x0, 0x695BE0, CFontSizes>();
+	FontBufferIter = AddressSelectorVC::SelectAddress<0x70975C, 0x0, 0x70875C, FontBufferPointer>();
+	FontBuffer.pdata = AddressSelectorVC::SelectAddress<0x70935C, 0x0, 0x70835C, CFontRenderState>();
+	RenderState = AddressSelectorVC::SelectAddress<0x94B8F8, 0x0, 0x94A900, CFontRenderState>();
+	Sprite = AddressSelectorVC::SelectAddress<0xA108B4, 0x0, 0xA0F8BC, CSprite2d>();
+	Details = AddressSelectorVC::SelectAddress<0x97F820, 0x0, 0x97E828, CFontDetails>();
 	
-	fpFindNewCharacter = hook::pattern("8B 44 24 04 66 83 F8 10").get(0).get();
-	fpParseTokenEPt = ParseTokenPattern.get(0).get();
-	fpParseTokenEPtR5CRGBARbRb = ParseTokenPattern.get(1).get();
-	fpPrintStringPart = hook::pattern("66 A1 ? ? ? ? 53 66 8B 0D ? ? ? ?").get(0).get();
-	fpPrintChar = hook::pattern("53 56 55 8B 2D ? ? ? ? 83 EC 48").get(0).get();
+	fpFindNewCharacter = AddressSelectorVC::SelectAddress<0x54FE70, 0x0, 0x54FD60>();
+	fpParseTokenEPt = AddressSelectorVC::SelectAddress<0x5502D0, 0x0, 0x5501C0>();
+	fpParseTokenEPtR5CRGBARbRb = AddressSelectorVC::SelectAddress<0x550510, 0x0, 0x550400>();
+	fpPrintStringPart = AddressSelectorVC::SelectAddress<0x5516C0, 0x0, 0x5515B0>();
+	fpPrintChar = AddressSelectorVC::SelectAddress<0x551E70, 0x0, 0x551D60>();
 }
 
 static CFont instance;
