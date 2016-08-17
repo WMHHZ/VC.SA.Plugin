@@ -38,7 +38,7 @@ bool WMLC::CheckGameVersion()
 {
 	auto &veref = injector::address_manager::singleton();
 
-	if (veref.IsIII() && (veref.GetMinorVersion() == 0 || veref.IsSteam()))
+	if (veref.IsIII() && (veref.GetMinorVersion() != 1))
 	{
 		PatchGame();
 	}

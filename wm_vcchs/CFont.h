@@ -116,7 +116,7 @@ public:
 	static float GetCharacterSizeDrawing(CharType arg_char);
 
 	static float __cdecl GetStringWidth(CharType *arg_text, bool arg_getall);
-	static CharType *GetNextSpace(CharType *arg_pointer);
+	static CharType *GetNextSpace(CharType *arg_text);
 
 	static __int16 __cdecl GetNumberLines(float arg_x, float arg_y, CharType *arg_text);
 	static void GetTextRect(CRect *result, float arg_x, float arg_y, CharType *arg_text);

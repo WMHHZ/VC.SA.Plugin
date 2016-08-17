@@ -48,6 +48,7 @@ void CFont::UnloadCHSTexture(int dummy)
 {
 	CTxdStore::fpRemoveTxdSlot(dummy);
 	CSprite2d::fpDelete(&CFont::Sprite[2]);
+	CTxdStore::fpRemoveTxdSlot(CTxdStore::fpFindTxdSlot("wm_vcchs"));
 }
 
 float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseCharset, bool bProp, float fScaleX)
@@ -143,7 +144,7 @@ float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 {
 	float result = 0.0f;
 
-	while (*arg_text != 0)
+	while (*arg_text != '\0')
 	{
 		if (*arg_text == ' ')
 		{
@@ -158,10 +159,17 @@ float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 		}
 		else if (*arg_text == '~')
 		{
-			do
+			if (result == 0.0f || bGetAll)
 			{
-				++arg_text;
-			} while (*arg_text != '~');
+				do
+				{
+					++arg_text;
+				} while (*arg_text != '~');
+			}
+			else
+			{
+				break;
+			}
 		}
 		else if (*arg_text < 0x80)
 		{
@@ -186,39 +194,44 @@ float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 	return result;
 }
 
-CharType *CFont::GetNextSpace(CharType *arg_pointer)
+CharType *CFont::GetNextSpace(CharType *arg_text)
 {
-	CharType *var_pointer = arg_pointer;
+	CharType *temp = arg_text;
 
-	bool succeeded = false;
-
-	while (*var_pointer != ' ' && *var_pointer != 0)
+	while (*temp != ' ' && *temp != '\0')
 	{
-		if (*var_pointer == '~')
+		if (*temp == '~')
 		{
-			do 
+			if (temp == arg_text)
 			{
-				++var_pointer;
-			} while (*var_pointer != '~');
-		}
-		else if (*var_pointer < 0x80)
-		{
-			succeeded = true;
-		}
-		else
-		{
-			if (var_pointer == arg_pointer || !succeeded)
+				do
+				{
+					++temp;
+				} while (*temp != '~');
+
+				++temp;
+				arg_text = temp;
+				continue;
+			}
+			else
 			{
-				++var_pointer;
+				break;
+			}
+		}
+		else if (*temp >= 0x80)
+		{
+			if (temp == arg_text)
+			{
+				++temp;
 			}
 
 			break;
 		}
 
-		++var_pointer;
+		++temp;
 	}
 
-	return var_pointer;
+	return temp;
 }
 
 __int16 CFont::GetNumberLines(float arg_x, float arg_y, CharType *arg_text)
@@ -506,7 +519,7 @@ void CFont::RenderFontBuffer()
 				break;
 			}
 
-			*RenderState = *pbuffer.pdata;
+			*RenderState = *(pbuffer.pdata);
 
 			var_14 = RenderState->Color;
 
@@ -654,11 +667,6 @@ void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
 		if (RenderState->BaseCharset)
 		{
 			arg_char = fpFindNewCharacter(arg_char);
-
-			if (arg_char == 0xD0)
-			{
-				arg_char = 0;
-			}
 		}
 
 		fpPrintChar(arg_x, arg_y, arg_char);

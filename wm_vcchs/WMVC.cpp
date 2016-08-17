@@ -15,15 +15,14 @@ bool WMVC::CheckResourceFile(HMODULE hPlugin)
 	char pluginPath[MAX_PATH];
 
 	GetModuleFileNameA(hPlugin, pluginPath, MAX_PATH);
-	strcpy(CFont::texturePath, pluginPath);
-	strcpy(CFont::textPath, pluginPath);
-	strcpy(strrchr(CFont::texturePath, '.'), "\\wm_vcchs.txd");
-	strcpy(strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
+	std::strcpy(CFont::texturePath, pluginPath);
+	std::strcpy(CFont::textPath, pluginPath);
+	std::strcpy(std::strrchr(CFont::texturePath, '.'), "\\wm_vcchs.txd");
+	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
 
 	if (!PathFileExistsA(CFont::texturePath) || !PathFileExistsA(CFont::textPath))
 	{
-		MessageBoxW(NULL, L"afafaf", WMVERSIONWSTRING, MB_OK);
-		//资源文件不见了
+		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_vcchs文件夹！", WMVERSIONWSTRING, MB_ICONWARNING);
 		return false;
 	}
 
@@ -40,14 +39,14 @@ bool WMVC::CheckGameVersion()
 	}
 	else
 	{
-		//不支持的游戏版本
+		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0：3088896字节\nSteam：3615744字节", WMVERSIONWSTRING, MB_ICONWARNING);
 		return false;
 	}
 
 	return true;
 }
 
-__declspec(naked) void Hook_LoadGxt1()
+__declspec(naked) void hook_load_gxt_mission()
 {
 	__asm
 	{
@@ -59,7 +58,7 @@ __declspec(naked) void Hook_LoadGxt1()
 }
 
 char aRb[] = "rb";
-__declspec(naked) void Hook_LoadGxt2()
+__declspec(naked) void hook_load_gxt()
 {
 	__asm
 	{
@@ -78,8 +77,8 @@ void WMVC::PatchGame()
 	memcpy(FEO_LAN_Entry + 0x12, FEO_LAN_Entry + 0x24, 0x12);
 	memset(FEO_LAN_Entry + 0x24, 0, 0x12);
 
-	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5852A0, 0x0, 0x5850D0>(), Hook_LoadGxt1);
-	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5855EE, 0x0, 0x58541E>(), Hook_LoadGxt2);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5852A0, 0x0, 0x5850D0>(), hook_load_gxt_mission);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5855EE, 0x0, 0x58541E>(), hook_load_gxt);
 
 	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552461, 0x0, 0x552351>(), CFont::LoadCHSTexture);
 	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552300, 0x0, 0x5521F0>(), CFont::UnloadCHSTexture);
