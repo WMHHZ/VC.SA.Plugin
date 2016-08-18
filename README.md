@@ -2,3 +2,4 @@
 </br>https://github.com/thelink2012/injector
 </br>http://utfcpp.sourceforge.net/
 </br>http://www.libpng.org/pub/png/libpng.html
+</br>https://www.freetype.org/
