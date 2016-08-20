@@ -49,8 +49,8 @@ public:
 	}
 };
 
-template <typename __Ret, typename... __Args>
-class thiscall_func_wrapper<__Ret(__Args...)>
+template <class __ThisType, typename __Ret, typename... __Args>
+class thiscall_func_wrapper<__Ret(__ThisType, __Args...)>
 {
 	void *pfunction;
 
@@ -62,8 +62,8 @@ public:
 	thiscall_func_wrapper &operator=(std::uintptr_t funcaddr) { pfunction = reinterpret_cast<void *>(funcaddr); return *this; }
 	operator void*() const { return pfunction; }
 
-	__Ret operator()(void *__this, __Args... args) const
+	__Ret operator()(__ThisType __this, __Args... args) const
 	{
-		return ((__Ret(__thiscall *)(void *, __Args...))(pfunction))(__this, std::forward<__Args>(args)...);
+		return ((__Ret(__thiscall *)(__ThisType, __Args...))(pfunction))(__this, std::forward<__Args>(args)...);
 	}
 };

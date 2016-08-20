@@ -3,12 +3,12 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <locale>
+#include <codecvt>
+#include <algorithm>
 
 #include <cstdio>
 #include <cstring>
-
-#include "../include/utf8cpp/utf8.h"
-#include <iterator>
 
 bool LCGXT::LoadText(const char *path)
 {
@@ -164,9 +164,10 @@ void LCGXT::GenerateWMHHZStuff()
 
 void LCGXT::UTF8ToUTF16(const std::string &str, std::vector<uint16_t> &result)
 {
-	result.clear();
+	std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
 
-	utf8::unchecked::utf8to16(str.begin(), str.end(), std::back_inserter(result));
-
+	std::wstring wstr = converter.from_bytes(str);
+	result.resize(wstr.length() + 1);
+	std::copy(wstr.begin(), wstr.end(), result.begin());
 	result.push_back(0);
 }

@@ -16,16 +16,21 @@ class CSprite2d
 public:
 	CSprite2d();
 	explicit CSprite2d(int);
+	bool Valid() const;
+	void SetRwTexture(RwTexture *texture);
 
 public:
-	static thiscall_func_wrapper<void(const char *, const char *)>
+	static thiscall_func_wrapper<void(CSprite2d *, const char *, const char *)>
 		fpSetTexture;
 
-	static thiscall_func_wrapper<void()>
+	static thiscall_func_wrapper<void(const CSprite2d *)>
 		fpSetRenderState;
 
-	static thiscall_func_wrapper<void()>
+	static thiscall_func_wrapper<void(CSprite2d *)>
 		fpDelete;
+
+	static thiscall_func_wrapper<void(const CSprite2d *,const CRect &rect, const CRGBA &color)>
+		fpDraw;
 
 	static cdecl_func_wrapper<void(const CRect &rect, const CRGBA &color)>
 		fpDrawRect;

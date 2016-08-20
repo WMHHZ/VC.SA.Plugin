@@ -5,6 +5,7 @@
 #include "rwFunc.h"
 #include "CTxdStore.h"
 #include "../include/selector/AddressSelector.h"
+#include "CFreeType.h"
 
 char CFont::texturePath[MAX_PATH];
 char CFont::textPath[MAX_PATH];
@@ -42,6 +43,7 @@ void CFont::LoadCHSTexture()
 	CTxdStore::fpSetCurrentTxd(slot);
 	CSprite2d::fpSetTexture(&CFont::Sprite[2], "chs", "chs_mask");
 	CTxdStore::fpPopCurrentTxd();
+	CFreeType::Init();
 }
 
 void CFont::UnloadCHSTexture(int dummy)
@@ -49,6 +51,7 @@ void CFont::UnloadCHSTexture(int dummy)
 	CTxdStore::fpRemoveTxdSlot(dummy);
 	CSprite2d::fpDelete(&CFont::Sprite[2]);
 	CTxdStore::fpRemoveTxdSlot(CTxdStore::fpFindTxdSlot("wm_vcchs"));
+	CFreeType::Close();
 }
 
 float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseCharset, bool bProp, float fScaleX)
@@ -57,6 +60,7 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 
 	if (arg_char >= 0x60)
 	{
+		return 32 * fScaleX;
 		switch (arg_char + 0x20)
 		{
 		case L'·':
@@ -609,6 +613,14 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 	static const float vfix3_slant = 0.009f / 4.0f;
 
 	CRect rect;
+
+	rect.x1 = arg_x;
+	rect.y2 = arg_y;
+	rect.x2 = CFont::RenderState->Scale.x * 32.0f + arg_x;
+	rect.y1 = CFont::RenderState->Scale.y * 20.0f + arg_y;
+
+	CSprite2d::fpDraw(&CFreeType::GetCharSprite(arg_char).sprite, rect, CFont::RenderState->Color);
+	return;
 
 	float u1, v1, u2, v2, u3, v3, u4, v4;
 

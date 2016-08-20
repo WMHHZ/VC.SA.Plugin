@@ -119,17 +119,16 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_VCCHS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include/freetype-2.6.5/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../include/freetype-2.6.5/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -156,6 +155,7 @@
     <ClCompile Include="..\include\selector\AddressSelector.cpp" />
     <ClCompile Include="CCharTable.cpp" />
     <ClCompile Include="CFont.cpp" />
+    <ClCompile Include="CFreeType.cpp" />
     <ClCompile Include="WMVC.cpp" />
     <ClCompile Include="CSprite2d.cpp" />
     <ClCompile Include="CTimer.cpp" />
@@ -167,6 +167,7 @@
     <ClInclude Include="..\include\selector\AddressSelector.h" />
     <ClInclude Include="CCharTable.h" />
     <ClInclude Include="CFont.h" />
+    <ClInclude Include="CFreeType.h" />
     <ClInclude Include="CSprite2d.h" />
     <ClInclude Include="CTimer.h" />
     <ClInclude Include="WMVC.h" />
