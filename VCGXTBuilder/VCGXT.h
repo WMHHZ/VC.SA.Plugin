@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <set>
 
 class VCGXT
 {
@@ -13,7 +12,6 @@ public:
 
 	bool LoadText(const char *);
 	void SaveAsGXT(const char *);
-	void GenerateWMHHZStuff();
 
 private:
 	struct TableSortMethod
@@ -31,5 +29,4 @@ private:
 	static size_t GetDataBlockSize(const std::map<std::string, std::vector<uint16_t> > &);
 
 	std::map<std::string, std::map<std::string, std::vector<uint16_t> >, TableSortMethod> m_GxtData;
-	std::set<uint16_t> m_WideCharCollection;
 };

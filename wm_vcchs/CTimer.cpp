@@ -1,5 +1,5 @@
 #include "CTimer.h"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 
 unsigned __int32 *CTimer::m_nTimeInMilliseconds;
 

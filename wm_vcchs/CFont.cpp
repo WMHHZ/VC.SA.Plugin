@@ -1,13 +1,12 @@
 ﻿#include "CFont.h"
 #include "CSprite2d.h"
 #include "CTimer.h"
-#include "CCharTable.h"
 #include "rwFunc.h"
 #include "CTxdStore.h"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 #include "CFreeType.h"
 
-char CFont::texturePath[MAX_PATH];
+char CFont::fontPath[MAX_PATH];
 char CFont::textPath[MAX_PATH];
 
 CFontSizes *CFont::Size;
@@ -32,25 +31,14 @@ CFont::fpPrintChar;
 cdecl_func_wrapper<void(float arg_x, float arg_y, unsigned int useless, CharType *arg_strbeg, CharType *arg_strend, float justifywrap)>
 CFont::fpPrintStringPart;
 
-void CFont::LoadCHSTexture()
+void CFont::LoadCHSFont()
 {
-	CTxdStore::fpPopCurrentTxd();
-	CTxdStore::fpPopCurrentTxd();
-	int slot = CTxdStore::fpAddTxdSlot("wm_vcchs");
-	CTxdStore::fpLoadTxd(slot, texturePath);
-	CTxdStore::fpAddRef(slot);
-	CTxdStore::fpPushCurrentTxd();
-	CTxdStore::fpSetCurrentTxd(slot);
-	CSprite2d::fpSetTexture(&CFont::Sprite[2], "chs", "chs_mask");
-	CTxdStore::fpPopCurrentTxd();
 	CFreeType::Init();
 }
 
-void CFont::UnloadCHSTexture(int dummy)
+void CFont::UnloadCHSFont(int dummy)
 {
 	CTxdStore::fpRemoveTxdSlot(dummy);
-	CSprite2d::fpDelete(&CFont::Sprite[2]);
-	CTxdStore::fpRemoveTxdSlot(CTxdStore::fpFindTxdSlot("wm_vcchs"));
 	CFreeType::Close();
 }
 
@@ -58,61 +46,9 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 {
 	__int16 charWidth;
 
-	if (arg_char >= 0x60)
+	if (arg_char >= 0x80)
 	{
-		return 32 * fScaleX;
-		switch (arg_char + 0x20)
-		{
-		case L'·':
-			charWidth = 24;
-			break;
-		case L'—':
-			charWidth = 32;
-			break;
-		case L'“':
-			charWidth = 16;
-			break;
-		case L'”':
-			charWidth = 16;
-			break;
-		case L'…':
-			charWidth = 24;
-			break;
-		case L'←':
-			charWidth = 24;
-			break;
-		case L'→':
-			charWidth = 24;
-			break;
-		case L'。':
-			charWidth = 14;
-			break;
-		case L'！':
-			charWidth = 10;
-			break;
-		case L'（':
-			charWidth = 16;
-			break;
-		case L'）':
-			charWidth = 16;
-			break;
-		case L'，':
-			charWidth = 12;
-			break;
-		case L'／':
-			charWidth = 18;
-			break;
-		case L'：':
-			charWidth = 10;
-			break;
-		case L'？':
-			charWidth = 18;
-			break;
-
-		default:
-			charWidth = 26;
-			break;
-		}
+		return ((CFreeType::GetCharInfo(arg_char).width * 0.8f + 3) * fScaleX);
 	}
 	else
 	{
@@ -123,7 +59,7 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 
 		if (bProp)
 		{
-			charWidth = Size[nFontStyle].PropValues[arg_char];
+			charWidth = Size[nFontStyle].PropValues[arg_char - 0x20];
 		}
 		else
 		{
@@ -177,13 +113,13 @@ float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 		}
 		else if (*arg_text < 0x80)
 		{
-			result += GetCharacterSizeNormal(*arg_text - 0x20);
+			result += GetCharacterSizeNormal(*arg_text);
 		}
 		else
 		{
 			if (result == 0.0f || bGetAll)
 			{
-				result += GetCharacterSizeNormal(*arg_text - 0x20);
+				result += GetCharacterSizeNormal(*arg_text);
 			}
 
 			if (!bGetAll)
@@ -565,16 +501,9 @@ void CFont::RenderFontBuffer()
 			pos.y = (RenderState->SlantRefPoint.x - pos.x) * RenderState->Slant + RenderState->SlantRefPoint.y;
 		}
 
-		var_char = *pbuffer.ptext - 0x20;
+		var_char = *pbuffer.ptext;
 
-		if (var_char < 0x60)
-		{
-			CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
-		}
-		else
-		{
-			CSprite2d::fpSetRenderState(&Sprite[2]);
-		}
+		CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
 
 		rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
 
@@ -604,27 +533,9 @@ void CFont::RenderFontBuffer()
 
 void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 {
-	static const float rRowsCount = 1.0f / 51.2f;
-	static const float rColumnsCount = 1.0f / 64.0f;
-	static const float ufix = 0.001f / 4.0f;
-	static const float vfix = 0.0021f / 4.0f;
-	static const float vfix1_slant = 0.00055f / 4.0f;
-	static const float vfix2_slant = 0.01f / 4.0f;
-	static const float vfix3_slant = 0.009f / 4.0f;
-
 	CRect rect;
 
-	rect.x1 = arg_x;
-	rect.y2 = arg_y;
-	rect.x2 = CFont::RenderState->Scale.x * 32.0f + arg_x;
-	rect.y1 = CFont::RenderState->Scale.y * 20.0f + arg_y;
-
-	CSprite2d::fpDraw(&CFreeType::GetCharSprite(arg_char).sprite, rect, CFont::RenderState->Color);
-	return;
-
-	float u1, v1, u2, v2, u3, v3, u4, v4;
-
-	CCharTable::CharPos pos;
+	auto &info = CFreeType::GetCharInfo(arg_char);
 
 	if (arg_x >= *rwFunc::RsGlobalW ||
 		arg_x <= 0.0f ||
@@ -634,48 +545,21 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 		return;
 	}
 
-	pos = CCharTable::GetCharPos(arg_char);
+	rect.x1 = arg_x;
+	rect.y2 = arg_y;
+	rect.x2 = CFont::RenderState->Scale.x * info.bitmap_width + arg_x;
+	rect.y1 = CFont::RenderState->Scale.y * info.bitmap_height / 2 + arg_y;
 
-	if (RenderState->Slant == 0.0f)
-	{
-		rect.x1 = arg_x;
-		rect.y2 = arg_y;
-		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-		rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
-
-		u1 = pos.columnIndex * rColumnsCount;
-		v1 = pos.rowIndex * rRowsCount;
-		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
-		v2 = v1;
-		u3 = u1;
-		v3 = (pos.rowIndex + 1) * rRowsCount - vfix;
-		u4 = u2;
-		v4 = v3;
-	}
-	else
-	{
-		rect.x1 = arg_x;
-		rect.y2 = arg_y + 0.015f;
-		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
-		rect.y1 = RenderState->Scale.y * 20.0f + arg_y;
-
-		u1 = pos.columnIndex * rColumnsCount;
-		v1 = pos.rowIndex * rRowsCount + vfix1_slant;
-		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
-		v2 = pos.rowIndex * rRowsCount + vfix + vfix2_slant;
-		u3 = pos.columnIndex * rColumnsCount;
-		v3 = (pos.rowIndex + 1) * rRowsCount - vfix3_slant;
-		u4 = (pos.columnIndex + 1) * rColumnsCount - ufix;
-		v4 = (pos.rowIndex + 1) * rRowsCount + vfix2_slant - vfix;
-	}
-
-	CSprite2d::fpAddToBuffer(rect, RenderState->Color, u1, v1, u2, v2, u3, v3, u4, v4);
+	CSprite2d::fpDraw(&info.sprite, rect, CFont::RenderState->Color);
+	return;
 }
 
 void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
 {
-	if (arg_char < 0x60)
+	if (arg_char < 0x80)
 	{
+		arg_char -= 0x20;
+
 		if (RenderState->BaseCharset)
 		{
 			arg_char = fpFindNewCharacter(arg_char);

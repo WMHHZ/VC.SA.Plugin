@@ -1,5 +1,5 @@
 #include "CTxdStore.h"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 
 cdecl_func_wrapper<int(const char *name)>
 CTxdStore::fpAddTxdSlot;

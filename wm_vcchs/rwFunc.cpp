@@ -1,13 +1,13 @@
 #include "rwFunc.h"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 
 __int32 *rwFunc::RsGlobalW;
 __int32 *rwFunc::RsGlobalH;
 
-cdecl_func_wrapper<__int32(RwRenderState state, void *value)>
+cdecl_func_wrapper<RwBool(RwRenderState state, void *value)>
 rwFunc::fpRwRenderStateSet;
 
-cdecl_func_wrapper<RwImage *(__int32 width, __int32 height, __int32 depth)>
+cdecl_func_wrapper<RwImage *(RwInt32 width, RwInt32 height, RwInt32 depth)>
 rwFunc::fpRwImageCreate;
 
 cdecl_func_wrapper<RwBool(RwImage *image)>
@@ -16,7 +16,7 @@ rwFunc::fpRwImageDestroy;
 cdecl_func_wrapper<RwImage *(RwImage *image)>
 rwFunc::fpRwImageAllocatePixels;
 
-cdecl_func_wrapper<RwImage *(RwImage *ipImage, RwInt32 nRasterType, RwInt32 *npWidth, RwInt32 *npHeight, RwInt32 *npDepth, RwInt32 *npFormat)>
+cdecl_func_wrapper<RwImage *(RwImage *ipImage, RwRasterType nRasterType, RwInt32 *npWidth, RwInt32 *npHeight, RwInt32 *npDepth, RwInt32 *npFormat)>
 rwFunc::fpRwImageFindRasterFormat;
 
 cdecl_func_wrapper<RwRaster *(RwInt32 width, RwInt32 height, RwInt32 depth, RwInt32 flags)>

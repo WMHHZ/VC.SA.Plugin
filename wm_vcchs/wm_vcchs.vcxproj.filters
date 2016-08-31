@@ -27,9 +27,6 @@
     <ClCompile Include="CSprite2d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CCharTable.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CTxdStore.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -39,10 +36,10 @@
     <ClCompile Include="WMVC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\selector\AddressSelector.cpp">
+    <ClCompile Include="CFreeType.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CFreeType.cpp">
+    <ClCompile Include="..\deps\selector\AddressSelector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,9 +51,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CSprite2d.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CCharTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="rwFunc.h">
@@ -71,10 +65,10 @@
     <ClInclude Include="WMVC.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\selector\AddressSelector.h">
+    <ClInclude Include="CFreeType.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CFreeType.h">
+    <ClInclude Include="..\deps\selector\AddressSelector.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

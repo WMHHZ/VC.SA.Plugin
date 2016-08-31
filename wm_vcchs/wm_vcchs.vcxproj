@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_VCCHS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>../include/freetype-2.6.5/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../deps/rwsdk-3.4-d3d8/include/d3d8/;../deps/freetype-2.6.5/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -128,10 +128,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../include/freetype-2.6.5/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>../deps/freetype-2.6.5/lib/;../deps/rwsdk-3.4-d3d8/lib/d3d8/release/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rplodatm.lib;rplogo.lib;rpltmap.lib;rpmatfx.lib;rpmipkl.lib;rpmorph.lib;rppatch.lib;rppatchmatfx.lib;rppatchskin.lib;rppatchskinmatfx.lib;rpprtstd.lib;rpptank.lib;rppvs.lib;rprandom.lib;rpskin.lib;rpskinmatfx.lib;rpspline.lib;rpusrdat.lib;rpworld.lib;rt2d.lib;rt2danim.lib;rtanim.lib;rtbary.lib;rtbezpat.lib;rtbmp.lib;rtcharse.lib;rtgncpip.lib;rtimport.lib;rtintsec.lib;rtltmap.lib;rtmipk.lib;rtmipkmatfx.lib;rtmipkpatch.lib;rtmipkpatchmatfx.lib;rtpick.lib;rtpitexd.lib;rtpng.lib;rtpngcw.lib;rtquat.lib;rtras.lib;rtray.lib;rtskinsp.lib;rtslerp.lib;rtsplpvs.lib;rttiff.lib;rttilerd.lib;rttoc.lib;rtvcat.lib;rtworld.lib;rwcore.lib;rpanisot.lib;rpcollis.lib;rpdmorph.lib;rphanim.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,8 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\selector\AddressSelector.cpp" />
-    <ClCompile Include="CCharTable.cpp" />
+    <ClCompile Include="..\deps\selector\AddressSelector.cpp" />
     <ClCompile Include="CFont.cpp" />
     <ClCompile Include="CFreeType.cpp" />
     <ClCompile Include="WMVC.cpp" />
@@ -164,8 +163,7 @@
     <ClCompile Include="rwFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\selector\AddressSelector.h" />
-    <ClInclude Include="CCharTable.h" />
+    <ClInclude Include="..\deps\selector\AddressSelector.h" />
     <ClInclude Include="CFont.h" />
     <ClInclude Include="CFreeType.h" />
     <ClInclude Include="CSprite2d.h" />

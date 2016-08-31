@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game.h"
-#include "../include/func_wrapper/func_wrapper.hpp"
+#include "../deps/func_wrapper/func_wrapper.hpp"
 
 typedef unsigned __int16 CharType;
 
@@ -83,7 +83,7 @@ static_assert(sizeof(CFontDetails) == 0x54, "CFontDetails is wrong.");
 class CFont
 {
 public:
-	static char texturePath[];
+	static char fontPath[];
 	static char textPath[];
 
 	static CFontSizes *Size;
@@ -126,8 +126,8 @@ public:
 	static void PrintCHSChar(float arg_x, float arg_y, CharType arg_char);
 	static void PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char);
 
-	static void __cdecl LoadCHSTexture();
-	static void __cdecl UnloadCHSTexture(int dummy);
+	static void __cdecl LoadCHSFont();
+	static void __cdecl UnloadCHSFont(int dummy);
 
 	CFont();
 };

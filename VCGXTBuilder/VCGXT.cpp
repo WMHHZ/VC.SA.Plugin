@@ -25,7 +25,6 @@ bool VCGXT::LoadText(const char *path)
 	std::map<std::string, std::map<std::string, std::vector<uint16_t> >, TableSortMethod>::iterator tableIt;
 
 	m_GxtData.clear();
-	m_WideCharCollection.clear();
 
 	inputFile.open(path);
 
@@ -55,17 +54,7 @@ bool VCGXT::LoadText(const char *path)
 
 			UTF8ToUTF16(matchResult.str(2), wideLineBuffer);
 
-			if (matchResult.str(1) == "CHS2500" || matchResult.str(1) == "CHS3000" || tableIt->second.emplace(matchResult.str(1), wideLineBuffer).second)
-			{
-				for (uint16_t chr : wideLineBuffer)
-				{
-					if (chr >= 0x80)
-					{
-						m_WideCharCollection.insert(chr);
-					}
-				}
-			}
-			else
+			if (!tableIt->second.emplace(matchResult.str(1), wideLineBuffer).second)
 			{
 				std::cout << "Repeated entry:\n" << matchResult.str(1) << "\nin table:\n" << tableIt->first << '\n' << '\n';
 				return false;
@@ -90,7 +79,7 @@ void VCGXT::SaveAsGXT(const char *path)
 
 	tableBlockSize = this->m_GxtData.size() * SizeOfTABL;
 
-	outputFile = fopen(path, "wb");
+	outputFile = std::fopen(path, "wb");
 
 	if (outputFile == nullptr)
 	{
@@ -98,38 +87,38 @@ void VCGXT::SaveAsGXT(const char *path)
 		return;
 	}
 
-	fwrite("TABL", 4, 1, outputFile);
-	fwrite(&tableBlockSize, 4, 1, outputFile);
+	std::fwrite("TABL", 4, 1, outputFile);
+	std::fwrite(&tableBlockSize, 4, 1, outputFile);
 	foTableBlock = 8;
-	fseek(outputFile, tableBlockSize, SEEK_CUR);
+	std::fseek(outputFile, tableBlockSize, SEEK_CUR);
 
 	for (auto &table : this->m_GxtData)
 	{
-		foKeyBlock = ftell(outputFile);
+		foKeyBlock = std::ftell(outputFile);
 
 		keyBlockSize = table.second.size() * SizeOfTKEY;
 		dataBlockSize = GetDataBlockSize(table.second);
 
 		memset(eightChars, 0, 8);
 		table.first.copy(eightChars, 7);
-		fseek(outputFile, foTableBlock, SEEK_SET);
-		fwrite(eightChars, 1, 8, outputFile);
-		fwrite(&foKeyBlock, 4, 1, outputFile);
+		std::fseek(outputFile, foTableBlock, SEEK_SET);
+		std::fwrite(eightChars, 1, 8, outputFile);
+		std::fwrite(&foKeyBlock, 4, 1, outputFile);
 		foTableBlock += SizeOfTABL;
 
 		keyBlockOffset = foKeyBlock;
-		fseek(outputFile, foKeyBlock, SEEK_SET);
+		std::fseek(outputFile, foKeyBlock, SEEK_SET);
 		if (table.first != "MAIN")
 		{
-			fwrite(eightChars, 1, 8, outputFile);
+			std::fwrite(eightChars, 1, 8, outputFile);
 		}
-		fwrite("TKEY", 1, 4, outputFile);
-		fwrite(&keyBlockSize, 4, 1, outputFile);
-		foKeyBlock = ftell(outputFile);
+		std::fwrite("TKEY", 1, 4, outputFile);
+		std::fwrite(&keyBlockSize, 4, 1, outputFile);
+		foKeyBlock = std::ftell(outputFile);
 
-		fseek(outputFile, keyBlockSize, SEEK_CUR);
-		fwrite("TDAT", 1, 4, outputFile);
-		fwrite(&dataBlockSize, 4, 1, outputFile);
+		std::fseek(outputFile, keyBlockSize, SEEK_CUR);
+		std::fwrite("TDAT", 1, 4, outputFile);
+		std::fwrite(&dataBlockSize, 4, 1, outputFile);
 
 		firstTDATEntryOffset = ftell(outputFile);
 		
@@ -140,60 +129,17 @@ void VCGXT::SaveAsGXT(const char *path)
 			memset(eightChars, 0, 8);
 			entry.first.copy(eightChars, 7);
 			TDATOffset = foDataBlock - firstTDATEntryOffset;
-			fseek(outputFile, foKeyBlock, SEEK_SET);
-			fwrite(&TDATOffset, 4, 1, outputFile);
-			fwrite(eightChars, 1, 8, outputFile);
+			std::fseek(outputFile, foKeyBlock, SEEK_SET);
+			std::fwrite(&TDATOffset, 4, 1, outputFile);
+			std::fwrite(eightChars, 1, 8, outputFile);
 			foKeyBlock += SizeOfTKEY;
-			fseek(outputFile, foDataBlock, SEEK_SET);
-			fwrite(entry.second.data(), 2, entry.second.size(), outputFile);
+			std::fseek(outputFile, foDataBlock, SEEK_SET);
+			std::fwrite(entry.second.data(), 2, entry.second.size(), outputFile);
 			
 		}
 	}
 
-	fclose(outputFile);
-}
-
-void VCGXT::GenerateWMHHZStuff()
-{
-	FILE *charactersSet;
-	std::ofstream convCode;
-
-	int row = 0;
-	int column = 0;
-
-	convCode.open("TABLE.txt", std::ios::trunc);
-
-	charactersSet = fopen("CHARACTERS.txt", "wb");
-
-	if (!convCode.is_open() || charactersSet == nullptr)
-	{
-		std::cout << "Failed to create output file.\n";
-		return;
-	}
-
-	fwrite("\xFF\xFE", 2, 1, charactersSet);
-
-	for (uint16_t chr : this->m_WideCharCollection)
-	{
-		convCode << std::hex << "m_Table[0x" << chr << std::dec << "] = {" << row << ',' << column << "};" << '\n';
-
-		fwrite(&chr, 2, 1, charactersSet);
-
-		if (column < 63)
-		{
-			column += 1;
-		}
-		else
-		{
-			row += 1;
-
-			fwrite(L"\n", 2, 1, charactersSet);
-
-			column = 0;
-		}
-	}
-
-	fclose(charactersSet);
+	std::fclose(outputFile);
 }
 
 size_t VCGXT::GetDataBlockSize(const std::map<std::string,std::vector<uint16_t> > &table)
@@ -215,5 +161,5 @@ void VCGXT::UTF8ToUTF16(const std::string &str, std::vector<uint16_t> &result)
 	std::wstring wstr = converter.from_bytes(str);
 	result.resize(wstr.length() + 1);
 	std::copy(wstr.begin(), wstr.end(), result.begin());
-	result.push_back(0);
+	result.back() = 0;
 }

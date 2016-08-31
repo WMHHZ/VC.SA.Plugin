@@ -3,9 +3,9 @@
 
 #include <cstring>
 
-#include "../include/injector/gvm/gvm.hpp"
-#include "../include/injector/hooking.hpp"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/injector/gvm/gvm.hpp"
+#include "../deps/injector/hooking.hpp"
+#include "../deps/selector/AddressSelector.h"
 
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
@@ -15,12 +15,12 @@ bool WMVC::CheckResourceFile(HMODULE hPlugin)
 	char pluginPath[MAX_PATH];
 
 	GetModuleFileNameA(hPlugin, pluginPath, MAX_PATH);
-	std::strcpy(CFont::texturePath, pluginPath);
+	std::strcpy(CFont::fontPath, pluginPath);
 	std::strcpy(CFont::textPath, pluginPath);
-	std::strcpy(std::strrchr(CFont::texturePath, '.'), "\\wm_vcchs.txd");
+	std::strcpy(std::strrchr(CFont::fontPath, '.'), "\\wm_vcchs.ttf");
 	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
 
-	if (!PathFileExistsA(CFont::texturePath) || !PathFileExistsA(CFont::textPath))
+	if (!PathFileExistsA(CFont::fontPath) || !PathFileExistsA(CFont::textPath))
 	{
 		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_vcchs文件夹！", WMVERSIONWSTRING, MB_ICONWARNING);
 		return false;
@@ -80,8 +80,8 @@ void WMVC::PatchGame()
 	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5852A0, 0x0, 0x5850D0>(), hook_load_gxt_mission);
 	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x5855EE, 0x0, 0x58541E>(), hook_load_gxt);
 
-	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552461, 0x0, 0x552351>(), CFont::LoadCHSTexture);
-	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552300, 0x0, 0x5521F0>(), CFont::UnloadCHSTexture);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552461, 0x0, 0x552351>(), CFont::LoadCHSFont);
+	injector::MakeCALL(AddressSelectorVC::SelectAddress<0x552300, 0x0, 0x5521F0>(), CFont::UnloadCHSFont);
 
 	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x550650, 0x0, 0x550540>(), CFont::GetStringWidth);
 	injector::MakeJMP(AddressSelectorVC::SelectAddress<0x550720, 0x0, 0x550610>(), CFont::GetTextRect);

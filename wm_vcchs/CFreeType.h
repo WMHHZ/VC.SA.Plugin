@@ -1,24 +1,25 @@
 #pragma once
 #include "CSprite2d.h"
-
-struct RwImage;
+#include <freetype/ftimage.h>
 
 struct CachedCharInfo
 {
-	unsigned __int8 widthInPixels;
-	unsigned __int8 heightInPixels;
+	float width;
+	float height;
+	unsigned int bitmap_width;
+	unsigned int bitmap_height;
 	CSprite2d sprite;
 };
 
 class CFreeType
 {
-	static CachedCharInfo m_Sprites[];
+	static CachedCharInfo m_InfoArray[];
 
-	static void InitCharSprite(wchar_t arg_char);
+	static void InitCharInfo(wchar_t arg_char);
 
 public:
 	static void Init();
 	static void Close();
 
-	static const CachedCharInfo &GetCharSprite(wchar_t arg_char);
+	static const CachedCharInfo &GetCharInfo(wchar_t arg_char);
 };
