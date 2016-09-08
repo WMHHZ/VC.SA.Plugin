@@ -1,5 +1,5 @@
 #include "CTxdStore.h"
-#include "../include/injector/injector.hpp"
+#include "../deps/injector/injector.hpp"
 
 void(__cdecl *CTxdStore::PopCurrentTxd)();
 void(__cdecl *CTxdStore::RemoveTxdSlot)(int slot);

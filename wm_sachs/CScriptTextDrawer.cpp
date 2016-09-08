@@ -1,5 +1,5 @@
 ﻿#include "CScriptTextDrawer.h"
-#include "../include/injector/injector.hpp"
+#include "../deps/injector/injector.hpp"
 
 CScriptTextDrawer *CScriptTextDrawer::m_TextDrawers;
 unsigned __int16 *CScriptTextDrawer::m_CurrentTextDrawerIndex;

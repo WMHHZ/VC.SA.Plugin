@@ -42,6 +42,9 @@
     <ClCompile Include="..\deps\selector\AddressSelector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CCharTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CFont.h">
@@ -69,6 +72,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\deps\selector\AddressSelector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCharTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,11 +3,14 @@
 #include "CTimer.h"
 #include "rwFunc.h"
 #include "CTxdStore.h"
+#include "CCharTable.h"
 #include "../deps/selector/AddressSelector.h"
-#include "CFreeType.h"
 
-char CFont::fontPath[MAX_PATH];
-char CFont::textPath[MAX_PATH];
+const __int16 CFont::iMaxCharWidth = 28;
+const float CFont::fMaxCharWidth = CFont::iMaxCharWidth;
+
+char CFont::fontPath[260];
+char CFont::textPath[260];
 
 CFontSizes *CFont::Size;
 FontBufferPointer CFont::FontBuffer;
@@ -33,13 +36,22 @@ CFont::fpPrintStringPart;
 
 void CFont::LoadCHSFont()
 {
-	CFreeType::Init();
+	CTxdStore::fpPopCurrentTxd();
+	CTxdStore::fpPopCurrentTxd();
+	int slot = CTxdStore::fpAddTxdSlot("wm_vcchs");
+	CTxdStore::fpLoadTxd(slot, fontPath);
+	CTxdStore::fpAddRef(slot);
+	CTxdStore::fpPushCurrentTxd();
+	CTxdStore::fpSetCurrentTxd(slot);
+	CSprite2d::fpSetTexture(&CFont::Sprite[2], "chs", "chs_mask");
+	CTxdStore::fpPopCurrentTxd();
 }
 
 void CFont::UnloadCHSFont(int dummy)
 {
 	CTxdStore::fpRemoveTxdSlot(dummy);
-	CFreeType::Close();
+	CSprite2d::fpDelete(&CFont::Sprite[2]);
+	CTxdStore::fpRemoveTxdSlot(CTxdStore::fpFindTxdSlot("wm_vcchs"));
 }
 
 float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseCharset, bool bProp, float fScaleX)
@@ -48,10 +60,65 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 
 	if (arg_char >= 0x80)
 	{
-		return ((CFreeType::GetCharInfo(arg_char).width * 0.8f + 3) * fScaleX);
+	/*	switch (arg_char)
+		{
+		case L'·':
+			charWidth = 24;
+			break;
+		case L'—':
+			charWidth = 32;
+			break;
+		case L'“':
+			charWidth = 16;
+			break;
+		case L'”':
+			charWidth = 16;
+			break;
+		case L'…':
+			charWidth = 24;
+			break;
+		case L'←':
+			charWidth = 24;
+			break;
+		case L'→':
+			charWidth = 24;
+			break;
+		case L'。':
+			charWidth = 14;
+			break;
+		case L'！':
+			charWidth = 10;
+			break;
+		case L'（':
+			charWidth = 16;
+			break;
+		case L'）':
+			charWidth = 16;
+			break;
+		case L'，':
+			charWidth = 12;
+			break;
+		case L'／':
+			charWidth = 18;
+			break;
+		case L'：':
+			charWidth = 10;
+			break;
+		case L'？':
+			charWidth = 18;
+			break;
+
+		default:
+			charWidth = iMaxCharWidth;
+			break;
+		}*/
+
+		charWidth = iMaxCharWidth + 2;
 	}
 	else
 	{
+		arg_char -= 0x20;
+
 		if (bBaseCharset)
 		{
 			arg_char = fpFindNewCharacter(arg_char);
@@ -59,7 +126,7 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 
 		if (bProp)
 		{
-			charWidth = Size[nFontStyle].PropValues[arg_char - 0x20];
+			charWidth = Size[nFontStyle].PropValues[arg_char];
 		}
 		else
 		{
@@ -90,7 +157,7 @@ float CFont::GetStringWidth(CharType *arg_text, bool bGetAll)
 		{
 			if (bGetAll)
 			{
-				result += GetCharacterSizeNormal(0);
+				result += GetCharacterSizeNormal(' ');
 			}
 			else
 			{
@@ -210,7 +277,7 @@ __int16 CFont::GetNumberLines(float arg_x, float arg_y, CharType *arg_text)
 
 			if (*arg_text == ' ')
 			{
-				xBound += GetCharacterSizeNormal(0);
+				xBound += GetCharacterSizeNormal(' ');
 				++arg_text;
 			}
 			else if (*arg_text == 0)
@@ -346,7 +413,7 @@ void CFont::PrintString(float arg_x, float arg_y, CharType *arg_text)
 							++numSpaces;
 						}
 
-						xBound += GetCharacterSizeNormal(0);
+						xBound += GetCharacterSizeNormal(' ');
 						++ptext;
 					}
 				}
@@ -503,7 +570,14 @@ void CFont::RenderFontBuffer()
 
 		var_char = *pbuffer.ptext;
 
-		CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
+		if (var_char < 0x80)
+		{
+			CSprite2d::fpSetRenderState(&Sprite[RenderState->FontStyle]);
+		}
+		else
+		{
+			CSprite2d::fpSetRenderState(&Sprite[2]);
+		}
 
 		rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
 
@@ -520,7 +594,7 @@ void CFont::RenderFontBuffer()
 
 		pos.x += GetCharacterSizeDrawing(var_char);
 	
-		if (var_char == 0)
+		if (var_char == ' ')
 		{
 			pos.x += RenderState->JustifyWrap;
 		}
@@ -533,9 +607,24 @@ void CFont::RenderFontBuffer()
 
 void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 {
+	//static const float rRowsCount = 1.0f / 51.2f;
+	static const float rRowsCount = 1.0f / 64.0f;
+	static const float rColumnsCount = 1.0f / 64.0f;
+	static const float ufix = 0.001f / 4.0f;
+	//static const float vfix = 0.0021f / 4.0f;
+	static const float vfix = 0.001f / 4.0f;
+	static const float vfix1_slant = 0.00055f / 4.0f;
+	//static const float vfix2_slant = 0.01f / 4.0f;
+	static const float vfix2_slant = 0.007f / 4.0f;
+	static const float vfix3_slant = 0.009f / 4.0f;
+
 	CRect rect;
 
-	auto &info = CFreeType::GetCharInfo(arg_char);
+	float yOffset;
+
+	float u1, v1, u2, v2, u3, v3, u4, v4;
+
+	CharPos pos;
 
 	if (arg_x >= *rwFunc::RsGlobalW ||
 		arg_x <= 0.0f ||
@@ -545,13 +634,44 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 		return;
 	}
 
-	rect.x1 = arg_x;
-	rect.y2 = arg_y;
-	rect.x2 = CFont::RenderState->Scale.x * info.bitmap_width + arg_x;
-	rect.y1 = CFont::RenderState->Scale.y * info.bitmap_height / 2 + arg_y;
+	pos = CCharTable::GetCharPos(arg_char);
 
-	CSprite2d::fpDraw(&info.sprite, rect, CFont::RenderState->Color);
-	return;
+	yOffset = RenderState->Scale.y * 2.0f;
+
+	if (RenderState->Slant == 0.0f)
+	{
+		rect.x1 = arg_x;
+		rect.y2 = arg_y + yOffset;
+		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+		rect.y1 = RenderState->Scale.y * 16.0f + arg_y + yOffset;
+
+		u1 = pos.columnIndex * rColumnsCount;
+		v1 = pos.rowIndex * rRowsCount;
+		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v2 = v1;
+		u3 = u1;
+		v3 = (pos.rowIndex + 1) * rRowsCount - vfix;
+		u4 = u2;
+		v4 = v3;
+	}
+	else
+	{
+		rect.x1 = arg_x;
+		rect.y2 = arg_y + 0.015f + yOffset;
+		rect.x2 = RenderState->Scale.x * 32.0f + arg_x;
+		rect.y1 = RenderState->Scale.y * 16.0f + arg_y + yOffset;
+
+		u1 = pos.columnIndex * rColumnsCount;
+		v1 = pos.rowIndex * rRowsCount + vfix1_slant;
+		u2 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v2 = pos.rowIndex * rRowsCount + vfix + vfix2_slant;
+		u3 = pos.columnIndex * rColumnsCount;
+		v3 = (pos.rowIndex + 1) * rRowsCount - vfix3_slant;
+		u4 = (pos.columnIndex + 1) * rColumnsCount - ufix;
+		v4 = (pos.rowIndex + 1) * rRowsCount + vfix2_slant - vfix;
+	}
+
+	CSprite2d::fpAddToBuffer(rect, RenderState->Color, u1, v1, u2, v2, u3, v3, u4, v4);
 }
 
 void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)

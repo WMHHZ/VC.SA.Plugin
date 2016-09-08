@@ -1,5 +1,5 @@
 #include "rwFunc.h"
-#include "../include/injector/injector.hpp"
+#include "../deps/injector/injector.hpp"
 
 RwGlobals **rwFunc::m_RwEngineInstance;
 RsGlobalType *rwFunc::m_RsGlobal;

@@ -4,10 +4,10 @@
 #include "rwFunc.h"
 #include "CCharTable.h"
 #include "CFont.h"
-#include "../include/injector/injector.hpp"
-#include "../include/injector/hooking.hpp"
+#include "../deps/injector/injector.hpp"
+#include "../deps/injector/hooking.hpp"
 
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 
 #include <cstring>
 

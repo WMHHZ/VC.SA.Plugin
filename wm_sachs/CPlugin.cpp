@@ -6,7 +6,7 @@
 #include "CSprite2d.h"
 #include "CScriptTextDrawer.h"
 #include "CCharTable.h"
-#include "../include/injector/hooking.hpp"
+#include "../deps/injector/hooking.hpp"
 
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")

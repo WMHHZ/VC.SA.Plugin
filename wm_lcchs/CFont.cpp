@@ -2,7 +2,7 @@
 #include "CTxdStore.h"
 #include "CCharTable.h"
 #include "rwFunc.h"
-#include "../include/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.h"
 
 char CFont::texturePath[MAX_PATH];
 char CFont::textPath[MAX_PATH];

@@ -1,5 +1,6 @@
 #pragma once
 #include "../deps/func_wrapper/func_wrapper.hpp"
+#include <rwcore.h>
 
 struct RwTexture;
 
@@ -29,7 +30,7 @@ public:
 	static thiscall_func_wrapper<void(CSprite2d *)>
 		fpDelete;
 
-	static thiscall_func_wrapper<void(const CSprite2d *,const CRect &rect, const CRGBA &color)>
+	static thiscall_func_wrapper<void(const CSprite2d *, const CRect &rect, const CRGBA &color)>
 		fpDraw;
 
 	static cdecl_func_wrapper<void(const CRect &rect, const CRGBA &color)>

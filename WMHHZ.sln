@@ -13,8 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_vcchs", "wm_vcchs\wm_vcc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF292FE0-DC73-4C7C-AD25-9814B0AA440D}"
 	ProjectSection(SolutionItems) = preProject
-		常用2500汉字.txt = 常用2500汉字.txt
-		常用3000汉字.txt = 常用3000汉字.txt
+		常用汉字.txt = 常用汉字.txt
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_lcchs", "wm_lcchs\wm_lcchs.vcxproj", "{A12E70A8-A500-4AA0-800C-7C50CD906044}"

@@ -1,5 +1,5 @@
 #include "CSprite.h"
-#include "../include/injector/injector.hpp"
+#include "../deps/injector/injector.hpp"
 
 void(__cdecl *CSprite::FlushSpriteBuffer)();
 

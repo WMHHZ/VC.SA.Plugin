@@ -1,7 +1,7 @@
 #include "CSprite2d.h"
 #include "../deps/selector/AddressSelector.h"
 
-thiscall_func_wrapper<void(CSprite2d *,const char *, const char *)>
+thiscall_func_wrapper<void(CSprite2d *, const char *, const char *)>
 CSprite2d::fpSetTexture;
 
 thiscall_func_wrapper<void(const CSprite2d *)>

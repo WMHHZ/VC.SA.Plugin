@@ -1,5 +1,6 @@
 ﻿#include "WMVC.h"
 #include "CFont.h"
+#include "CCharTable.h"
 
 #include <cstring>
 
@@ -12,17 +13,20 @@
 
 bool WMVC::CheckResourceFile(HMODULE hPlugin)
 {
-	char pluginPath[MAX_PATH];
+	char pluginPath[260];
 
-	GetModuleFileNameA(hPlugin, pluginPath, MAX_PATH);
+	GetModuleFileNameA(hPlugin, pluginPath, 260);
 	std::strcpy(CFont::fontPath, pluginPath);
 	std::strcpy(CFont::textPath, pluginPath);
-	std::strcpy(std::strrchr(CFont::fontPath, '.'), "\\wm_vcchs.ttf");
-	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
+	std::strcpy(CCharTable::datPath, pluginPath);
 
-	if (!PathFileExistsA(CFont::fontPath) || !PathFileExistsA(CFont::textPath))
+	std::strcpy(std::strrchr(CFont::fontPath, '.'), "\\wm_vcchs.txd");
+	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
+	std::strcpy(std::strrchr(CCharTable::datPath, '.'), "\\wm_vcchs.dat");
+
+	if (!PathFileExistsA(CFont::fontPath) || !PathFileExistsA(CFont::textPath) || !PathFileExistsA(CCharTable::datPath))
 	{
-		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_vcchs文件夹！", WMVERSIONWSTRING, MB_ICONWARNING);
+		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_vcchs文件夹！", WMVERSIONWSTRING, MB_ICONERROR);
 		return false;
 	}
 
@@ -35,11 +39,12 @@ bool WMVC::CheckGameVersion()
 
 	if (veref.IsVC() && (veref.GetMinorVersion() != 1))
 	{
+		CCharTable::ReadTable();
 		PatchGame();
 	}
 	else
 	{
-		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0：3088896字节\nSteam：3615744字节", WMVERSIONWSTRING, MB_ICONWARNING);
+		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0：3088896字节\nSteam：3615744字节", WMVERSIONWSTRING, MB_ICONERROR);
 		return false;
 	}
 

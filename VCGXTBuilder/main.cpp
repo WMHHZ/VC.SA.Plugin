@@ -7,6 +7,7 @@ int main()
 	if (temp.LoadText("GTAVC.txt"))
 	{
 		temp.SaveAsGXT("wm_vcchs.gxt");
+		temp.GenerateWMHHZStuff();
 	}
 
 	return 0;

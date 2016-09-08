@@ -1,5 +1,5 @@
 #include "CSprite2d.h"
-#include "../include/injector/injector.hpp"
+#include "../deps/injector/injector.hpp"
 
 void(__cdecl *CSprite2d::AddToBuffer)(CRect  const& posn, CRGBA  const& color, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4);
 void *CSprite2d::fpDelete;

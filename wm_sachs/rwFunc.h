@@ -1,5 +1,5 @@
 #pragma once
-#include "../include/func_wrapper/func_wrapper.hpp"
+#include "../deps/func_wrapper/func_wrapper.hpp"
 #include "rw/RenderWareTypes.h"
 
 class rwFunc

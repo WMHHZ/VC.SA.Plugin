@@ -83,6 +83,9 @@ static_assert(sizeof(CFontDetails) == 0x54, "CFontDetails is wrong.");
 class CFont
 {
 public:
+	static const __int16 iMaxCharWidth;
+	static const float fMaxCharWidth;
+
 	static char fontPath[];
 	static char textPath[];
 
