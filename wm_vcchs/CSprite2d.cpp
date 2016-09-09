@@ -26,7 +26,7 @@ CSprite2d::CSprite2d() :m_pRwTexture(nullptr) {}
 
 bool CSprite2d::Valid() const
 {
-	return (m_pRwTexture != nullptr);
+	return (this->m_pRwTexture != nullptr);
 }
 
 void CSprite2d::SetRwTexture(RwTexture *texture)

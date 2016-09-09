@@ -37,7 +37,7 @@ bool WMVC::CheckGameVersion()
 {
 	auto &veref = injector::address_manager::singleton();
 
-	if (veref.IsVC() && (veref.GetMinorVersion() != 1))
+	if (veref.IsVC() && (veref.IsSteam() || veref.GetMinorVersion() == 0))
 	{
 		CCharTable::ReadTable();
 		PatchGame();
@@ -97,7 +97,7 @@ void WMVC::PatchGame()
 
 	injector::WriteMemory(AddressSelectorVC::SelectAddress<0x68FD58, 0x0, 0x68ED60, float>(), 999.0f);
 
-	unsigned __int8 *SpaceAddInstr = AddressSelectorVC::SelectAddress<0x6161BB, 0x0, 0x615D50, unsigned __int8>();
+	unsigned __int8 *SpaceAddInstr = AddressSelectorVC::SelectAddress<0x6161BB, 0x0, 0x615DDB, unsigned __int8>();
 	injector::MakeNOP(SpaceAddInstr, 6);
 	injector::MakeNOP(SpaceAddInstr + 8);
 	injector::MakeNOP(SpaceAddInstr + 0x22);

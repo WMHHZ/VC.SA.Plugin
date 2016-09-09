@@ -615,7 +615,7 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 	static const float vfix = 0.001f / 4.0f;
 	static const float vfix1_slant = 0.00055f / 4.0f;
 	//static const float vfix2_slant = 0.01f / 4.0f;
-	static const float vfix2_slant = 0.007f / 4.0f;
+	static const float vfix2_slant = 0.0075f / 4.0f;
 	static const float vfix3_slant = 0.009f / 4.0f;
 
 	CRect rect;

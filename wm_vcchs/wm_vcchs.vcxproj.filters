@@ -36,9 +36,6 @@
     <ClCompile Include="WMVC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CFreeType.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\deps\selector\AddressSelector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -66,9 +63,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WMVC.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CFreeType.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\deps\selector\AddressSelector.h">
