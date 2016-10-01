@@ -1,5 +1,5 @@
 #include "CTxdStore.h"
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.hpp"
 
 void *CTxdStore::fpAddTxdSlot;
 void *CTxdStore::fpLoadTxd;

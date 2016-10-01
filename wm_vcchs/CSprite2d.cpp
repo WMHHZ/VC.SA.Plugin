@@ -1,5 +1,5 @@
 #include "CSprite2d.h"
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/asnew.hpp"
 
 thiscall_func_wrapper<void(CSprite2d *, const char *, const char *)>
 CSprite2d::fpSetTexture;
@@ -24,30 +24,15 @@ CSprite2d::fpRenderVertexBuffer;
 
 CSprite2d::CSprite2d() :m_pRwTexture(nullptr) {}
 
-bool CSprite2d::Valid() const
-{
-	return (this->m_pRwTexture != nullptr);
-}
-
-void CSprite2d::SetRwTexture(RwTexture *texture)
-{
-	if (m_pRwTexture)
-	{
-		fpDelete(this);
-	}
-
-	m_pRwTexture = texture;
-}
-
 CSprite2d::CSprite2d(int)
 {
-	fpAddToBuffer = AddressSelectorVC::SelectAddress<0x578830, 0x0, 0x578720>();
-	fpDelete = AddressSelectorVC::SelectAddress<0x578A20, 0x0, 0x578910>();
-	fpDraw = AddressSelectorVC::SelectAddress<0x578710, 0x0, 0x0>();
-	fpDrawRect = AddressSelectorVC::SelectAddress<0x577B00, 0x0, 0x5779F0>();
-	fpRenderVertexBuffer = AddressSelectorVC::SelectAddress<0x5787E0, 0x0, 0x5786D0>();
-	fpSetRenderState = AddressSelectorVC::SelectAddress<0x577B90, 0x0, 0x577A80>();
-	fpSetTexture = AddressSelectorVC::SelectAddress<0x5789B0, 0x0, 0x5788A0>();
+	fpAddToBuffer = addr_sel::vc::select_address<0x578830, 0x0, 0x578720>();
+	fpDelete = addr_sel::vc::select_address<0x578A20, 0x0, 0x578910>();
+	fpDraw = addr_sel::vc::select_address<0x578710, 0x0, 0x0>();
+	fpDrawRect = addr_sel::vc::select_address<0x577B00, 0x0, 0x5779F0>();
+	fpRenderVertexBuffer = addr_sel::vc::select_address<0x5787E0, 0x0, 0x5786D0>();
+	fpSetRenderState = addr_sel::vc::select_address<0x577B90, 0x0, 0x577A80>();
+	fpSetTexture = addr_sel::vc::select_address<0x5789B0, 0x0, 0x5788A0>();
 }
 
 static CSprite2d instance(0);

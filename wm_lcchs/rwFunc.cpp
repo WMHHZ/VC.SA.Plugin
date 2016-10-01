@@ -1,5 +1,5 @@
 #include "rwFunc.h"
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.hpp"
 
 __int32 *rwFunc::RsGlobalW;
 __int32 *rwFunc::RsGlobalH;

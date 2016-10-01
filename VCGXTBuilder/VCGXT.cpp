@@ -73,6 +73,12 @@ bool VCGXT::LoadText(const char *path)
 
 			UTF8ToUTF16(matchResult.str(2), wideLineBuffer);
 
+			if ((std::count(wideLineBuffer.begin(), wideLineBuffer.end(), '~') % 2) != 0)
+			{
+				std::cout << "Invalid token format at key: " << matchResult.str(1) << ". Skipped." << '\n';
+				continue;
+			}
+
 			if (tableIt->second.emplace(matchResult.str(1), wideLineBuffer).second)
 			{
 				for (uint16_t chr : wideLineBuffer)
@@ -128,7 +134,7 @@ void VCGXT::SaveAsGXT(const char *path)
 		keyBlockSize = table.second.size() * SizeOfTKEY;
 		dataBlockSize = GetDataBlockSize(table.second);
 
-		memset(eightChars, 0, 8);
+		std::memset(eightChars, 0, 8);
 		table.first.copy(eightChars, 7);
 		std::fseek(outputFile, foTableBlock, SEEK_SET);
 		std::fwrite(eightChars, 1, 8, outputFile);
@@ -155,7 +161,7 @@ void VCGXT::SaveAsGXT(const char *path)
 		{
 			foDataBlock = ftell(outputFile);
 
-			memset(eightChars, 0, 8);
+			std::memset(eightChars, 0, 8);
 			entry.first.copy(eightChars, 7);
 			TDATOffset = foDataBlock - firstTDATEntryOffset;
 			std::fseek(outputFile, foKeyBlock, SEEK_SET);

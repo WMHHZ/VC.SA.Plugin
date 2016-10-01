@@ -1,6 +1,5 @@
 #pragma once
 #include "../deps/func_wrapper/func_wrapper.hpp"
-#include <rwcore.h>
 
 struct RwTexture;
 
@@ -9,16 +8,14 @@ class CRGBA;
 
 class CSprite2d
 {
-	RwTexture *m_pRwTexture;
-
 	CSprite2d(const CSprite2d &);
 	CSprite2d &operator=(const CSprite2d &);
 
 public:
+	RwTexture *m_pRwTexture;
+
 	CSprite2d();
 	explicit CSprite2d(int);
-	bool Valid() const;
-	void SetRwTexture(RwTexture *texture);
 
 public:
 	static thiscall_func_wrapper<void(CSprite2d *, const char *, const char *)>

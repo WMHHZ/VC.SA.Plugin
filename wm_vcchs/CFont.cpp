@@ -4,7 +4,10 @@
 #include "rwFunc.h"
 #include "CTxdStore.h"
 #include "CCharTable.h"
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/asnew.hpp"
+
+#include <string>
+#include <sstream>
 
 const __int16 CFont::iMaxCharWidth = 28;
 const float CFont::fMaxCharWidth = CFont::iMaxCharWidth;
@@ -16,8 +19,11 @@ CFontSizes *CFont::Size;
 FontBufferPointer CFont::FontBuffer;
 FontBufferPointer *CFont::FontBufferIter;
 CFontRenderState *CFont::RenderState;
-CSprite2d *CFont::Sprite;
 CFontDetails *CFont::Details;
+
+CSprite2d *CFont::Sprite;
+CSprite2d CFont::ChsSprite;
+CSprite2d CFont::ChsSlantSprite;
 
 cdecl_func_wrapper<CharType(CharType arg_char)>
 CFont::fpFindNewCharacter;
@@ -37,20 +43,43 @@ CFont::fpPrintStringPart;
 void CFont::LoadCHSFont()
 {
 	CTxdStore::fpPopCurrentTxd();
-	CTxdStore::fpPopCurrentTxd();
 	int slot = CTxdStore::fpAddTxdSlot("wm_vcchs");
 	CTxdStore::fpLoadTxd(slot, fontPath);
 	CTxdStore::fpAddRef(slot);
 	CTxdStore::fpPushCurrentTxd();
 	CTxdStore::fpSetCurrentTxd(slot);
-	CSprite2d::fpSetTexture(&CFont::Sprite[2], "chs", "chs_mask");
+	CSprite2d::fpSetTexture(&ChsSprite, "normal", "normalm");
+	CSprite2d::fpSetTexture(&ChsSlantSprite, "slant", "slantm");
 	CTxdStore::fpPopCurrentTxd();
+
+	RwRaster *fontraster = ChsSprite.m_pRwTexture->raster;
+
+	DWORD *pCapsMaxTextureWidthHeight = addr_sel::vc::select_address<DWORD>({ 0x975290, 0x0, 0x974298 });
+
+	if (pCapsMaxTextureWidthHeight[0] < fontraster->width ||
+		pCapsMaxTextureWidthHeight[1] < fontraster->height)
+	{
+		std::wstring waringtext;
+		std::wstringstream wsstream;
+
+		waringtext = L"你的显卡最大只支持";
+		wsstream << pCapsMaxTextureWidthHeight[0];
+		waringtext += wsstream.str();
+		waringtext += L'x';
+		wsstream.str(L"");
+		wsstream << pCapsMaxTextureWidthHeight[1];
+		waringtext += wsstream.str();
+		waringtext += L"的字库贴图！";
+
+		MessageBoxW(NULL, waringtext.c_str(), L"警告", MB_ICONWARNING);
+	}
 }
 
 void CFont::UnloadCHSFont(int dummy)
 {
 	CTxdStore::fpRemoveTxdSlot(dummy);
-	CSprite2d::fpDelete(&CFont::Sprite[2]);
+	CSprite2d::fpDelete(&ChsSprite);
+	CSprite2d::fpDelete(&ChsSlantSprite);
 	CTxdStore::fpRemoveTxdSlot(CTxdStore::fpFindTxdSlot("wm_vcchs"));
 }
 
@@ -60,60 +89,7 @@ float CFont::GetCharacterSize(CharType arg_char, __int16 nFontStyle, bool bBaseC
 
 	if (arg_char >= 0x80)
 	{
-	/*	switch (arg_char)
-		{
-		case L'·':
-			charWidth = 24;
-			break;
-		case L'—':
-			charWidth = 32;
-			break;
-		case L'“':
-			charWidth = 16;
-			break;
-		case L'”':
-			charWidth = 16;
-			break;
-		case L'…':
-			charWidth = 24;
-			break;
-		case L'←':
-			charWidth = 24;
-			break;
-		case L'→':
-			charWidth = 24;
-			break;
-		case L'。':
-			charWidth = 14;
-			break;
-		case L'！':
-			charWidth = 10;
-			break;
-		case L'（':
-			charWidth = 16;
-			break;
-		case L'）':
-			charWidth = 16;
-			break;
-		case L'，':
-			charWidth = 12;
-			break;
-		case L'／':
-			charWidth = 18;
-			break;
-		case L'：':
-			charWidth = 10;
-			break;
-		case L'？':
-			charWidth = 18;
-			break;
-
-		default:
-			charWidth = iMaxCharWidth;
-			break;
-		}*/
-
-		charWidth = iMaxCharWidth + 2;
+		charWidth = iMaxCharWidth + 1;
 	}
 	else
 	{
@@ -516,7 +492,7 @@ void CFont::RenderFontBuffer()
 		{
 			++pbuffer.ptext;
 
-			if (((pbuffer.addr) & 3) != 0)
+			if ((pbuffer.addr & 3) != 0)
 			{
 				++pbuffer.ptext;
 			}
@@ -526,7 +502,7 @@ void CFont::RenderFontBuffer()
 				break;
 			}
 
-			*RenderState = *(pbuffer.pdata);
+			*RenderState = *pbuffer.pdata;
 
 			var_14 = RenderState->Color;
 
@@ -576,7 +552,14 @@ void CFont::RenderFontBuffer()
 		}
 		else
 		{
-			CSprite2d::fpSetRenderState(&Sprite[2]);
+			if (RenderState->Slant == 0.0f)
+			{
+				CSprite2d::fpSetRenderState(&ChsSprite);
+			}
+			else
+			{
+				CSprite2d::fpSetRenderState(&ChsSlantSprite);
+			}
 		}
 
 		rwFunc::fpRwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
@@ -600,14 +583,15 @@ void CFont::RenderFontBuffer()
 		}
 	
 		++pbuffer.ptext;
-	}	
+	}
 
 	FontBufferIter->addr = FontBuffer.addr;
+
+
 }
 
 void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 {
-	//static const float rRowsCount = 1.0f / 51.2f;
 	static const float rRowsCount = 1.0f / 64.0f;
 	static const float rColumnsCount = 1.0f / 64.0f;
 	static const float ufix = 0.001f / 4.0f;
@@ -615,7 +599,7 @@ void CFont::PrintCHSChar(float arg_x, float arg_y, CharType arg_char)
 	static const float vfix = 0.001f / 4.0f;
 	static const float vfix1_slant = 0.00055f / 4.0f;
 	//static const float vfix2_slant = 0.01f / 4.0f;
-	static const float vfix2_slant = 0.0075f / 4.0f;
+	static const float vfix2_slant = 0.007f / 4.0f;
 	static const float vfix3_slant = 0.009f / 4.0f;
 
 	CRect rect;
@@ -693,20 +677,25 @@ void CFont::PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
 	}
 }
 
+void CFont::DisableSlant(float slant)
+{
+	Details->Slant = 0.0f;
+}
+
 CFont::CFont()
 {
-	Size = AddressSelectorVC::SelectAddress<0x696BD8, 0x0, 0x695BE0, CFontSizes>();
-	FontBufferIter = AddressSelectorVC::SelectAddress<0x70975C, 0x0, 0x70875C, FontBufferPointer>();
-	FontBuffer.pdata = AddressSelectorVC::SelectAddress<0x70935C, 0x0, 0x70835C, CFontRenderState>();
-	RenderState = AddressSelectorVC::SelectAddress<0x94B8F8, 0x0, 0x94A900, CFontRenderState>();
-	Sprite = AddressSelectorVC::SelectAddress<0xA108B4, 0x0, 0xA0F8BC, CSprite2d>();
-	Details = AddressSelectorVC::SelectAddress<0x97F820, 0x0, 0x97E828, CFontDetails>();
+	Size = addr_sel::vc::select_address<0x696BD8, 0x0, 0x695BE0, CFontSizes>();
+	FontBufferIter = addr_sel::vc::select_address<0x70975C, 0x0, 0x70875C, FontBufferPointer>();
+	FontBuffer.pdata = addr_sel::vc::select_address<0x70935C, 0x0, 0x70835C, CFontRenderState>();
+	RenderState = addr_sel::vc::select_address<0x94B8F8, 0x0, 0x94A900, CFontRenderState>();
+	Sprite = addr_sel::vc::select_address<0xA108B4, 0x0, 0xA0F8BC, CSprite2d>();
+	Details = addr_sel::vc::select_address<0x97F820, 0x0, 0x97E828, CFontDetails>();
 	
-	fpFindNewCharacter = AddressSelectorVC::SelectAddress<0x54FE70, 0x0, 0x54FD60>();
-	fpParseTokenEPt = AddressSelectorVC::SelectAddress<0x5502D0, 0x0, 0x5501C0>();
-	fpParseTokenEPtR5CRGBARbRb = AddressSelectorVC::SelectAddress<0x550510, 0x0, 0x550400>();
-	fpPrintStringPart = AddressSelectorVC::SelectAddress<0x5516C0, 0x0, 0x5515B0>();
-	fpPrintChar = AddressSelectorVC::SelectAddress<0x551E70, 0x0, 0x551D60>();
+	fpFindNewCharacter = addr_sel::vc::select_address<0x54FE70, 0x0, 0x54FD60>();
+	fpParseTokenEPt = addr_sel::vc::select_address<0x5502D0, 0x0, 0x5501C0>();
+	fpParseTokenEPtR5CRGBARbRb = addr_sel::vc::select_address<0x550510, 0x0, 0x550400>();
+	fpPrintStringPart = addr_sel::vc::select_address<0x5516C0, 0x0, 0x5515B0>();
+	fpPrintChar = addr_sel::vc::select_address<0x551E70, 0x0, 0x551D60>();
 }
 
 static CFont instance;

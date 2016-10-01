@@ -7,7 +7,7 @@
 #include "../deps/injector/injector.hpp"
 #include "../deps/injector/hooking.hpp"
 
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.hpp"
 
 #include <cstring>
 

@@ -1,11 +1,10 @@
 #pragma once
 
 #include "game.h"
+#include "CSprite2d.h"
 #include "../deps/func_wrapper/func_wrapper.hpp"
 
 typedef unsigned __int16 CharType;
-
-class CSprite2d;
 
 struct CFontSizes
 {
@@ -96,6 +95,8 @@ public:
 	static CFontRenderState *RenderState;
 
 	static CSprite2d *Sprite;
+	static CSprite2d ChsSprite;
+	static CSprite2d ChsSlantSprite;
 
 	static CFontDetails *Details;
 
@@ -128,6 +129,15 @@ public:
 	static void __cdecl RenderFontBuffer();
 	static void PrintCHSChar(float arg_x, float arg_y, CharType arg_char);
 	static void PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char);
+
+	template <unsigned i100xScale>
+	static void __cdecl SetScaleHacked(float scalex, float scaley)
+	{
+		Details->Scale.x = scaley / i100xScale / 100;
+		Details->Scale.y = scaley;
+	}
+
+	static void __cdecl DisableSlant(float slant);
 
 	static void __cdecl LoadCHSFont();
 	static void __cdecl UnloadCHSFont(int dummy);

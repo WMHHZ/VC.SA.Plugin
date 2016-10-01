@@ -1,6 +1,6 @@
 #include "CSprite2d.h"
 #include "rwFunc.h"
-#include "../deps/selector/AddressSelector.h"
+#include "../deps/selector/AddressSelector.hpp"
 
 void *CSprite2d::fpSetTexture;
 void *CSprite2d::fpDelete;
