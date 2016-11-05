@@ -53,6 +53,8 @@ bool VCGXT::LoadText(const char *path)
 		return false;
 	}
 
+	skip_utf8_signature(inputFile);
+
 	while (std::getline(inputFile, lineBuffer))
 	{
 		if (lineBuffer.empty() || lineBuffer.front() == ';')
@@ -245,4 +247,21 @@ void VCGXT::UTF8ToUTF16(const std::string &str, std::vector<uint16_t> &result)
 	result.resize(wstr.length() + 1);
 	std::copy(wstr.begin(), wstr.end(), result.begin());
 	result.back() = 0;
+}
+
+void VCGXT::skip_utf8_signature(std::ifstream &stream)
+{
+	char header[3];
+
+	stream.seekg(0);
+
+	if (stream.get(header[0]) && stream.get(header[1]) && stream.get(header[2]))
+	{
+		if (header[0] == '\xEF' && header[1] == '\xBB' && header[2] == '\xBF')
+		{
+			return;
+		}
+	}
+
+	stream.seekg(0);
 }

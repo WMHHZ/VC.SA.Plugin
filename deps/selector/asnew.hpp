@@ -9,23 +9,22 @@ namespace addr_sel
 {
 	template <::std::uintptr_t... addresses>
 	struct addresses_list
-	{};
+	{
+		static_assert(sizeof...(addresses) > 0, "Empty list is not allowed.");
+	};
 
 	template <typename>
 	struct is_addresses_list : ::std::false_type 
-	{};
-
-	template <>
-	struct is_addresses_list<addresses_list<> > : ::std::false_type
 	{};
 
 	template<::std::uintptr_t... addresses>
 	struct is_addresses_list<addresses_list<addresses...> > : ::std::true_type
 	{};
 
-	static bool list_contains_address(::std::uintptr_t address, addresses_list<>)
+	template <::std::uintptr_t last>
+	static bool list_contains_address(::std::uintptr_t address, addresses_list<last>)
 	{
-		return false;
+		return (address == last);
 	}
 
 	template <::std::uintptr_t first, ::std::uintptr_t... rest>
@@ -118,5 +117,7 @@ namespace addr_sel
 		}
 	};
 
+	typedef address_selector<addresses_list<0x5C1E70>, addresses_list<0x5C2130>, addresses_list<0x9912ED, 0x5C6FD0> > lc;
 	typedef address_selector<addresses_list<0x667BF0>, addresses_list<0x667C40>, addresses_list<0xA402ED, 0x666BA0> > vc;
+	typedef address_selector<addresses_list<0x82457C, 0x824570>, addresses_list<0x8252FC>, addresses_list<0x858EA8> > saus;
 }

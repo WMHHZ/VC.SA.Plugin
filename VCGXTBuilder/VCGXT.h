@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <iosfwd>
 
 struct TableSortMethod
 {
@@ -37,6 +38,8 @@ public:
 	VCGXT();
 
 private:
+	void skip_utf8_signature(std::ifstream &stream);
+
 	static inline void UTF8ToUTF16(const std::string &, std::vector<uint16_t> &);
 
 	static size_t GetDataBlockSize(const std::map<std::string, std::vector<uint16_t> > &);

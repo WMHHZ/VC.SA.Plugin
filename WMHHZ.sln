@@ -20,8 +20,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_lcchs", "wm_lcchs\wm_lcc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LCGXTBuilder", "LCGXTBuilder\LCGXTBuilder.vcxproj", "{C12A44F7-041A-4C22-8AC5-31673698FBA4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_ivchs", "wm_ivchs\wm_ivchs.vcxproj", "{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -128,22 +126,6 @@ Global
 		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.RelWithDebInfo|x64.Build.0 = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Debug|Win32.Build.0 = Debug|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Debug|x64.ActiveCfg = Debug|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Debug|x64.Build.0 = Debug|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.MinSizeRel|Win32.ActiveCfg = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.MinSizeRel|Win32.Build.0 = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.MinSizeRel|x64.ActiveCfg = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.MinSizeRel|x64.Build.0 = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Release|Win32.ActiveCfg = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Release|Win32.Build.0 = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Release|x64.ActiveCfg = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.Release|x64.Build.0 = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.RelWithDebInfo|Win32.Build.0 = Release|Win32
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.RelWithDebInfo|x64.ActiveCfg = Release|x64
-		{4DC6155B-BD88-417C-9E18-DB2A04F3EED4}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

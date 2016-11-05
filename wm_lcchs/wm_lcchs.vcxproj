@@ -149,7 +149,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\selector\AddressSelector.cpp" />
     <ClCompile Include="CCharTable.cpp" />
     <ClCompile Include="CFont.cpp" />
     <ClCompile Include="CSprite2d.cpp" />
@@ -159,7 +158,6 @@
     <ClCompile Include="WMLC.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\selector\AddressSelector.h" />
     <ClInclude Include="CCharTable.h" />
     <ClInclude Include="CFont.h" />
     <ClInclude Include="CSprite2d.h" />

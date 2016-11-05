@@ -54,20 +54,20 @@ void CFont::LoadCHSFont()
 
 	RwRaster *fontraster = ChsSprite.m_pRwTexture->raster;
 
-	DWORD *pCapsMaxTextureWidthHeight = addr_sel::vc::select_address<DWORD>({ 0x975290, 0x0, 0x974298 });
+	DWORD *pCapsMaxTextureWidth = addr_sel::vc::select_address<DWORD>({ 0x975290, 0x0, 0x974298 });
 
-	if (pCapsMaxTextureWidthHeight[0] < fontraster->width ||
-		pCapsMaxTextureWidthHeight[1] < fontraster->height)
+	if (pCapsMaxTextureWidth[0] < fontraster->width ||
+		pCapsMaxTextureWidth[1] < fontraster->height)
 	{
 		std::wstring waringtext;
 		std::wstringstream wsstream;
 
 		waringtext = L"你的显卡最大只支持";
-		wsstream << pCapsMaxTextureWidthHeight[0];
+		wsstream << pCapsMaxTextureWidth[0];
 		waringtext += wsstream.str();
 		waringtext += L'x';
 		wsstream.str(L"");
-		wsstream << pCapsMaxTextureWidthHeight[1];
+		wsstream << pCapsMaxTextureWidth[1];
 		waringtext += wsstream.str();
 		waringtext += L"的字库贴图！";
 
@@ -684,18 +684,18 @@ void CFont::DisableSlant(float slant)
 
 CFont::CFont()
 {
-	Size = addr_sel::vc::select_address<0x696BD8, 0x0, 0x695BE0, CFontSizes>();
-	FontBufferIter = addr_sel::vc::select_address<0x70975C, 0x0, 0x70875C, FontBufferPointer>();
-	FontBuffer.pdata = addr_sel::vc::select_address<0x70935C, 0x0, 0x70835C, CFontRenderState>();
-	RenderState = addr_sel::vc::select_address<0x94B8F8, 0x0, 0x94A900, CFontRenderState>();
-	Sprite = addr_sel::vc::select_address<0xA108B4, 0x0, 0xA0F8BC, CSprite2d>();
-	Details = addr_sel::vc::select_address<0x97F820, 0x0, 0x97E828, CFontDetails>();
+	Size = addr_sel::vc::select_address<CFontSizes>({0x696BD8, 0x0, 0x695BE0});
+	FontBufferIter = addr_sel::vc::select_address<FontBufferPointer>({0x70975C, 0x0, 0x70875C});
+	FontBuffer.pdata = addr_sel::vc::select_address<CFontRenderState>({0x70935C, 0x0, 0x70835C, });
+	RenderState = addr_sel::vc::select_address<CFontRenderState>({0x94B8F8, 0x0, 0x94A900});
+	Sprite = addr_sel::vc::select_address<CSprite2d>({0xA108B4, 0x0, 0xA0F8BC});
+	Details = addr_sel::vc::select_address<CFontDetails>({0x97F820, 0x0, 0x97E828});
 	
-	fpFindNewCharacter = addr_sel::vc::select_address<0x54FE70, 0x0, 0x54FD60>();
-	fpParseTokenEPt = addr_sel::vc::select_address<0x5502D0, 0x0, 0x5501C0>();
-	fpParseTokenEPtR5CRGBARbRb = addr_sel::vc::select_address<0x550510, 0x0, 0x550400>();
-	fpPrintStringPart = addr_sel::vc::select_address<0x5516C0, 0x0, 0x5515B0>();
-	fpPrintChar = addr_sel::vc::select_address<0x551E70, 0x0, 0x551D60>();
+	fpFindNewCharacter = addr_sel::vc::select_address({0x54FE70, 0x0, 0x54FD60});
+	fpParseTokenEPt = addr_sel::vc::select_address({0x5502D0, 0x0, 0x5501C0});
+	fpParseTokenEPtR5CRGBARbRb = addr_sel::vc::select_address({0x550510, 0x0, 0x550400});
+	fpPrintStringPart = addr_sel::vc::select_address({0x5516C0, 0x0, 0x5515B0});
+	fpPrintChar = addr_sel::vc::select_address({0x551E70, 0x0, 0x551D60});
 }
 
 static CFont instance;

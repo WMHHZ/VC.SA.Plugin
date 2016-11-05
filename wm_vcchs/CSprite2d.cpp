@@ -26,13 +26,13 @@ CSprite2d::CSprite2d() :m_pRwTexture(nullptr) {}
 
 CSprite2d::CSprite2d(int)
 {
-	fpAddToBuffer = addr_sel::vc::select_address<0x578830, 0x0, 0x578720>();
-	fpDelete = addr_sel::vc::select_address<0x578A20, 0x0, 0x578910>();
-	fpDraw = addr_sel::vc::select_address<0x578710, 0x0, 0x0>();
-	fpDrawRect = addr_sel::vc::select_address<0x577B00, 0x0, 0x5779F0>();
-	fpRenderVertexBuffer = addr_sel::vc::select_address<0x5787E0, 0x0, 0x5786D0>();
-	fpSetRenderState = addr_sel::vc::select_address<0x577B90, 0x0, 0x577A80>();
-	fpSetTexture = addr_sel::vc::select_address<0x5789B0, 0x0, 0x5788A0>();
+	fpAddToBuffer = addr_sel::vc::select_address({0x578830, 0x0, 0x578720});
+	fpDelete = addr_sel::vc::select_address({0x578A20, 0x0, 0x578910});
+	fpDraw = addr_sel::vc::select_address({0x578710, 0x0, 0x0});
+	fpDrawRect = addr_sel::vc::select_address({0x577B00, 0x0, 0x5779F0});
+	fpRenderVertexBuffer = addr_sel::vc::select_address({0x5787E0, 0x0, 0x5786D0});
+	fpSetRenderState = addr_sel::vc::select_address({0x577B90, 0x0, 0x577A80});
+	fpSetTexture = addr_sel::vc::select_address({0x5789B0, 0x0, 0x5788A0});
 }
 
 static CSprite2d instance(0);

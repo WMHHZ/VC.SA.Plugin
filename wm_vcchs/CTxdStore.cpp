@@ -27,14 +27,14 @@ CTxdStore::fpRemoveTxdSlot;
 
 CTxdStore::CTxdStore()
 {
-	fpAddTxdSlot = addr_sel::vc::select_address<0x580F00, 0x0, 0x580D30>();
-	fpLoadTxd = addr_sel::vc::select_address<0x580CD0, 0x0, 0x580B00>();
-	fpAddRef = addr_sel::vc::select_address<0x580A60, 0x0, 0x580890>();
-	fpPushCurrentTxd = addr_sel::vc::select_address<0x580AC0, 0x0, 0x5808F0>();
-	fpPopCurrentTxd = addr_sel::vc::select_address<0x580AA0, 0x0, 0x5808D0>();
-	fpSetCurrentTxd = addr_sel::vc::select_address<0x580AD0, 0x0, 0x580900>();
-	fpFindTxdSlot = addr_sel::vc::select_address<0x580D70, 0x0, 0x580BA0>();
-	fpRemoveTxdSlot = addr_sel::vc::select_address<0x580E90, 0x0, 0x580CC0>();
+	fpAddTxdSlot = addr_sel::vc::select_address({0x580F00, 0x0, 0x580D30});
+	fpLoadTxd = addr_sel::vc::select_address({0x580CD0, 0x0, 0x580B00});
+	fpAddRef = addr_sel::vc::select_address({0x580A60, 0x0, 0x580890});
+	fpPushCurrentTxd = addr_sel::vc::select_address({0x580AC0, 0x0, 0x5808F0});
+	fpPopCurrentTxd = addr_sel::vc::select_address({0x580AA0, 0x0, 0x5808D0});
+	fpSetCurrentTxd = addr_sel::vc::select_address({0x580AD0, 0x0, 0x580900});
+	fpFindTxdSlot = addr_sel::vc::select_address({0x580D70, 0x0, 0x580BA0});
+	fpRemoveTxdSlot = addr_sel::vc::select_address({0x580E90, 0x0, 0x580CC0});
 }
 
 static CTxdStore instance;
