@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "../deps/func_wrapper/func_wrapper.hpp"
-#include <rwcore.h>
+#include "../deps/selector/asnew.hpp"
+#include "rw/rwcore.h"
 
 class rwFunc
 {

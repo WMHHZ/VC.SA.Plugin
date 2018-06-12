@@ -1,5 +1,4 @@
-#include "CTxdStore.h"
-#include "../deps/selector/asnew.hpp"
+﻿#include "CTxdStore.h"
 
 cdecl_func_wrapper<int(const char *name)>
 CTxdStore::fpAddTxdSlot;

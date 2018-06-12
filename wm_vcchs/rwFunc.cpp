@@ -1,5 +1,4 @@
-#include "rwFunc.h"
-#include "../deps/selector/asnew.hpp"
+﻿#include "rwFunc.h"
 
 __int32 *rwFunc::RsGlobalW;
 __int32 *rwFunc::RsGlobalH;

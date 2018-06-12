@@ -44,7 +44,7 @@ namespace injector
         // Call function at @p returning @Ret with args @Args
         static Ret call(memory_pointer_tr p, Args... a)
         {
-            auto fn = (Ret(__cdecl *)(Args...)) p.get<void>();
+            auto fn = (Ret(*)(Args...)) p.get<void>();
             return fn(std::forward<Args>(a)...);
         }
 

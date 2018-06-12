@@ -30,29 +30,29 @@
 #include <cstdio>
 #include "gvm/gvm.hpp"
 /*
-	The following macros (#define) are relevant on this header:
+    The following macros (#define) are relevant on this header:
 
-	INJECTOR_GVM_HAS_TRANSLATOR
-		If defined, the user should provide their own address_manager::translator function.
-		That function is responssible for translating a void pointer (that mayn't be an actual pointer) into an actual address.
-		The meaning of that void pointer will be made by YOU when you send it to the functions that receive pointers on this library.
-		The default translator does nothing but returns that void pointer as the address.
+    INJECTOR_GVM_HAS_TRANSLATOR
+        If defined, the user should provide their own address_manager::translator function.
+        That function is responssible for translating a void pointer (that mayn't be an actual pointer) into an actual address.
+        The meaning of that void pointer will be made by YOU when you send it to the functions that receive pointers on this library.
+        The default translator does nothing but returns that void pointer as the address.
 
-	INJECTOR_GVM_OWN_DETECT
-		If defined,  the user should provide it's own game detection function thought game_version_manager::Detect
-		By default it provide an good detection for the Grand Theft Auto series.
+    INJECTOR_GVM_OWN_DETECT
+        If defined,  the user should provide it's own game detection function thought game_version_manager::Detect
+        By default it provide an good detection for the Grand Theft Auto series.
 
-	INJECTOR_GVM_PLUGIN_NAME
-		If this is defined, it will be used as the plugin name used at error messages.
-		By default it will use ""Unknown Plugin Name"
+    INJECTOR_GVM_PLUGIN_NAME
+        If this is defined, it will be used as the plugin name used at error messages.
+        By default it will use ""Unknown Plugin Name"
 
-	INJECTOR_GVM_DUMMY
-		If defined, the game_version_manager will be a dummy object
-		By default it provides a nice gvm for Grand Theft Auto series
-		
-	INJECTOR_OWN_GVM
-		If defined, the game_version_manager should be implemented by the user before including this library.
-		By default it provides a nice gvm for Grand Theft Auto series
+    INJECTOR_GVM_DUMMY
+        If defined, the game_version_manager will be a dummy object
+        By default it provides a nice gvm for Grand Theft Auto series
+        
+    INJECTOR_OWN_GVM
+        If defined, the game_version_manager should be implemented by the user before including this library.
+        By default it provides a nice gvm for Grand Theft Auto series
 */
 #include "gvm/gvm.hpp"
 
@@ -68,31 +68,31 @@ namespace injector
  */
 union auto_pointer
 {
-	protected:
-		friend union memory_pointer_tr;
-		template<class T> friend union basic_memory_pointer;
-		
-		void*	 p;
-		uintptr_t a;
+    protected:
+        friend union memory_pointer_tr;
+        template<class T> friend union basic_memory_pointer;
+        
+        void*	 p;
+        uintptr_t a;
 
-	public:
-		auto_pointer() : p(0)                          {}
-		auto_pointer(const auto_pointer& x) : p(x.p)  {}
-		explicit auto_pointer(void* x)    : p(x)       {}
-		explicit auto_pointer(uint32_t x) : a(x)       {}
+    public:
+        auto_pointer() : p(0)                          {}
+        auto_pointer(const auto_pointer& x) : p(x.p)  {}
+        explicit auto_pointer(void* x)    : p(x)       {}
+        explicit auto_pointer(uint32_t x) : a(x)       {}
 
-		bool is_null() const { return this->p != nullptr; }
+        bool is_null() const { return this->p != nullptr; }
 
-	#if __cplusplus >= 201103L || _MSC_VER >= 1800
-		explicit operator bool() const { return is_null(); }
-	#endif
+    #if __cplusplus >= 201103L || _MSC_VER >= 1800
+        explicit operator bool() const { return is_null(); }
+    #endif
 
-		auto_pointer get() const               { return *this; }
-		template<class T> T* get() const       { return (T*) this->p; }
-		template<class T> T* get_raw() const   { return (T*) this->p; }
+        auto_pointer get() const               { return *this; }
+        template<class T> T* get() const       { return (T*) this->p; }
+        template<class T> T* get_raw() const   { return (T*) this->p; }
 
-		template<class T>
-		operator T*() const { return reinterpret_cast<T*>(p); }
+        template<class T>
+        operator T*() const { return reinterpret_cast<T*>(p); }
 };
 
 /*
@@ -103,89 +103,89 @@ union auto_pointer
 template<class MemTranslator>
 union basic_memory_pointer
 {
-	protected:
-		void*	  p;
-		uintptr_t a;
-		
-		// Translates address p to the running executable pointer
-		static auto_pointer memory_translate(void* p)
-		{
-			return auto_pointer(MemTranslator()(p));
-		}
+    protected:
+        void*	  p;
+        uintptr_t a;
+        
+        // Translates address p to the running executable pointer
+        static auto_pointer memory_translate(void* p)
+        {
+            return auto_pointer(MemTranslator()(p));
+        }
 
-	public:
-		basic_memory_pointer()                      : p(nullptr)    {}
-		basic_memory_pointer(std::nullptr_t)        : p(nullptr)    {}
-		basic_memory_pointer(uintptr_t x)           : a(x)          {}
-		basic_memory_pointer(const auto_pointer& x) : p(x.p)        {}
-		basic_memory_pointer(const basic_memory_pointer& rhs) : p(rhs.p)  {}
+    public:
+        basic_memory_pointer()                      : p(nullptr)    {}
+        basic_memory_pointer(std::nullptr_t)        : p(nullptr)    {}
+        basic_memory_pointer(uintptr_t x)           : a(x)          {}
+        basic_memory_pointer(const auto_pointer& x) : p(x.p)        {}
+        basic_memory_pointer(const basic_memory_pointer& rhs) : p(rhs.p)  {}
 
-		template<class T>
-		basic_memory_pointer(T* x) : p((void*)x) {}
+        template<class T>
+        basic_memory_pointer(T* x) : p((void*)x) {}
 
-		
+        
 
-		
-		// Gets the translated pointer (plus automatic casting to lhs)
-		auto_pointer get() const               { return memory_translate(p); }
-		
-		// Gets the translated pointer (casted to T*)
-		template<class T> T* get() const        { return get(); }
-		
-		// Gets the raw pointer, without translation (casted to T*)
-		template<class T> T* get_raw() const    { return auto_pointer(p); }
-		
-		// This type can get assigned from void* and uintptr_t
-		basic_memory_pointer& operator=(void* x)		{ return p = x, *this; }
-		basic_memory_pointer& operator=(uintptr_t x)	{ return a = x, *this; }
-		
-		/* Arithmetic */
-		basic_memory_pointer operator+(const basic_memory_pointer& rhs) const
-		{ return basic_memory_pointer(this->a + rhs.a); }
-		
-		basic_memory_pointer operator-(const basic_memory_pointer& rhs) const
-		{ return basic_memory_pointer(this->a - rhs.a); }
-		
-		basic_memory_pointer operator*(const basic_memory_pointer& rhs) const
-		{ return basic_memory_pointer(this->a * rhs.a); }
-		
-		basic_memory_pointer operator/(const basic_memory_pointer& rhs) const
-		{ return basic_memory_pointer(this->a / rhs.a); }
-		
-		
-		/* Comparision */
-		bool operator==(const basic_memory_pointer& rhs) const
-		{ return this->a == rhs.a; }
-		
-		bool operator!=(const basic_memory_pointer& rhs) const
-		{ return this->a != rhs.a; }
-		
-		bool operator<(const basic_memory_pointer& rhs) const
-		{ return this->a < rhs.a; }
-		
-		bool operator<=(const basic_memory_pointer& rhs) const
-		{ return this->a <= rhs.a; }
-		
-		bool operator>(const basic_memory_pointer& rhs) const
-		{ return this->a > rhs.a; }
-		
-		bool operator>=(const basic_memory_pointer& rhs) const
-		{ return this->a >=rhs.a; }
-		
-		bool is_null() const      { return this->p == nullptr; }
-		uintptr_t as_int() const  { return this->a; }	// does not perform translation
+        
+        // Gets the translated pointer (plus automatic casting to lhs)
+        auto_pointer get() const               { return memory_translate(p); }
+        
+        // Gets the translated pointer (casted to T*)
+        template<class T> T* get() const        { return get(); }
+        
+        // Gets the raw pointer, without translation (casted to T*)
+        template<class T> T* get_raw() const    { return auto_pointer(p); }
+        
+        // This type can get assigned from void* and uintptr_t
+        basic_memory_pointer& operator=(void* x)		{ return p = x, *this; }
+        basic_memory_pointer& operator=(uintptr_t x)	{ return a = x, *this; }
+        
+        /* Arithmetic */
+        basic_memory_pointer operator+(const basic_memory_pointer& rhs) const
+        { return basic_memory_pointer(this->a + rhs.a); }
+        
+        basic_memory_pointer operator-(const basic_memory_pointer& rhs) const
+        { return basic_memory_pointer(this->a - rhs.a); }
+        
+        basic_memory_pointer operator*(const basic_memory_pointer& rhs) const
+        { return basic_memory_pointer(this->a * rhs.a); }
+        
+        basic_memory_pointer operator/(const basic_memory_pointer& rhs) const
+        { return basic_memory_pointer(this->a / rhs.a); }
+        
+        
+        /* Comparision */
+        bool operator==(const basic_memory_pointer& rhs) const
+        { return this->a == rhs.a; }
+        
+        bool operator!=(const basic_memory_pointer& rhs) const
+        { return this->a != rhs.a; }
+        
+        bool operator<(const basic_memory_pointer& rhs) const
+        { return this->a < rhs.a; }
+        
+        bool operator<=(const basic_memory_pointer& rhs) const
+        { return this->a <= rhs.a; }
+        
+        bool operator>(const basic_memory_pointer& rhs) const
+        { return this->a > rhs.a; }
+        
+        bool operator>=(const basic_memory_pointer& rhs) const
+        { return this->a >=rhs.a; }
+        
+        bool is_null() const      { return this->p == nullptr; }
+        uintptr_t as_int() const  { return this->a; }	// does not perform translation
 
 
 
 #if __cplusplus >= 201103L || _MSC_VER >= 1800  // MSVC 2013
-		/* Conversion to other types */
-		explicit operator uintptr_t() const
-		{ return this->a; }	// does not perform translation
-		explicit operator bool() const
-		{ return this->p != nullptr; }
+        /* Conversion to other types */
+        explicit operator uintptr_t() const
+        { return this->a; }	// does not perform translation
+        explicit operator bool() const
+        { return this->p != nullptr; }
 #else
-		//operator bool() -------------- Causes casting problems because of implicitness, use !is_null()
-		//{ return this->p != nullptr; }
+        //operator bool() -------------- Causes casting problems because of implicitness, use !is_null()
+        //{ return this->p != nullptr; }
 #endif
 
 };
@@ -203,55 +203,55 @@ typedef basic_memory_pointer<address_manager::fn_mem_translator_aslr>  memory_po
  */
 union memory_pointer_tr
 {
-	protected:
-		void*     p;
-		uintptr_t a;
-	
-	public:
-		template<class Tr>
-		memory_pointer_tr(const basic_memory_pointer<Tr>& ptr)
-			: p(ptr.get())
-		{}      // Constructs from a basic_memory_pointer
-	  
-		memory_pointer_tr(const auto_pointer& ptr)
-			: p(ptr.p)
-		{}  // Constructs from a auto_pointer, probably comming from basic_memory_pointer::get
-		
-		memory_pointer_tr(const memory_pointer_tr& rhs)
-			: p(rhs.p)
-		{}  // Constructs from my own type, copy constructor
-		
-		memory_pointer_tr(uintptr_t x)
-			: p(memory_pointer(x).get())
-		{}  // Constructs from a integer, translating the address
-	  
-		memory_pointer_tr(void* x)
-			: p(memory_pointer(x).get())
-		{}  // Constructs from a void pointer, translating the address
-		
-		// Just to be method-compatible with basic_memory_pointer ...
-		auto_pointer         get()      { return auto_pointer(p);     }
-		template<class T> T* get()      { return get(); }
-		template<class T> T* get_raw()  { return get(); }
+    protected:
+        void*     p;
+        uintptr_t a;
+    
+    public:
+        template<class Tr>
+        memory_pointer_tr(const basic_memory_pointer<Tr>& ptr)
+            : p(ptr.get())
+        {}      // Constructs from a basic_memory_pointer
+      
+        memory_pointer_tr(const auto_pointer& ptr)
+            : p(ptr.p)
+        {}  // Constructs from a auto_pointer, probably comming from basic_memory_pointer::get
+        
+        memory_pointer_tr(const memory_pointer_tr& rhs)
+            : p(rhs.p)
+        {}  // Constructs from my own type, copy constructor
+        
+        memory_pointer_tr(uintptr_t x)
+            : p(memory_pointer(x).get())
+        {}  // Constructs from a integer, translating the address
+      
+        memory_pointer_tr(void* x)
+            : p(memory_pointer(x).get())
+        {}  // Constructs from a void pointer, translating the address
+        
+        // Just to be method-compatible with basic_memory_pointer ...
+        auto_pointer         get()      { return auto_pointer(p);     }
+        template<class T> T* get()      { return get(); }
+        template<class T> T* get_raw()  { return get(); }
 
-		memory_pointer_tr operator+(const uintptr_t& rhs) const
-		{ return memory_pointer_raw(this->a + rhs); }
-		
-		memory_pointer_tr operator-(const uintptr_t& rhs) const
-		{ return memory_pointer_raw(this->a - rhs); }
-		
-		memory_pointer_tr operator*(const uintptr_t& rhs) const
-		{ return memory_pointer_raw(this->a * rhs); }
-		
-		memory_pointer_tr operator/(const uintptr_t& rhs) const
-		{ return memory_pointer_raw(this->a / rhs); }
+        memory_pointer_tr operator+(const uintptr_t& rhs) const
+        { return memory_pointer_raw(this->a + rhs); }
+        
+        memory_pointer_tr operator-(const uintptr_t& rhs) const
+        { return memory_pointer_raw(this->a - rhs); }
+        
+        memory_pointer_tr operator*(const uintptr_t& rhs) const
+        { return memory_pointer_raw(this->a * rhs); }
+        
+        memory_pointer_tr operator/(const uintptr_t& rhs) const
+        { return memory_pointer_raw(this->a / rhs); }
 
-		bool is_null() const      { return this->p == nullptr; }
-		uintptr_t as_int() const  { return this->a; }
-		
+        bool is_null() const      { return this->p == nullptr; }
+        uintptr_t as_int() const  { return this->a; }
+        
 #if __cplusplus >= 201103L
-	   explicit operator uintptr_t() const
-	   { return this->a; }
+       explicit operator uintptr_t() const
+       { return this->a; }
 #else
 #endif
 
@@ -269,7 +269,7 @@ union memory_pointer_tr
  */
 inline bool ProtectMemory(memory_pointer_tr addr, size_t size, DWORD protection)
 {
-	return VirtualProtect(addr.get(), size, protection, &protection) != 0;
+    return VirtualProtect(addr.get(), size, protection, &protection) != 0;
 }
 
 /*
@@ -279,7 +279,7 @@ inline bool ProtectMemory(memory_pointer_tr addr, size_t size, DWORD protection)
  */
 inline bool UnprotectMemory(memory_pointer_tr addr, size_t size, DWORD& out_oldprotect)
 {
-	return VirtualProtect(addr.get(), size, PAGE_EXECUTE_READWRITE, &out_oldprotect) != 0;
+    return VirtualProtect(addr.get(), size, PAGE_EXECUTE_READWRITE, &out_oldprotect) != 0;
 }
 
 /*
@@ -289,21 +289,21 @@ inline bool UnprotectMemory(memory_pointer_tr addr, size_t size, DWORD& out_oldp
  */
 struct scoped_unprotect
 {
-	memory_pointer_raw  addr;
-	size_t              size;
-	DWORD               dwOldProtect;
-	bool                bUnprotected;
+    memory_pointer_raw  addr;
+    size_t              size;
+    DWORD               dwOldProtect;
+    bool                bUnprotected;
 
-	scoped_unprotect(memory_pointer_tr addr, size_t size)
-	{
-		if(size == 0) bUnprotected = false;
-		else          bUnprotected = UnprotectMemory(this->addr = addr.get<void>(), this->size = size, dwOldProtect);
-	}
-	
-	~scoped_unprotect()
-	{
-		if(bUnprotected) ProtectMemory(this->addr.get(), this->size, this->dwOldProtect);
-	}
+    scoped_unprotect(memory_pointer_tr addr, size_t size)
+    {
+        if(size == 0) bUnprotected = false;
+        else          bUnprotected = UnprotectMemory(this->addr = addr.get<void>(), this->size = size, dwOldProtect);
+    }
+    
+    ~scoped_unprotect()
+    {
+        if(bUnprotected) ProtectMemory(this->addr.get(), this->size, this->dwOldProtect);
+    }
 };
 
 
@@ -320,8 +320,8 @@ struct scoped_unprotect
  */
 inline void WriteMemoryRaw(memory_pointer_tr addr, void* value, size_t size, bool vp)
 {
-	scoped_unprotect xprotect(addr, vp? size : 0);
-	memcpy(addr.get(), value, size);
+    scoped_unprotect xprotect(addr, vp? size : 0);
+    memcpy(addr.get(), value, size);
 }
 
 /*
@@ -331,8 +331,8 @@ inline void WriteMemoryRaw(memory_pointer_tr addr, void* value, size_t size, boo
  */
 inline void ReadMemoryRaw(memory_pointer_tr addr, void* ret, size_t size, bool vp)
 {
-	scoped_unprotect xprotect(addr, vp? size : 0);
-	memcpy(ret, addr.get(), size);
+    scoped_unprotect xprotect(addr, vp? size : 0);
+    memcpy(ret, addr.get(), size);
 }
 
 /*
@@ -342,8 +342,8 @@ inline void ReadMemoryRaw(memory_pointer_tr addr, void* ret, size_t size, bool v
  */
 inline void MemoryFill(memory_pointer_tr addr, uint8_t value, size_t size, bool vp)
 {
-	scoped_unprotect xprotect(addr, vp? size : 0);
-	memset(addr.get(), value, size);
+    scoped_unprotect xprotect(addr, vp? size : 0);
+    memset(addr.get(), value, size);
 }
 
 /*
@@ -354,8 +354,8 @@ inline void MemoryFill(memory_pointer_tr addr, uint8_t value, size_t size, bool 
 template<class T>
 inline T& WriteObject(memory_pointer_tr addr, const T& value, bool vp = false)
 {
-	scoped_unprotect xprotect(addr, vp? sizeof(value) : 0);
-	return (*addr.get<T>() = value);
+    scoped_unprotect xprotect(addr, vp? sizeof(value) : 0);
+    return (*addr.get<T>() = value);
 }
 
 /*
@@ -366,8 +366,8 @@ inline T& WriteObject(memory_pointer_tr addr, const T& value, bool vp = false)
 template<class T>
 inline T& ReadObject(memory_pointer_tr addr, T& value, bool vp = false)
 {
-	scoped_unprotect xprotect(addr, vp? sizeof(value) : 0);
-	return (value = *addr.get<T>());
+    scoped_unprotect xprotect(addr, vp? sizeof(value) : 0);
+    return (value = *addr.get<T>());
 }
 
 
@@ -379,7 +379,7 @@ inline T& ReadObject(memory_pointer_tr addr, T& value, bool vp = false)
 template<class T>
 inline void WriteMemory(memory_pointer_tr addr, T value, bool vp = false)
 {
-	WriteObject(addr, value, vp);
+    WriteObject(addr, value, vp);
 }
 
 /*
@@ -390,8 +390,8 @@ inline void WriteMemory(memory_pointer_tr addr, T value, bool vp = false)
 template<class T>
 inline T ReadMemory(memory_pointer_tr addr, bool vp = false)
 {
-	T value;
-	return ReadObject(addr, value, vp);
+    T value;
+    return ReadObject(addr, value, vp);
 }
 
 /*
@@ -401,21 +401,21 @@ inline T ReadMemory(memory_pointer_tr addr, bool vp = false)
  *      Does memory unprotection if @vp is true.
  */
  inline memory_pointer_raw AdjustPointer(memory_pointer_tr addr,
-										 memory_pointer_raw replacement_base, memory_pointer_tr default_base, memory_pointer_tr default_end,
-										 size_t max_search = 8, bool vp = true)
+                                         memory_pointer_raw replacement_base, memory_pointer_tr default_base, memory_pointer_tr default_end,
+                                         size_t max_search = 8, bool vp = true)
  {
-	scoped_unprotect xprotect(addr, vp? max_search + sizeof(void*) : 0);
-	for(size_t i = 0; i < max_search; ++i)
-	{
-		memory_pointer_raw ptr = ReadMemory<void*>(addr + i);
-		if(ptr >= default_base.get() && ptr <= default_end.get())
-		{
-			auto result = replacement_base + (ptr - default_base.get());
-			WriteMemory<void*>(addr + i, result.get());
-			return result;
-		}
-	}
-	return nullptr;
+    scoped_unprotect xprotect(addr, vp? max_search + sizeof(void*) : 0);
+    for(size_t i = 0; i < max_search; ++i)
+    {
+        memory_pointer_raw ptr = ReadMemory<void*>(addr + i);
+        if(ptr >= default_base.get() && ptr <= default_end.get())
+        {
+            auto result = replacement_base + (ptr - default_base.get());
+            WriteMemory<void*>(addr + i, result.get());
+            return result;
+        }
+    }
+    return nullptr;
  }
 
 
@@ -429,7 +429,7 @@ inline T ReadMemory(memory_pointer_tr addr, bool vp = false)
  */
 inline memory_pointer_raw GetAbsoluteOffset(int rel_value, memory_pointer_tr end_of_instruction)
 {
-	return end_of_instruction.get<char>() + rel_value;
+    return end_of_instruction.get<char>() + rel_value;
 }
 
 /*
@@ -438,7 +438,7 @@ inline memory_pointer_raw GetAbsoluteOffset(int rel_value, memory_pointer_tr end
  */
 inline int GetRelativeOffset(memory_pointer_tr abs_value, memory_pointer_tr end_of_instruction)
 {
-	return uintptr_t(abs_value.get<char>() - end_of_instruction.get<char>());
+    return uintptr_t(abs_value.get<char>() - end_of_instruction.get<char>());
 }
 
 /*
@@ -447,13 +447,13 @@ inline int GetRelativeOffset(memory_pointer_tr abs_value, memory_pointer_tr end_
  */
 inline memory_pointer_raw ReadRelativeOffset(memory_pointer_tr at, size_t sizeof_addr = 4, bool vp = true)
 {
-	switch(sizeof_addr)
-	{
-		case 1: return (GetAbsoluteOffset(ReadMemory<int8_t> (at, vp), at+sizeof_addr));
-		case 2: return (GetAbsoluteOffset(ReadMemory<int16_t>(at, vp), at+sizeof_addr));
-		case 4: return (GetAbsoluteOffset(ReadMemory<int32_t>(at, vp), at+sizeof_addr));
-	}
-	return nullptr;
+    switch(sizeof_addr)
+    {
+        case 1: return (GetAbsoluteOffset(ReadMemory<int8_t> (at, vp), at+sizeof_addr));
+        case 2: return (GetAbsoluteOffset(ReadMemory<int16_t>(at, vp), at+sizeof_addr));
+        case 4: return (GetAbsoluteOffset(ReadMemory<int32_t>(at, vp), at+sizeof_addr));
+    }
+    return nullptr;
 }
 
 /*
@@ -462,12 +462,12 @@ inline memory_pointer_raw ReadRelativeOffset(memory_pointer_tr at, size_t sizeof
  */
 inline void MakeRelativeOffset(memory_pointer_tr at, memory_pointer_tr dest, size_t sizeof_addr = 4, bool vp = true)
 {
-	switch(sizeof_addr)
-	{
-		case 1: WriteMemory<int8_t> (at, static_cast<int8_t> (GetRelativeOffset(dest, at+sizeof_addr)), vp);
-		case 2: WriteMemory<int16_t>(at, static_cast<int16_t>(GetRelativeOffset(dest, at+sizeof_addr)), vp);
-		case 4: WriteMemory<int32_t>(at, static_cast<int32_t>(GetRelativeOffset(dest, at+sizeof_addr)), vp);
-	}
+    switch(sizeof_addr)
+    {
+        case 1: WriteMemory<int8_t> (at, static_cast<int8_t> (GetRelativeOffset(dest, at+sizeof_addr)), vp);
+        case 2: WriteMemory<int16_t>(at, static_cast<int16_t>(GetRelativeOffset(dest, at+sizeof_addr)), vp);
+        case 4: WriteMemory<int32_t>(at, static_cast<int32_t>(GetRelativeOffset(dest, at+sizeof_addr)), vp);
+    }
 }
 
 /*
@@ -477,23 +477,23 @@ inline void MakeRelativeOffset(memory_pointer_tr at, memory_pointer_tr dest, siz
  */
 inline memory_pointer_raw GetBranchDestination(memory_pointer_tr at, bool vp = true)
 {
-	switch(ReadMemory<uint8_t>(at, vp))
-	{
-		// We need to handle other instructions (and prefixes) later...
-		case 0xE8:	// call rel
-		case 0xE9:	// jmp rel
-			return ReadRelativeOffset(at + 1, 4, vp);
+    switch(ReadMemory<uint8_t>(at, vp))
+    {
+        // We need to handle other instructions (and prefixes) later...
+        case 0xE8:	// call rel
+        case 0xE9:	// jmp rel
+            return ReadRelativeOffset(at + 1, 4, vp);
 
-		case 0xFF: 
-			switch(ReadMemory<uint8_t>(at + 1, vp))
-			{
-				case 0x15:  // call dword ptr [addr]
-				case 0x25:  // jmp dword ptr [addr]
-					return *(ReadMemory<uintptr_t*>(at + 2, vp));
-			}
-			break;
-	}
-	return nullptr;
+        case 0xFF: 
+            switch(ReadMemory<uint8_t>(at + 1, vp))
+            {
+                case 0x15:  // call dword ptr [addr]
+                case 0x25:  // jmp dword ptr [addr]
+                    return *(ReadMemory<uintptr_t*>(at + 2, vp));
+            }
+            break;
+    }
+    return nullptr;
 }
 
 /*
@@ -503,10 +503,10 @@ inline memory_pointer_raw GetBranchDestination(memory_pointer_tr at, bool vp = t
  */
 inline memory_pointer_raw MakeJMP(memory_pointer_tr at, memory_pointer_raw dest, bool vp = true)
 {
-	auto p = GetBranchDestination(at, vp);
-	WriteMemory<uint8_t>(at, 0xE9, vp);
-	MakeRelativeOffset(at+1, dest, 4, vp);
-	return p;
+    auto p = GetBranchDestination(at, vp);
+    WriteMemory<uint8_t>(at, 0xE9, vp);
+    MakeRelativeOffset(at+1, dest, 4, vp);
+    return p;
 }
 
 /*
@@ -516,10 +516,10 @@ inline memory_pointer_raw MakeJMP(memory_pointer_tr at, memory_pointer_raw dest,
  */
 inline memory_pointer_raw MakeCALL(memory_pointer_tr at, memory_pointer_raw dest, bool vp = true)
 {
-	auto p = GetBranchDestination(at, vp);
-	WriteMemory<uint8_t>(at, 0xE8, vp);
-	MakeRelativeOffset(at+1, dest, 4, vp);
-	return p;
+    auto p = GetBranchDestination(at, vp);
+    WriteMemory<uint8_t>(at, 0xE8, vp);
+    MakeRelativeOffset(at+1, dest, 4, vp);
+    return p;
 }
 
 /*
@@ -529,8 +529,8 @@ inline memory_pointer_raw MakeCALL(memory_pointer_tr at, memory_pointer_raw dest
  */
 inline void MakeJA(memory_pointer_tr at, memory_pointer_raw dest, bool vp = true)
 {
-	WriteMemory<uint16_t>(at, 0x87F0, vp);
-	MakeRelativeOffset(at+2, dest, 4, vp);
+    WriteMemory<uint16_t>(at, 0x87F0, vp);
+    MakeRelativeOffset(at+2, dest, 4, vp);
 }
 
 /*
@@ -539,7 +539,7 @@ inline void MakeJA(memory_pointer_tr at, memory_pointer_raw dest, bool vp = true
  */
 inline void MakeNOP(memory_pointer_tr at, size_t count = 1, bool vp = true)
 {
-	MemoryFill(at, 0x90, count, vp);
+    MemoryFill(at, 0x90, count, vp);
 }
 
 /*
@@ -548,7 +548,7 @@ inline void MakeNOP(memory_pointer_tr at, size_t count = 1, bool vp = true)
  */
 inline void MakeRangedNOP(memory_pointer_tr at, memory_pointer_tr until, bool vp = true)
 {
-	return MakeNOP(at, size_t(until.get_raw<char>() - at.get_raw<char>()), vp);
+    return MakeNOP(at, size_t(until.get_raw<char>() - at.get_raw<char>()), vp);
 }
 
 
@@ -559,8 +559,8 @@ inline void MakeRangedNOP(memory_pointer_tr at, memory_pointer_tr until, bool vp
  */
 inline void MakeRET(memory_pointer_tr at, uint16_t pop = 0, bool vp = true)
 {
-	WriteMemory(at, pop? 0xC2 : 0xC3, vp);
-	if(pop) WriteMemory(at+1, pop, vp);
+    WriteMemory(at, pop? 0xC2 : 0xC3, vp);
+    if(pop) WriteMemory(at+1, pop, vp);
 }
 
 
@@ -574,27 +574,27 @@ inline void MakeRET(memory_pointer_tr at, uint16_t pop = 0, bool vp = true)
  template<uintptr_t addr>
  struct lazy_pointer
  {
-	public:
-		 // Returns the final raw pointer
-		 static auto_pointer get()
-		 {
-			 return xget().get();
-		 }
+    public:
+         // Returns the final raw pointer
+         static auto_pointer get()
+         {
+             return xget().get();
+         }
 
-		 template<class T>
-		 static T* get()
-		 {
-			 return get().get<T>();
-		 }
+         template<class T>
+         static T* get()
+         {
+             return get().get<T>();
+         }
 
-	private:
-		// Returns the final pointer
-		static memory_pointer_raw xget()
-		{
-			static void* ptr = nullptr;
-			if(!ptr) ptr = memory_pointer(addr).get();
-			return memory_pointer_raw(ptr);
-		}
+    private:
+        // Returns the final pointer
+        static memory_pointer_raw xget()
+        {
+            static void* ptr = nullptr;
+            if(!ptr) ptr = memory_pointer(addr).get();
+            return memory_pointer_raw(ptr);
+        }
 };
 
  /*
@@ -604,52 +604,52 @@ inline void MakeRET(memory_pointer_tr at, uint16_t pop = 0, bool vp = true)
  template<uintptr_t addr, class T>
  struct lazy_object
  {
-	 static T& get()
-	 {
-		 static T data;
-		 static bool has_data = false;
-		 if(!has_data)
-		 {
-			 ReadObject<T>(addr, data, true);
-			 has_data = true;
-		 }
-		 return data;
-	 }
+     static T& get()
+     {
+         static T data;
+         static bool has_data = false;
+         if(!has_data)
+         {
+             ReadObject<T>(addr, data, true);
+             has_data = true;
+         }
+         return data;
+     }
  };
 
 
  /*
-	Helpers
+    Helpers
  */
 
  template<class T>
 inline memory_pointer  mem_ptr(T p)
 {
-	return memory_pointer(p);
+    return memory_pointer(p);
 }
 
 template<class T>
 inline memory_pointer_raw  raw_ptr(T p)
 {
-	return memory_pointer_raw(p);
+    return memory_pointer_raw(p);
 }
 
 template<class Tr>
 inline memory_pointer_raw  raw_ptr(basic_memory_pointer<Tr> p)
 {
-	return raw_ptr(p.get());
+    return raw_ptr(p.get());
 }
 
 template<uintptr_t addr>
 inline memory_pointer_raw  lazy_ptr()
 {
-	return lazy_pointer<addr>::get();
+    return lazy_pointer<addr>::get();
 }
 
 template<class T>
 inline memory_pointer_aslr  aslr_ptr(T p)
 {
-	return memory_pointer_aslr(p);
+    return memory_pointer_aslr(p);
 }
 
 
@@ -662,88 +662,84 @@ inline memory_pointer_aslr  aslr_ptr(T p)
 // Detects game, region and version; returns false if could not detect it
 inline bool game_version_manager::Detect()
 {
-	// Cleanup data
-	this->Clear();
+    // Cleanup data
+    this->Clear();
 
-	// Find NT header
-	uintptr_t          base     = (uintptr_t) GetModuleHandleA(NULL);
-	IMAGE_DOS_HEADER*  dos      = (IMAGE_DOS_HEADER*)(base);
-	IMAGE_NT_HEADERS*  nt       = (IMAGE_NT_HEADERS*)(base + dos->e_lfanew);
-			
-	// Look for game and version thought the entry-point
-	// Thanks to Silent for many of the entry point offsets
-	switch (base + nt->OptionalHeader.AddressOfEntryPoint + (0x400000 - base))
-	{
-		case 0x5C1E70:  // GTA III 1.0
-			game = '3', major = 1, minor = 0, region = 0, steam = false;
-			return true;
-			
-		case 0x5C2130:  // GTA III 1.1
-			game = '3', major = 1, minor = 1, region = 0, steam = false;
-			return true;
-			
-		case 0x5C6FD0:  // GTA III 1.1 (Cracked Steam Version)
-		case 0x9912ED:  // GTA III 1.1 (Encrypted Steam Version)
-			game = '3', major = 1, minor = 1, region = 0, steam = true;
-			return true;
-	
-		case 0x667BF0:  // GTA VC 1.0
-			game = 'V', major = 1, minor = 0, region = 0, steam = false;
-			return true;
-			
-		case 0x667C40:  // GTA VC 1.1
-			game = 'V', major = 1, minor = 1, region = 0, steam = false;
-			return true;
+    // Find NT header
+    uintptr_t          base     = (uintptr_t) GetModuleHandleA(NULL);
+    IMAGE_DOS_HEADER*  dos      = (IMAGE_DOS_HEADER*)(base);
+    IMAGE_NT_HEADERS*  nt       = (IMAGE_NT_HEADERS*)(base + dos->e_lfanew);
+            
+    // Look for game and version thought the entry-point
+    // Thanks to Silent for many of the entry point offsets
+    switch (base + nt->OptionalHeader.AddressOfEntryPoint + (0x400000 - base))
+    {
+        case 0x5C1E70:  // GTA III 1.0
+            game = '3', major = 1, minor = 0, region = 0, steam = false;
+            return true;
+            
+        case 0x5C2130:  // GTA III 1.1
+            game = '3', major = 1, minor = 1, region = 0, steam = false;
+            return true;
+            
+        case 0x5C6FD0:  // GTA III 1.1 (Cracked Steam Version)
+        case 0x9912ED:  // GTA III 1.1 (Encrypted Steam Version)
+            game = '3', major = 1, minor = 1, region = 0, steam = true;
+            return true;
+    
+        case 0x667BF0:  // GTA VC 1.0
+            game = 'V', major = 1, minor = 0, region = 0, steam = false;
+            return true;
+            
+        case 0x667C40:  // GTA VC 1.1
+            game = 'V', major = 1, minor = 1, region = 0, steam = false;
+            return true;
 
-		case 0x666BA0:  // GTA VC 1.1 (Cracked Steam Version)
-		case 0xA402ED:  // GTA VC 1.1 (Encrypted Steam Version)
-			game = 'V', major = 1, minor = 1, region = 0, steam = true;
-			return true;
-	
-		case 0x82457C:  // GTA SA 1.0 US Cracked
-		case 0x824570:  // GTA SA 1.0 US Compact
-			game = 'S', major = 1, minor = 0, region = 'U', steam = false;
-			cracker = injector::ReadMemory<uint8_t>(raw_ptr(0x406A20), true) == 0xE9? 'H' : 0;
-			return true;
+        case 0x666BA0:  // GTA VC 1.1 (Cracked Steam Version)
+        case 0xA402ED:  // GTA VC 1.1 (Encrypted Steam Version)
+            game = 'V', major = 1, minor = 1, region = 0, steam = true;
+            return true;
+    
+        case 0x82457C:  // GTA SA 1.0 US Cracked
+        case 0x824570:  // GTA SA 1.0 US Compact
+            game = 'S', major = 1, minor = 0, region = 'U', steam = false;
+            cracker = injector::ReadMemory<uint8_t>(raw_ptr(0x406A20), true) == 0xE9? 'H' : 0;
+            return true;
 
-		case 0x8245BC:  // GTA SA 1.0 EU Cracked (??????)
-		case 0x8245B0:  // GTA SA 1.0 EU Cracked
-			game = 'S', major = 1, minor = 0, region = 'E', steam = false;
-			cracker = injector::ReadMemory<uint8_t>(raw_ptr(0x406A20), true) == 0xE9? 'H' : 0;  // just to say 'securom'
-			return true;
-			
-		case 0x8252FC:  // GTA SA 1.1 US Cracked
-			game = 'S', major = 1, minor = 1, region = 'U', steam = false;
-			return true;
-			
-		case 0x82533C:  // GTA SA 1.1 EU Cracked
-			game = 'S', major = 1, minor = 1, region = 'E', steam = false;
-			return true;
-			
-		case 0x85EC4A:  // GTA SA 3.0 (Cracked Steam Version)
-		case 0xD3C3DB:  // GTA SA 3.0 (Encrypted Steam Version)
-			game = 'S', major = 3, minor = 0, region = 0, steam = true;
-			return true;
+        case 0x8245BC:  // GTA SA 1.0 EU Cracked (??????)
+        case 0x8245B0:  // GTA SA 1.0 EU Cracked
+            game = 'S', major = 1, minor = 0, region = 'E', steam = false;
+            cracker = injector::ReadMemory<uint8_t>(raw_ptr(0x406A20), true) == 0xE9? 'H' : 0;  // just to say 'securom'
+            return true;
+            
+        case 0x8252FC:  // GTA SA 1.1 US Cracked
+            game = 'S', major = 1, minor = 1, region = 'U', steam = false;
+            return true;
+            
+        case 0x82533C:  // GTA SA 1.1 EU Cracked
+            game = 'S', major = 1, minor = 1, region = 'E', steam = false;
+            return true;
+            
+        case 0x85EC4A:  // GTA SA 3.0 (Cracked Steam Version)
+        case 0xD3C3DB:  // GTA SA 3.0 (Encrypted Steam Version)
+            game = 'S', major = 3, minor = 0, region = 0, steam = true;
+            return true;
 
-		case 0x858EA8: //GTA SA New Steam r2
-			game = 'S', major = 3, minor = 1, region = 0, steam = true;
-			return true;
+        case 0xC965AD:  // GTA IV 1.0.0.4 US
+            game = 'I', major = 1, minor = 0, majorRevision = 0, minorRevision = 4, region = 'U', steam = false;
+            return true;
 
-		case 0xC965AD:  // GTA IV 1.0.0.4 US
-			game = 'I', major = 1, minor = 0, majorRevision = 0, minorRevision = 4, region = 'U', steam = false;
-			return true;
+        case 0xD0D011:  // GTA IV 1.0.0.7 US
+            game = 'I', major = 1, minor = 0, majorRevision = 0, minorRevision = 7, region = 'U', steam = false;
+            return true;
 
-		case 0xD0D011:  // GTA IV 1.0.0.7 US
-			game = 'I', major = 1, minor = 0, majorRevision = 0, minorRevision = 7, region = 'U', steam = false;
-			return true;
+        case 0xD0AF06:  // GTA EFLC 1.1.2.0 US
+            game = 'E', major = 1, minor = 1, majorRevision = 2, minorRevision = 0, region = 'U', steam = false;
+            return true;
 
-		case 0xD0AF06:  // GTA EFLC 1.1.2.0 US
-			game = 'E', major = 1, minor = 1, majorRevision = 2, minorRevision = 0, region = 'U', steam = false;
-			return true;
-
-		default:
-			return false;
-	}
+        default:
+            return false;
+    }
 }
 
 #endif

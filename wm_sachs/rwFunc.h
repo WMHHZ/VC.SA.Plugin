@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "../deps/func_wrapper/func_wrapper.hpp"
-#include "rw/RenderWareTypes.h"
+#include "rw/rwcore.h"
+#include "rw/skeleton.h"
 
 class rwFunc
 {

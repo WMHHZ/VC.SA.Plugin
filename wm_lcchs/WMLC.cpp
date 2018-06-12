@@ -7,7 +7,8 @@
 #include "../deps/injector/injector.hpp"
 #include "../deps/injector/hooking.hpp"
 
-#include "../deps/selector/AddressSelector.hpp"
+#include "../deps/func_wrapper/func_wrapper.hpp"
+#include "../deps/selector/asnew.hpp"
 
 #include <cstring>
 
@@ -108,42 +109,42 @@ unsigned __int16 *ContinousTokensFix(unsigned __int16 *arg_text, unsigned __int1
 
 void WMLC::PatchGame()
 {
-	unsigned __int8 *FET_LAN_Entry = AddressSelectorLC::SelectAddress<0x6157AC, 0x0, 0x621F64, unsigned __int8>();
+	unsigned __int8 *FET_LAN_Entry = addr_sel::lc::select_address<unsigned __int8>({0x6157AC, 0x0, 0x621F64});
 	std::memcpy(FET_LAN_Entry, FET_LAN_Entry + 0x14, 0x14);
 	std::memcpy(FET_LAN_Entry + 0x14, FET_LAN_Entry + 0x28, 0x14);
 	std::memset(FET_LAN_Entry + 0x28, 0, 0x14);
 
-	injector::WriteMemory<unsigned __int32>(AddressSelectorLC::SelectAddress<0x5082CF, 0x0, 0x50833F>(), 255, true);
-	injector::WriteMemory<unsigned __int8>(AddressSelectorLC::SelectAddress<0x5082D4, 0x0, 0x508344>(), 0, true);
-	injector::WriteMemory<unsigned __int32>(AddressSelectorLC::SelectAddress<0x5082D6, 0x0, 0x508346>(), 0, true);
-	injector::WriteMemory<unsigned __int8>(AddressSelectorLC::SelectAddress<0x5082DB, 0x0, 0x50834B>(), 0, true);
+	injector::WriteMemory<unsigned __int32>(addr_sel::lc::select_address({0x5082CF, 0x0, 0x50833F}), 255, true);
+	injector::WriteMemory<unsigned __int8>(addr_sel::lc::select_address({0x5082D4, 0x0, 0x508344}), 0, true);
+	injector::WriteMemory<unsigned __int32>(addr_sel::lc::select_address({0x5082D6, 0x0, 0x508346}), 0, true);
+	injector::WriteMemory<unsigned __int8>(addr_sel::lc::select_address({0x5082DB, 0x0, 0x50834B}), 0, true);
 
-	injector::WriteMemory<__int16>(AddressSelectorLC::SelectAddress<0x52B73A, 0x0, 0x52B90A>(), 5, true);
+	injector::WriteMemory<__int16>(addr_sel::lc::select_address({0x52B73A, 0x0, 0x52B90A}), 5, true);
 
-	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x52C42F, 0x0, 0x52C5FF>(), LoadCHSGXT);
+	injector::MakeCALL(addr_sel::lc::select_address({0x52C42F, 0x0, 0x52C5FF}), LoadCHSGXT);
 
-	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x500B87, 0x0, 0x500BF7>(), CFont::LoadCHSTexture);
-	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x500BCA, 0x0, 0x500C3A>(), CFont::UnloadCHSTexture);
+	injector::MakeCALL(addr_sel::lc::select_address({0x500B87, 0x0, 0x500BF7}), CFont::LoadCHSTexture);
+	injector::MakeCALL(addr_sel::lc::select_address({0x500BCA, 0x0, 0x500C3A}), CFont::UnloadCHSTexture);
 
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x5018A0, 0x0, 0x501910>(), CFont::GetStringWidth);
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501260, 0x0, 0x5012D0>(), CFont::GetNumberLines);
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x5013B0, 0x0, 0x501420>(), CFont::GetTextRect);
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501960, 0x0, 0x5019D0>(), CFont::GetNextSpace);
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x501840, 0x0, 0x5018B0>(), CFont::GetCharacterSize);
+	injector::MakeJMP(addr_sel::lc::select_address({0x5018A0, 0x0, 0x501910}), CFont::GetStringWidth);
+	injector::MakeJMP(addr_sel::lc::select_address({0x501260, 0x0, 0x5012D0}), CFont::GetNumberLines);
+	injector::MakeJMP(addr_sel::lc::select_address({0x5013B0, 0x0, 0x501420}), CFont::GetTextRect);
+	injector::MakeJMP(addr_sel::lc::select_address({0x501960, 0x0, 0x5019D0}), CFont::GetNextSpace);
+	injector::MakeJMP(addr_sel::lc::select_address({0x501840, 0x0, 0x5018B0}), CFont::GetCharacterSize);
 
-	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x50179F, 0x0, 0x50180F>(), CFont::PrintCharDispatcher);
+	injector::MakeCALL(addr_sel::lc::select_address({0x50179F, 0x0, 0x50180F}), CFont::PrintCharDispatcher);
 
-	jmpBack1.retAddr1 = AddressSelectorLC::SelectAddress<0x50117C, 0x0, 0x5011EC>();
-	jmpBack1.retAddr2 = AddressSelectorLC::SelectAddress<0x501167, 0x0, 0x5011D7>();
-	jmpBack1.retAddr3 = AddressSelectorLC::SelectAddress<0x50123B, 0x0, 0x5012AB>();
-	injector::MakeJMP(AddressSelectorLC::SelectAddress<0x50115F, 0x0, 0x5011CF>(), PrintStringFix);
+	jmpBack1.retAddr1 = addr_sel::lc::select_address({0x50117C, 0x0, 0x5011EC});
+	jmpBack1.retAddr2 = addr_sel::lc::select_address({0x501167, 0x0, 0x5011D7});
+	jmpBack1.retAddr3 = addr_sel::lc::select_address({0x50123B, 0x0, 0x5012AB});
+	injector::MakeJMP(addr_sel::lc::select_address({0x50115F, 0x0, 0x5011CF}), PrintStringFix);
 
-	injector::MakeCALL(AddressSelectorLC::SelectAddress<0x501751, 0x0, 0x5017C1>(), ContinousTokensFix);
+	injector::MakeCALL(addr_sel::lc::select_address({0x501751, 0x0, 0x5017C1}), ContinousTokensFix);
 
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F4EB, 0x0, 0x58F6CB>(), 6);
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F4F3, 0x0, 0x58F6D3>(), 1);
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F50D, 0x0, 0x58F6ED>(), 1);
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F528, 0x0, 0x58F708>(), 1);
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F52D, 0x0, 0x58F70D>(), 6);
-	injector::MakeNOP(AddressSelectorLC::SelectAddress<0x58F55D, 0x0, 0x58F73D>(), 6);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F4EB, 0x0, 0x58F6CB}), 6);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F4F3, 0x0, 0x58F6D3}), 1);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F50D, 0x0, 0x58F6ED}), 1);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F528, 0x0, 0x58F708}), 1);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F52D, 0x0, 0x58F70D}), 6);
+	injector::MakeNOP(addr_sel::lc::select_address({0x58F55D, 0x0, 0x58F73D}), 6);
 }

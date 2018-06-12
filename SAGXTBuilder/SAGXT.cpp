@@ -57,7 +57,7 @@ bool SAGXT::LoadText(const char *path)
 			wideLineBuffer = encodeconverter.from_bytes(matchResult.str(2));
 
 			auto hash = std::stoul(matchResult.str(1), nullptr, 16);
-			if (hash == 0xFFFFFFFF || tableIt->second.emplace(hash, matchResult.str(2)).second)
+			if (tableIt->second.emplace(hash, matchResult.str(2)).second)
 			{
 				for (wchar_t chr : wideLineBuffer)
 				{

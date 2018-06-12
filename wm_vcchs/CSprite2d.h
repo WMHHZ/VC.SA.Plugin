@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "../deps/func_wrapper/func_wrapper.hpp"
+#include "../deps/selector/asnew.hpp"
 
 struct RwTexture;
 

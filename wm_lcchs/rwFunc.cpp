@@ -1,5 +1,5 @@
-#include "rwFunc.h"
-#include "../deps/selector/AddressSelector.hpp"
+﻿#include "rwFunc.h"
+#include "../deps/selector/asnew.hpp"
 
 __int32 *rwFunc::RsGlobalW;
 __int32 *rwFunc::RsGlobalH;
@@ -19,11 +19,11 @@ __int32 rwFunc::RwIm2DRenderPrimitive(RwPrimitiveType primType, RwD3D8Vertex *ve
 
 rwFunc::rwFunc()
 {
-	RsGlobalW = AddressSelectorLC::SelectAddress<0x8F436C, 0x0, 0x904560, __int32>();
+    RsGlobalW = addr_sel::lc::select_address<__int32>({ 0x8F436C, 0x0, 0x904560 });
 	RsGlobalH = RsGlobalW + 1;
 
-	fpRwRenderStateSet = AddressSelectorLC::SelectAddress<0x5A43C0, 0x0, 0x5A5360>();
-	fpRwIm2DRenderPrimitive = AddressSelectorLC::SelectAddress<0x5A4430, 0x0, 0x5A5410>();
+    fpRwRenderStateSet = addr_sel::lc::select_address({ 0x5A43C0, 0x0, 0x5A5360 });
+    fpRwIm2DRenderPrimitive = addr_sel::lc::select_address({ 0x5A4430, 0x0, 0x5A5410 });
 }
 
 static rwFunc instance;

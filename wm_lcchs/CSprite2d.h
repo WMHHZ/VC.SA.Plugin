@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "game.h"
+#include "../deps/func_wrapper/func_wrapper.hpp"
 
 struct RwTexture;
 struct RwD3D8Vertex;
