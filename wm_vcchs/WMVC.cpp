@@ -11,7 +11,7 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
-bool WMVC::CheckResourceFile(HMODULE hPlugin)
+void WMVC::MakeResourcePath(HMODULE hPlugin)
 {
 	char pluginPath[260];
 
@@ -23,32 +23,6 @@ bool WMVC::CheckResourceFile(HMODULE hPlugin)
 	std::strcpy(std::strrchr(CFont::fontPath, '.'), "\\wm_vcchs.txd");
 	std::strcpy(std::strrchr(CFont::textPath, '.'), "\\wm_vcchs.gxt");
 	std::strcpy(std::strrchr(CCharTable::datPath, '.'), "\\wm_vcchs.dat");
-
-	if (!PathFileExistsA(CFont::fontPath) || !PathFileExistsA(CFont::textPath) || !PathFileExistsA(CCharTable::datPath))
-	{
-		MessageBoxW(nullptr, L"找不到资源文件，请确认是否带上了wm_vcchs文件夹！", WMVERSIONWSTRING, MB_ICONERROR);
-		return false;
-	}
-
-	return true;
-}
-
-bool WMVC::CheckGameVersion()
-{
-	auto &veref = injector::address_manager::singleton();
-
-	if (veref.IsVC() && (veref.IsSteam() || veref.GetMinorVersion() == 0))
-	{
-		CCharTable::ReadTable();
-		PatchGame();
-	}
-	else
-	{
-		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0：3088896字节\nSteam：3615744字节", WMVERSIONWSTRING, MB_ICONERROR);
-		return false;
-	}
-
-	return true;
 }
 
 __declspec(naked) void hook_load_gxt_mission()
