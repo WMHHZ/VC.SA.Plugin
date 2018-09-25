@@ -98,8 +98,6 @@
     <ClInclude Include="CSprite.h" />
     <ClInclude Include="CSprite2d.h" />
     <ClInclude Include="CTxdStore.h" />
-    <ClInclude Include="rw\RenderWare.h" />
-    <ClInclude Include="rw\RenderWareTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCharTable.cpp" />

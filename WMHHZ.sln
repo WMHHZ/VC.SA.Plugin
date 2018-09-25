@@ -11,9 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VCGXTBuilder", "VCGXTBuilde
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_vcchs", "wm_vcchs\wm_vcchs.vcxproj", "{EB8CB421-248F-4A82-BD36-958531E072F7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_lcchs", "wm_lcchs\wm_lcchs.vcxproj", "{A12E70A8-A500-4AA0-800C-7C50CD906044}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LCGXTBuilder", "LCGXTBuilder\LCGXTBuilder.vcxproj", "{C12A44F7-041A-4C22-8AC5-31673698FBA4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03538B4C-238B-4544-A70D-D30A9DB30670}"
+	ProjectSection(SolutionItems) = preProject
+		VC-LTL helper for Visual Studio.props = VC-LTL helper for Visual Studio.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +38,6 @@ Global
 		{EB8CB421-248F-4A82-BD36-958531E072F7}.Debug|Win32.Build.0 = Debug|Win32
 		{EB8CB421-248F-4A82-BD36-958531E072F7}.Release|Win32.ActiveCfg = Release|Win32
 		{EB8CB421-248F-4A82-BD36-958531E072F7}.Release|Win32.Build.0 = Release|Win32
-		{A12E70A8-A500-4AA0-800C-7C50CD906044}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A12E70A8-A500-4AA0-800C-7C50CD906044}.Debug|Win32.Build.0 = Debug|Win32
-		{A12E70A8-A500-4AA0-800C-7C50CD906044}.Release|Win32.ActiveCfg = Release|Win32
-		{A12E70A8-A500-4AA0-800C-7C50CD906044}.Release|Win32.Build.0 = Release|Win32
-		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.Debug|Win32.Build.0 = Debug|Win32
-		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.Release|Win32.ActiveCfg = Release|Win32
-		{C12A44F7-041A-4C22-8AC5-31673698FBA4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

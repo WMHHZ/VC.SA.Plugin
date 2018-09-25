@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class CVector2D
 {
@@ -9,7 +9,7 @@ public:
 class CRGBA
 {
 public:
-	unsigned __int8 red, green, blue, alpha;
+	unsigned char red, green, blue, alpha;
 };
 
 class CRect

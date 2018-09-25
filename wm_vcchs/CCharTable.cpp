@@ -1,6 +1,5 @@
 ﻿#include "CCharTable.h"
-#include <array>
-#include <cstdio>
+
 
 static std::array<CharPos, 0x10000> sTable;
 

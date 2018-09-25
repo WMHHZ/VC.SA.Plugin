@@ -3,8 +3,8 @@
 
 struct CharPos
 {
-	unsigned __int8 rowIndex;
-	unsigned __int8 columnIndex;
+	unsigned char rowIndex;
+	unsigned char columnIndex;
 };
 
 class CCharTable

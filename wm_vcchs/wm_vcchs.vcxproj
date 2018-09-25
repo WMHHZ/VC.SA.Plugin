@@ -71,8 +71,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_VCCHS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WM_VCCHS_EXPORTS;_DISABLE_DEPRECATE_LTL_MESSAGE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../deps/rwsdk-3.4-d3d8/include/d3d8/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -101,6 +100,7 @@
     <ClInclude Include="CFont.h" />
     <ClInclude Include="CSprite2d.h" />
     <ClInclude Include="CTimer.h" />
+    <ClInclude Include="stdinc.h" />
     <ClInclude Include="WMVC.h" />
     <ClInclude Include="CTxdStore.h" />
     <ClInclude Include="game.h" />

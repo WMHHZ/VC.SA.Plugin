@@ -1,42 +1,32 @@
 ﻿#pragma once
-#include "../deps/func_wrapper/func_wrapper.hpp"
-#include "../deps/selector/asnew.hpp"
-
-struct RwTexture;
-
-class CRect;
-class CRGBA;
+#include "stdinc.h"
+#include "game.h"
 
 class CSprite2d
 {
-	CSprite2d(const CSprite2d &);
-	CSprite2d &operator=(const CSprite2d &);
+private:
+    RwTexture *m_pRwTexture;
 
 public:
-	RwTexture *m_pRwTexture;
+    static injector::hook_back<void(__fastcall *)(CSprite2d *, int, const char *, const char *)>
+        fpSetTexture;
 
-	CSprite2d();
-	explicit CSprite2d(int);
+    static injector::hook_back<void(__fastcall *)(const CSprite2d *, int)>
+        fpSetRenderState;
 
-public:
-	static thiscall_func_wrapper<void(CSprite2d *, const char *, const char *)>
-		fpSetTexture;
+    static injector::hook_back<void(__fastcall *)(CSprite2d *, int)>
+        fpDelete;
 
-	static thiscall_func_wrapper<void(const CSprite2d *)>
-		fpSetRenderState;
+    static injector::hook_back<void(__fastcall *)(const CSprite2d *, int, const CRect &rect, const CRGBA &color)>
+        fpDraw;
 
-	static thiscall_func_wrapper<void(CSprite2d *)>
-		fpDelete;
+    static injector::hook_back<void(*)(const CRect &rect, const CRGBA &color)>
+        fpDrawRect;
 
-	static thiscall_func_wrapper<void(const CSprite2d *, const CRect &rect, const CRGBA &color)>
-		fpDraw;
+    static injector::hook_back<void(*)(const CRect &rect, const CRGBA &color, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4)>
+        fpAddToBuffer;
 
-	static cdecl_func_wrapper<void(const CRect &rect, const CRGBA &color)>
-		fpDrawRect;
-
-	static cdecl_func_wrapper<void(const CRect &rect, const CRGBA &color, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4)>
-		fpAddToBuffer;
-
-	static cdecl_func_wrapper<void()>
-		fpRenderVertexBuffer;
+    static injector::hook_back<void(*)()>
+        fpRenderVertexBuffer;
 };
+VALIDATE_SIZE(CSprite2d, 4)

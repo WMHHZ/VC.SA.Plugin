@@ -1,9 +1,7 @@
-#pragma once
+﻿#pragma once
 
 class CTimer
 {
 public:
-	static unsigned __int32 *m_nTimeInMilliseconds;
-
-	CTimer();
+	static unsigned int *m_nTimeInMilliseconds;
 };
