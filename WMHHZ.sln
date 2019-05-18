@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_sachs", "wm_sachs\wm_sachs.vcxproj", "{6E744484-D7F5-479E-98E2-2DD27A9BAEF5}"
 EndProject
@@ -10,11 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VCGXTBuilder", "VCGXTBuilder\VCGXTBuilder.vcxproj", "{197D7B6F-E03A-49F1-B70B-6842E197B48F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wm_vcchs", "wm_vcchs\wm_vcchs.vcxproj", "{EB8CB421-248F-4A82-BD36-958531E072F7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03538B4C-238B-4544-A70D-D30A9DB30670}"
-	ProjectSection(SolutionItems) = preProject
-		VC-LTL helper for Visual Studio.props = VC-LTL helper for Visual Studio.props
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B0FF3B26-12A0-47A0-A1E0-36B19E615908}
 	EndGlobalSection
 EndGlobal
