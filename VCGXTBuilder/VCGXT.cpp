@@ -4,12 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
-#include <locale>
-#include <codecvt>
 #include <algorithm>
-
 #include <cstring>
 #include <cstdio>
+#include "../deps/utf8cpp/utf8.h"
 
 struct CharPos
 {
@@ -23,10 +21,7 @@ static std::array<CharPos, 0x10000> sTable;
 
 VCGXT::VCGXT()
 {
-	std::for_each(std::begin(MostUsedCharacters), std::end(MostUsedCharacters) - 1, [this](wchar_t chr)
-	{
-		m_WideCharCollection.insert(chr);
-	});
+    m_WideCharCollection.insert(std::begin(MostUsedCharacters), std::end(MostUsedCharacters) - 1);
 }
 
 bool VCGXT::LoadText(const char *path)
@@ -111,7 +106,7 @@ void VCGXT::SaveAsGXT(const char *path)
 {
 	FILE *outputFile;
 	long foTableBlock, foKeyBlock, foDataBlock;
-	int32_t tableBlockSize, keyBlockOffset, keyBlockSize, TDATOffset, firstTDATEntryOffset, dataBlockSize;
+	int32_t tableBlockSize, keyBlockSize, TDATOffset, firstTDATEntryOffset, dataBlockSize;
 	char eightChars[8];
 
 	tableBlockSize = this->m_GxtData.size() * SizeOfTABL;
@@ -143,7 +138,6 @@ void VCGXT::SaveAsGXT(const char *path)
 		std::fwrite(&foKeyBlock, 4, 1, outputFile);
 		foTableBlock += SizeOfTABL;
 
-		keyBlockOffset = foKeyBlock;
 		std::fseek(outputFile, foKeyBlock, SEEK_SET);
 		if (table.first != "MAIN")
 		{
@@ -241,12 +235,9 @@ size_t VCGXT::GetDataBlockSize(const std::map<std::string,std::vector<uint16_t> 
 
 void VCGXT::UTF8ToUTF16(const std::string &str, std::vector<uint16_t> &result)
 {
-	static std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
-
-	std::wstring wstr = converter.from_bytes(str);
-	result.resize(wstr.length() + 1);
-	std::copy(wstr.begin(), wstr.end(), result.begin());
-	result.back() = 0;
+    result.clear();
+    utf8::utf8to16(str.begin(), str.end(), std::back_inserter(result));
+    result.push_back(0);
 }
 
 void VCGXT::skip_utf8_signature(std::ifstream &stream)

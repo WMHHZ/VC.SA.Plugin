@@ -38,7 +38,7 @@ union FontBufferPointer
 {
     CFontRenderState *pdata;
     CharType *ptext;
-    unsigned int addr;
+    std::uintptr_t addr;
 };
 VALIDATE_SIZE(FontBufferPointer, 4)
 

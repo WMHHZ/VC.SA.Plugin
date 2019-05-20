@@ -23,7 +23,7 @@ void CCharTable::ReadTable()
 		if (std::ftell(hfile) == 131072)
 		{
 			std::fseek(hfile, 0, SEEK_SET);
-			std::fread(&sTable.front(), 2, 0x10000, hfile);
+			std::fread(sTable.data(), 2, 0x10000, hfile);
 		}
 		
 		std::fclose(hfile);
