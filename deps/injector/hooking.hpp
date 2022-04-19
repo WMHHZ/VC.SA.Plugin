@@ -497,7 +497,7 @@ namespace injector
      *      For standard conventions (usually __cdecl)
      */
     template<uintptr_t addr1, class Prototype>
-    struct function_hooker;
+    class function_hooker;
 
     template<uintptr_t addr1, class Ret, class ...Args>
     class function_hooker<addr1, Ret(Args...)>

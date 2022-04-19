@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "../deps/injector/assembly.hpp"
+#include "rw/rwcore.h"
+//#include "../deps/injector/assembly.hpp"
 #include "../deps/injector/injector.hpp"
 #include "../deps/injector/hooking.hpp"
 #include "../deps/injector/calling.hpp"
 #include "../deps/injector/utility.hpp"
-#include "../deps/utf8cpp/utf8.h"
-#include "rw/rwcore.h"
+#include <utf8cpp/utf8.h>
 #include <filesystem>
 #include <array>
 #include <cstdio>

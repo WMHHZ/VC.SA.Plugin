@@ -6,7 +6,7 @@
 #include "rwFunc.h"
 #include "rw/rwcore.h"
 #include "../deps/injector/injector.hpp"
-#include "../deps/utf8cpp/utf8.h"
+#include <utf8cpp/utf8.h>
 
 float CFont::fix_value_2;
 float CFont::fix_value_2_chs;

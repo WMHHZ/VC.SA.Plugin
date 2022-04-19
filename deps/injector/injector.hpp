@@ -28,7 +28,6 @@
 #include <windows.h>
 #include <cstdint>
 #include <cstdio>
-#include "gvm/gvm.hpp"
 /*
     The following macros (#define) are relevant on this header:
 
@@ -191,7 +190,7 @@ union basic_memory_pointer
 };
 
  // Typedefs including memory translator for the above type
-typedef basic_memory_pointer<address_manager::fn_mem_translator>       memory_pointer;
+typedef basic_memory_pointer<address_manager::fn_mem_translator_nop>   memory_pointer;
 typedef basic_memory_pointer<address_manager::fn_mem_translator_nop>   memory_pointer_raw;
 typedef basic_memory_pointer<address_manager::fn_mem_translator_aslr>  memory_pointer_aslr;
 

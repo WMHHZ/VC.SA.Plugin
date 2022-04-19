@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cstdio>
 
-#include "../deps/utf8cpp/utf8.h"
+#include <utf8cpp/utf8.h>
 
 bool SAGXT::LoadText(const char *path)
 {
@@ -165,7 +165,7 @@ void SAGXT::GenerateWMHHZStuff()
 
     for (auto chr : this->m_WideCharCollection)
     {
-        convCode << std::hex << "m_Table[0x" << chr << std::dec << "] = {" << row << ',' << column << "};" << '\n';
+        convCode << std::hex << "m_Table[0x" << static_cast<int>(chr) << std::dec << "] = {" << row << ',' << column << "};" << '\n';
 
         fwrite(&chr, 2, 1, charactersSet);
 

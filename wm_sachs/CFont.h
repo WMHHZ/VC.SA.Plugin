@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "game.h"
-#include "../deps/func_wrapper/func_wrapper.hpp"
 
 class CSprite2d;
 
