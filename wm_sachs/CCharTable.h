@@ -1,16 +1,15 @@
 #pragma once
-#include "CFont.h"
 
 class CCharTable
 {
 public:
 	struct CharPos
 	{
-		unsigned __int8 rowIndex;
-		unsigned __int8 columnIndex;
+		unsigned char rowIndex;
+		unsigned char columnIndex;
 	};
 
-	static CharPos GetCharPos(unsigned __int32 chr);
+	static CharPos GetCharPos(unsigned int chr);
 
 	static void InitTable();
 

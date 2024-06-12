@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CFont.h"
+#include "CFontPatch.h"
 
 struct CharPos
 {

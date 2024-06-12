@@ -1,4 +1,5 @@
 #include "CCharTable.h"
+#include "CFontPatch.h"
 
 CCharTable::CharPos CCharTable::m_Table[0x10000];
 
@@ -8,9 +9,9 @@ CCharTable::CharPos CCharTable::GetCharPos(unsigned __int32 chr)
 
 	if (chr < 0x60)
 	{
-		if (CFont::RenderState->FontStyle != 0)
+		if (CFontPatch::RenderState->FontStyle != 0)
 		{
-			chr = CFont::FindSubFontCharacter(chr, CFont::RenderState->FontStyle);
+			chr = CFontPatch::FindSubFontCharacter(chr, CFontPatch::RenderState->FontStyle);
 		
 			if (chr == 0xD0)
 			{

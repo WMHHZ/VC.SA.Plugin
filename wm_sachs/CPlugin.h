@@ -11,11 +11,9 @@ public:
 	static char textPath[];
 	static const wchar_t *MessageboxTitle;
 
-	static bool CheckResourceFile(HMODULE hPlugin);
-	static bool CheckGameVersion();
+	static bool Init(HMODULE hPlugin);
 
 	static void Patch10U();
-	static void PatchSteam();
 
 	static void __cdecl LoadCHSTexture();
 	static void __cdecl UnloadCHSTexture(int dummy);

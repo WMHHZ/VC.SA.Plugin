@@ -1,12 +1,8 @@
 ﻿#include "CPlugin.h"
-#include "rwFunc.h"
-#include "CFont.h"
-#include "CTxdStore.h"
-#include "CSprite.h"
-#include "CSprite2d.h"
-#include "CScriptTextDrawer.h"
+#include <game_sa/RenderWare.h>
+#include <game_sa/CTxdStore.h>
+#include "CFontPatch.h"
 #include "CCharTable.h"
-#include "../deps/injector/hooking.hpp"
 
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
@@ -29,7 +25,7 @@ __declspec(naked) void Hook_LoadGxt()
 	}
 }
 
-bool CPlugin::CheckResourceFile(HMODULE hPlugin)
+bool CPlugin::Init(HMODULE hPlugin)
 {
 	char pluginPath[MAX_PATH];
 
@@ -45,48 +41,12 @@ bool CPlugin::CheckResourceFile(HMODULE hPlugin)
 		return false;
 	}
 
-	return true;
-}
-
-bool CPlugin::CheckGameVersion()
-{
-	injector::address_manager &veref = injector::address_manager::singleton();
-
-	if (veref.IsSA())
-	{	
-		if (veref.IsSteam())
-		{
-			rwFunc::InitSteam();
-			CSprite::InitSteam();
-			CSprite2d::InitSteam();
-			CTxdStore::InitSteam();
-			CScriptTextDrawer::InitSteam();
-			CFont::InitSteam();
-
-			PatchSteam();
-		}
-		else
-		{
-			rwFunc::Init10U();
-			CSprite::Init10U();
-			CSprite2d::Init10U();
-			CTxdStore::Init10U();
-			CScriptTextDrawer::Init10U();
-			CFont::Init10U();
-
-			Patch10U();
-		}
-		
-		CCharTable::InitTable();
-	}
-	else
-	{
-		MessageBoxW(nullptr, L"你正在使用的游戏版本不被支持！请确保你的游戏主程序为以下之一：\n1.0美版：14383616字节\n1.0美版：5189632字节\nSteam版：5971456字节", MessageboxTitle, MB_ICONWARNING);
-		return false;
-	}
+	Patch10U();
+	CCharTable::InitTable();
 
 	return true;
 }
+
 
 void CPlugin::Patch10U()
 {
@@ -118,38 +78,22 @@ void CPlugin::Patch10U()
 	injector::MakeJMP(0x71A210, CFont::RenderFontBuffer);
 }
 
-void CPlugin::PatchSteam()
-{
-	injector::MakeCALL(injector::aslr_ptr(0x5D7CC6).get(), LoadCHSTexture);
-	injector::MakeCALL(injector::aslr_ptr(0x736148).get(), UnloadCHSTexture);
-	
-	injector::MakeCALL(injector::aslr_ptr(0x6CD6F3).get(), Hook_LoadGxt);
-	injector::MakeCALL(injector::aslr_ptr(0x6CDC1B).get(), Hook_LoadGxt);
-	injector::MemoryFill(injector::aslr_ptr(0x94278A).get(), 0, 0x12, false);
-	
-	injector::MakeNOP(injector::aslr_ptr(0x58D7E4).get(), 5);
-
-	injector::MakeJMP(injector::aslr_ptr(0x737150).get(), CFont::RenderFontBuffer);
-	injector::MakeJMP(injector::aslr_ptr(0x737A70).get(), CFont::GetStringWidth);
-	injector::MakeJMP(injector::aslr_ptr(0x737B90).get(), CFont::ProcessCurrentString);
-}
-
 void CPlugin::LoadCHSTexture()
 {
 	int width, height, depth, flags;
 
 	CTxdStore::PopCurrentTxd();
 	
-	RwImage *image = rwFunc::RtPNGImageRead(texturePath);
-	rwFunc::RwImageFindRasterFormat(image, 4, &width, &height, &depth, &flags);
-	RwRaster *raster = rwFunc::RwRasterCreate(width, height, depth, flags);
-	rwFunc::RwRasterSetFromImage(raster, image);
-	rwFunc::RwImageDestroy(image);
-	CFont::m_ChsSprite.m_pRwTexture = rwFunc::RwTextureCreate(raster);
+	RwImage *image = RtPNGImageRead(texturePath);
+	RwImageFindRasterFormat(image, 4, &width, &height, &depth, &flags);
+	RwRaster *raster = RwRasterCreate(width, height, depth, flags);
+	RwRasterSetFromImage(raster, image);
+	RwImageDestroy(image);
+	CFontPatch::m_ChsSprite.m_pTexture = RwTextureCreate(raster);
 }
 
 void CPlugin::UnloadCHSTexture(int dummy)
 {
 	CTxdStore::RemoveTxdSlot(dummy);
-	CFont::m_ChsSprite.Delete();
+	CFontPatch::m_ChsSprite.Delete();
 }
