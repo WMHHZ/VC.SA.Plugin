@@ -24,9 +24,6 @@ CFontRenderState *CFontPatch::m_FontBuffer;
 FontBufferPointer *CFontPatch::m_FontBufferIter;
 CFontRenderState *CFontPatch::RenderState;
 
-bool *CFontPatch::m_bFontPropOn;
-char *CFontPatch::m_nFontOutlineSize;
-
 unsigned char(__cdecl *CFontPatch::FindSubFontCharacter)(unsigned char, unsigned char);
 void(__cdecl *CFontPatch::PrintKeyTokenFormat)(char *);
 void(__cdecl *CFontPatch::RenderString)(float, float, const char *, const char *, float);
@@ -51,7 +48,7 @@ float __cdecl CFontPatch::GetScaledLetterWidthNormal(unsigned int arg_char)
             arg_char = FindSubFontCharacter(arg_char, CFont::m_FontStyle);
         }
 
-        if (*m_bFontPropOn)
+        if (CFont::m_bFontPropOn)
         {
             charWidth = gFontData[CFont::m_FontTextureId].m_propValues[arg_char];
         }
@@ -61,7 +58,7 @@ float __cdecl CFontPatch::GetScaledLetterWidthNormal(unsigned int arg_char)
         }
     }
 
-    return ((charWidth + *m_nFontOutlineSize) * CFont::m_Scale->x);
+    return ((charWidth + CFont::m_nFontOutlineSize) * CFont::m_Scale->x);
 }
 
 float CFontPatch::GetScaledLetterWidthScript(unsigned int arg_char)
@@ -647,9 +644,6 @@ void CFontPatch::Init10U()
     m_FontBuffer = injector::raw_ptr(0xC716B0).get();
     m_FontBufferIter = injector::raw_ptr(0xC716A8).get();
     RenderState = injector::raw_ptr(0xC71AA0).get();
-
-    m_bFontPropOn = injector::raw_ptr(0xC71A7D).get();
-    m_nFontOutlineSize = injector::raw_ptr(0xC71A9B).get();
 
     FindSubFontCharacter = injector::raw_ptr(0x7192C0).get();
 

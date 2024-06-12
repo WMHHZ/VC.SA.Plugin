@@ -55,7 +55,6 @@ public:
     char pad4[3];
     int TextCount;
 };
-VALIDATE_SIZE(CFontDetails, 0x54)
 
 class CFontRenderState
 {

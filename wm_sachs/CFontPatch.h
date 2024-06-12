@@ -54,9 +54,6 @@ public:
     static FontBufferPointer *m_FontBufferIter;
     static CFontRenderState *RenderState;
 
-    static bool *m_bFontPropOn;
-    static char *m_nFontOutlineSize;
-
     static unsigned char(__cdecl *FindSubFontCharacter)(unsigned char, unsigned char);
     static void(__cdecl *PrintKeyTokenFormat)(char *);
     static void(__cdecl *RenderString)(float, float, const char *, const char *, float);
