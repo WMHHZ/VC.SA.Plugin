@@ -55,7 +55,6 @@ public:
     static CFontRenderState *RenderState;
 
     static unsigned char(__cdecl *FindSubFontCharacter)(unsigned char, unsigned char);
-    static void(__cdecl *PrintKeyTokenFormat)(char *);
     static void(__cdecl *RenderString)(float, float, const char *, const char *, float);
 
     static float GetScaledLetterWidthNormal(unsigned int);

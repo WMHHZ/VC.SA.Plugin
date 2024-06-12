@@ -17,6 +17,7 @@ add_library(wm_sachs SHARED
     ${CMAKE_SOURCE_DIR}/plugin-sdk/plugin_sa/game_sa/CTxdStore.cpp
     ${CMAKE_SOURCE_DIR}/plugin-sdk/plugin_sa/game_sa/CRect.cpp
     ${CMAKE_SOURCE_DIR}/plugin-sdk/plugin_sa/game_sa/CVector2D.cpp
+    ${CMAKE_SOURCE_DIR}/plugin-sdk/plugin_sa/game_sa/CMessages.cpp
     ${CMAKE_SOURCE_DIR}/plugin-sdk/shared/game/CRGBA.cpp
     ${CMAKE_SOURCE_DIR}/plugin-sdk/shared/GameVersion.cpp
     ${CMAKE_SOURCE_DIR}/plugin-sdk/shared/PluginBase.cpp

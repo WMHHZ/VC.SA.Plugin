@@ -41,12 +41,12 @@ bool CPlugin::Init(HMODULE hPlugin)
 		return false;
 	}
 
+    CFontPatch::Init10U();
 	Patch10U();
 	CCharTable::InitTable();
 
 	return true;
 }
-
 
 void CPlugin::Patch10U()
 {
@@ -57,25 +57,25 @@ void CPlugin::Patch10U()
 	injector::MakeCALL(0x6A0222, Hook_LoadGxt);
 	injector::MemoryFill(0x8CFD6A, 0, 0x12, false);
 
-	injector::MakeCALL(0x47B565, CFont::GetStringWidth);
-	injector::MakeCALL(0x47B73A, CFont::GetStringWidth);
-	injector::MakeCALL(0x57A49B, CFont::GetStringWidth);
-	injector::MakeCALL(0x57FB52, CFont::GetStringWidth);
-	injector::MakeCALL(0x57FE35, CFont::GetStringWidth);
-	injector::MakeCALL(0x5814A7, CFont::GetStringWidth);
-	injector::MakeCALL(0x581512, CFont::GetStringWidth);
-	injector::MakeCALL(0x58BCCC, CFont::GetStringWidth);
+	injector::MakeCALL(0x47B565, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x47B73A, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x57A49B, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x57FB52, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x57FE35, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x5814A7, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x581512, CFontPatch::GetStringWidth);
+	injector::MakeCALL(0x58BCCC, CFontPatch::GetStringWidth);
 
-	injector::MakeCALL(0x71A5F1, CFont::ProcessCurrentString);
-	injector::MakeCALL(0x71A611, CFont::ProcessCurrentString);
-	injector::MakeCALL(0x71A631, CFont::ProcessCurrentString);
-	injector::MakeCALL(0x71A802, CFont::ProcessCurrentString);
-	injector::MakeCALL(0x71A834, CFont::ProcessCurrentString);
+	injector::MakeCALL(0x71A5F1, CFontPatch::ProcessCurrentString);
+	injector::MakeCALL(0x71A611, CFontPatch::ProcessCurrentString);
+	injector::MakeCALL(0x71A631, CFontPatch::ProcessCurrentString);
+	injector::MakeCALL(0x71A802, CFontPatch::ProcessCurrentString);
+	injector::MakeCALL(0x71A834, CFontPatch::ProcessCurrentString);
 
-	injector::MakeCALL(0x57BF70, CFont::RenderFontBuffer);
-	injector::MakeCALL(0x719B5D, CFont::RenderFontBuffer);
-	injector::MakeCALL(0x719F43, CFont::RenderFontBuffer);
-	injector::MakeJMP(0x71A210, CFont::RenderFontBuffer);
+	injector::MakeCALL(0x57BF70, CFontPatch::RenderFontBuffer);
+	injector::MakeCALL(0x719B5D, CFontPatch::RenderFontBuffer);
+	injector::MakeCALL(0x719F43, CFontPatch::RenderFontBuffer);
+	injector::MakeJMP(0x71A210, CFontPatch::RenderFontBuffer);
 }
 
 void CPlugin::LoadCHSTexture()

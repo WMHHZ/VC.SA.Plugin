@@ -7,6 +7,7 @@
 
 #include <game_sa/CSprite.h>
 #include <game_sa/RenderWare.h>
+#include <game_sa/CMessages.h>
 
 float CFontPatch::fix_value_2;
 float CFontPatch::fix_value_2_chs;
@@ -25,7 +26,6 @@ FontBufferPointer *CFontPatch::m_FontBufferIter;
 CFontRenderState *CFontPatch::RenderState;
 
 unsigned char(__cdecl *CFontPatch::FindSubFontCharacter)(unsigned char, unsigned char);
-void(__cdecl *CFontPatch::PrintKeyTokenFormat)(char *);
 void(__cdecl *CFontPatch::RenderString)(float, float, const char *, const char *, float);
 
 float __cdecl CFontPatch::GetScaledLetterWidthNormal(unsigned int arg_char)
@@ -154,7 +154,7 @@ float CFontPatch::GetStringWidth(const char *arg_text, bool bGetAll, bool bScrip
     strncpy(strbuf, arg_text, 400);
     strbuf[399] = 0;
 
-    PrintKeyTokenFormat(strbuf);
+    CMessages::InsertPlayerControlKeysInString(strbuf);
 
     while (true)
     {
@@ -534,7 +534,7 @@ void CFontPatch::RenderFontBuffer()
                 m_ChsSprite.SetRenderState();
             }
 
-            RWSRCGLOBAL(dOpenDevice).fpRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
+            RwRenderStateSet(RwRenderState::rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
 
             PrintCHSChar(pos.x, pos.y, var_char);
             CSprite::FlushSpriteBuffer();
@@ -647,6 +647,5 @@ void CFontPatch::Init10U()
 
     FindSubFontCharacter = injector::raw_ptr(0x7192C0).get();
 
-    PrintKeyTokenFormat = injector::raw_ptr(0x69E160).get();
     RenderString = injector::raw_ptr(0x719B40).get();
 }
