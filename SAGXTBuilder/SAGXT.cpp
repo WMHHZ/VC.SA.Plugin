@@ -6,8 +6,9 @@
 
 #include <cstring>
 #include <cstdio>
+#include <utf8/unchecked.h>
 
-#include <utf8cpp/utf8.h>
+#include <utf8/checked.h>
 
 bool SAGXT::LoadText(const char *path)
 {
@@ -53,7 +54,7 @@ bool SAGXT::LoadText(const char *path)
             auto hash = std::stoul(matchResult.str(1), nullptr, 16);
             if (tableIt->second.emplace(hash, matchResult.str(2)).second)
             {
-                utf8::iterator<std::string::const_iterator> it(matchResult[2].first, matchResult[2].first, matchResult[2].second);
+                utf8::iterator it(matchResult[2].first, matchResult[2].first, matchResult[2].second);
 
                 while (it.base() != matchResult[2].second)
                 {

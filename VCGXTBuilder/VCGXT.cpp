@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cstring>
 #include <cstdio>
-#include <utf8cpp/utf8.h>
+#include <utf8/checked.h>
 
 struct CharPos
 {
