@@ -7,7 +7,6 @@ find_package(utf8cpp CONFIG REQUIRED)
 add_library(wm_sachs SHARED
     CCharTable.cpp
     CFontPatch.cpp
-    CGInputSAPatch.cpp
     CPlugin.cpp
     dllmain.cpp
     ${CMAKE_SOURCE_DIR}/thirdparty/plugin-sdk/plugin_sa/game_sa/RenderWare.cpp

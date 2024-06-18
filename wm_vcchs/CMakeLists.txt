@@ -5,7 +5,6 @@ project(wm_vcchs)
 add_library(wm_vcchs SHARED
     CCharTable.cpp
     CFontPatch.cpp
-    CGInputVCPatch.cpp
     dllmain.cpp
     WMVC.cpp
     ${CMAKE_SOURCE_DIR}/thirdparty/plugin-sdk/plugin_vc/game_vc/RenderWare.cpp

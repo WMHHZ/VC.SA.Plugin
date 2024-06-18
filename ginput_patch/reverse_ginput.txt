@@ -1,1 +1,7 @@
 ﻿GInput 1.11
+10007E50 加载贴图
+1000A740 一大堆Patch
+1003AD64 贴图对象指针
+1000C3CB 替换贴图位置
+1000C53A Patch CFont相关
+对于原版字符，调用原有PrintChar函数
