@@ -5,25 +5,26 @@
 #include <injector.hpp>
 #include <utf8/unchecked.h>
 
+#include <game_sa/CMessages.h>
 #include <game_sa/CSprite.h>
 #include <game_sa/RenderWare.h>
-#include <game_sa/CMessages.h>
+
 
 float CFontPatch::fix_value_2;
 float CFontPatch::fix_value_2_chs;
 
-const float CFontPatch::scale_x_rec = 1.0f / 16.0f;
-const float CFontPatch::scale_y_rec = 1.0f / 12.8f;
+const float CFontPatch::scale_x_rec     = 1.0f / 16.0f;
+const float CFontPatch::scale_y_rec     = 1.0f / 12.8f;
 const float CFontPatch::scale_x_rec_chs = 1.0f / 64.0f;
 const float CFontPatch::scale_y_rec_chs = 1.0f / 51.2f;
-const float CFontPatch::fix_value_1 = 0.0021f;
+const float CFontPatch::fix_value_1     = 0.0021f;
 const float CFontPatch::fix_value_1_chs = 0.0021f / 4.0f;
 
 CSprite2d CFontPatch::m_ChsSprite;
 
-CFontRenderState *CFontPatch::m_FontBuffer;
+CFontRenderState  *CFontPatch::m_FontBuffer;
 FontBufferPointer *CFontPatch::m_FontBufferIter;
-CFontRenderState *CFontPatch::RenderState;
+CFontRenderState  *CFontPatch::RenderState;
 
 unsigned char(__cdecl *CFontPatch::FindSubFontCharacter)(unsigned char, unsigned char);
 void(__cdecl *CFontPatch::RenderString)(float, float, const char *, const char *, float);
@@ -64,7 +65,7 @@ float __cdecl CFontPatch::GetScaledLetterWidthNormal(unsigned int arg_char)
 float CFontPatch::GetScaledLetterWidthScript(unsigned int arg_char)
 {
     auto &drawer = CTheScripts::IntroTextLines[CTheScripts::NumberOfIntroTextLinesThisFrame];
-    
+
     unsigned char charWidth, style;
 
     if (arg_char >= 0x60)
@@ -81,12 +82,12 @@ float CFontPatch::GetScaledLetterWidthScript(unsigned int arg_char)
         switch (drawer.font)
         {
         case 2:
-            style = 0;
+            style    = 0;
             arg_char = FindSubFontCharacter(arg_char, 2);
             break;
 
         case 3:
-            style = 1;
+            style    = 1;
             arg_char = FindSubFontCharacter(arg_char, 1);
             break;
 
@@ -143,14 +144,14 @@ float __cdecl CFontPatch::GetScaledLetterWidthDrawing(unsigned int arg_char)
 
 float CFontPatch::GetStringWidth(const char *arg_text, bool bGetAll, bool bScript)
 {
-    char strbuf[400];
+    char  strbuf[400];
     char *bufIter = strbuf;
 
     float result = 0.0f;
 
-    bool succeeded = false;
+    bool succeeded   = false;
     bool StopAtDelim = false;
-    
+
     strncpy(strbuf, arg_text, 400);
     strbuf[399] = 0;
 
@@ -175,7 +176,7 @@ float CFontPatch::GetStringWidth(const char *arg_text, bool bGetAll, bool bScrip
                 break;
             }
 
-            do 
+            do
             {
                 ++bufIter;
             } while (*bufIter != '~');
@@ -263,15 +264,15 @@ char *CFontPatch::GetNextSpace(char *arg_pointer)
 
 short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, char *arg_text)
 {
-    char *esi = arg_text;
+    char       *esi = arg_text;
     const char *ebp = esi;
     const char *edi;
 
-    __int16 result = 0;
+    __int16 result   = 0;
     __int16 numWords = 0;
 
     bool emptyLine = true;
-    char tag = '\0';
+    char tag       = '\0';
 
     CRGBA fontColor = *CFont::m_Color;
     CRGBA tagColor;
@@ -297,7 +298,7 @@ short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, cha
     while (*esi != '\0')
     {
         CFont::m_nExtraFontSymbolId = 0;
-        strWidth = GetStringWidth(esi, false, false);
+        strWidth                    = GetStringWidth(esi, false, false);
 
         if (*esi == '~')
         {
@@ -322,7 +323,7 @@ short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, cha
         if ((strWidth <= widthLimit || emptyLine) && !CFont::m_bNewLine)
         {
             xBound = strWidth;
-            esi = GetNextSpace(esi);
+            esi    = GetNextSpace(esi);
 
             if (*esi != '\0')
             {
@@ -337,7 +338,7 @@ short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, cha
                     ++esi;
                 }
 
-                var_110 = xBound;
+                var_110   = xBound;
                 emptyLine = false;
             }
             else
@@ -436,10 +437,10 @@ short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, cha
                 xBound = arg_x;
             }
 
-            ebp = esi;
+            ebp       = esi;
             emptyLine = true;
-            var_110 = 0.0f;
-            numWords = 0;
+            var_110   = 0.0f;
+            numWords  = 0;
         }
 
         CFont::m_nExtraFontSymbolId = 0;
@@ -455,8 +456,8 @@ short CFontPatch::ProcessCurrentString(bool print, float arg_x, float arg_y, cha
 
 void CFontPatch::RenderFontBuffer()
 {
-    CRGBA var_color;
-    CVector2D pos;
+    CRGBA        var_color;
+    CVector2D    pos;
     unsigned int var_char;
 
     FontBufferPointer ebx;
@@ -570,8 +571,8 @@ void CFontPatch::RenderFontBuffer()
 
 void CFontPatch::PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
 {
-    CRect rect;
-    float row, column;
+    CRect               rect;
+    float               row, column;
     CCharTable::CharPos cpos;
 
     if (arg_y < 0.0f || RsGlobal.maximumHeight < arg_y || arg_x < 0.0f || RsGlobal.maximumWidth < arg_x)
@@ -581,10 +582,10 @@ void CFontPatch::PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
 
     if (CFont::m_nExtraFontSymbolId != 0)
     {
-        rect.top = RenderState->Scale.y * 2.0f + arg_y;
-        rect.right = RenderState->Scale.y * 17.0f + arg_x;
+        rect.top    = RenderState->Scale.y * 2.0f + arg_y;
+        rect.right  = RenderState->Scale.y * 17.0f + arg_x;
         rect.bottom = RenderState->Scale.y * 19.0f + arg_y;
-        rect.left = arg_x;
+        rect.left   = arg_x;
         CFont::ButtonSprite[CFont::m_nExtraFontSymbolId].Draw(rect, CRGBA(255, 255, 255, RenderState->Color.a));
         return;
     }
@@ -596,12 +597,12 @@ void CFontPatch::PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
 
     cpos = CCharTable::GetCharPos(arg_char);
 
-    row = cpos.rowIndex;
+    row    = cpos.rowIndex;
     column = cpos.columnIndex;
 
-    rect.left = arg_x;
-    rect.top = arg_y;
-    rect.right = RenderState->Scale.x * 32.0f + arg_x;
+    rect.left   = arg_x;
+    rect.top    = arg_y;
+    rect.right  = RenderState->Scale.x * 32.0f + arg_x;
     rect.bottom = RenderState->Scale.y * 20.0f + arg_y;
 
     if (arg_char < 0x60)
@@ -609,41 +610,30 @@ void CFontPatch::PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
         row *= scale_y_rec;
         column *= scale_x_rec;
 
-        CSprite2d::AddToBuffer(rect, RenderState->Color,
-            column,
-            row + fix_value_2,
-            column + scale_x_rec - fix_value_1,
-            row + fix_value_2,
-            column,
-            row + scale_y_rec - fix_value_2,
-            column + scale_x_rec - fix_value_1,
-            row + scale_y_rec - fix_value_2);
+        CSprite2d::AddToBuffer(rect, RenderState->Color, column, row + fix_value_2, column + scale_x_rec - fix_value_1,
+                               row + fix_value_2, column, row + scale_y_rec - fix_value_2,
+                               column + scale_x_rec - fix_value_1, row + scale_y_rec - fix_value_2);
     }
     else
     {
         row *= scale_y_rec_chs;
         column *= scale_x_rec_chs;
 
-        CSprite2d::AddToBuffer(rect, RenderState->Color,
-            column,
-            row + fix_value_2_chs,
-            column + scale_x_rec_chs - fix_value_1_chs,
-            row + fix_value_2_chs,
-            column,
-            row + scale_y_rec_chs - fix_value_2_chs,
-            column + scale_x_rec_chs - fix_value_1_chs,
-            row + scale_y_rec_chs - fix_value_2_chs);
+        CSprite2d::AddToBuffer(rect, RenderState->Color, column, row + fix_value_2_chs,
+                               column + scale_x_rec_chs - fix_value_1_chs, row + fix_value_2_chs, column,
+                               row + scale_y_rec_chs - fix_value_2_chs, column + scale_x_rec_chs - fix_value_1_chs,
+                               row + scale_y_rec_chs - fix_value_2_chs);
     }
 }
 
 void CFontPatch::Init10U()
 {
-    fix_value_2 = 0.0021f;
+    fix_value_2     = 0.0021f;
     fix_value_2_chs = 0.0021f / 4.0f;
 
-    m_FontBuffer = injector::raw_ptr(0xC716B0).get();
+    m_FontBuffer     = injector::raw_ptr(0xC716B0).get();
     m_FontBufferIter = injector::raw_ptr(0xC716A8).get();
-    RenderState = injector::raw_ptr(0xC71AA0).get();
+    RenderState      = injector::raw_ptr(0xC71AA0).get();
 
     FindSubFontCharacter = injector::raw_ptr(0x7192C0).get();
 

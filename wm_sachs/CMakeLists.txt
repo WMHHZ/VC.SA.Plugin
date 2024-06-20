@@ -5,6 +5,7 @@ project(wm_sachs)
 find_package(utf8cpp CONFIG REQUIRED)
 
 add_library(wm_sachs SHARED
+    Main.cpp
     CCharTable.cpp
     CFontPatch.cpp
     CPlugin.cpp

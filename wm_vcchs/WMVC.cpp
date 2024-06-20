@@ -1,6 +1,7 @@
 ﻿#include "WMVC.h"
-#include "CFontPatch.h"
 #include "CCharTable.h"
+#include "CFontPatch.h"
+
 
 void WMVC::MakeResourcePath(HMODULE hPlugin)
 {
@@ -27,7 +28,7 @@ __declspec(naked) void hook_load_gxt_mission()
     }
 }
 
-char aRb[] = "rb";
+char                   aRb[] = "rb";
 __declspec(naked) void hook_load_gxt()
 {
     __asm
@@ -42,13 +43,13 @@ __declspec(naked) void hook_load_gxt()
 
 void WMVC::PatchGame()
 {
-    //初始化内存地址
-    CFontPatch::Size = (tFontTable*)GLOBAL_ADDRESS_BY_VERSION(0x696BD8, 0x0, 0x695BE0);
-    CFontPatch::FontBufferIter = (FontBufferPointer*)GLOBAL_ADDRESS_BY_VERSION(0x70975C, 0x0, 0x70875C);
-    CFontPatch::FontBuffer.pdata = (CFontRenderState*)GLOBAL_ADDRESS_BY_VERSION(0x70935C, 0x0, 0x70835C);
+    // 初始化内存地址
+    CFontPatch::Size             = (tFontTable *)GLOBAL_ADDRESS_BY_VERSION(0x696BD8, 0x0, 0x695BE0);
+    CFontPatch::FontBufferIter   = (FontBufferPointer *)GLOBAL_ADDRESS_BY_VERSION(0x70975C, 0x0, 0x70875C);
+    CFontPatch::FontBuffer.pdata = (CFontRenderState *)GLOBAL_ADDRESS_BY_VERSION(0x70935C, 0x0, 0x70835C);
 
-    //Patch
-    unsigned char* FEO_LAN_Entry = (unsigned char *)GLOBAL_ADDRESS_BY_VERSION(0x6DA386, 0x0, 0x6D9356);
+    // Patch
+    unsigned char *FEO_LAN_Entry = (unsigned char *)GLOBAL_ADDRESS_BY_VERSION(0x6DA386, 0x0, 0x6D9356);
     memcpy(FEO_LAN_Entry, FEO_LAN_Entry + 0x12, 0x12);
     memcpy(FEO_LAN_Entry + 0x12, FEO_LAN_Entry + 0x24, 0x12);
     memset(FEO_LAN_Entry + 0x24, 0, 0x12);
@@ -68,7 +69,7 @@ void WMVC::PatchGame()
 
     injector::WriteMemory(GLOBAL_ADDRESS_BY_VERSION(0x68FD58, 0x0, 0x68ED60), 999.0f);
 
-    unsigned char* SpaceAddInstr = (unsigned char*)GLOBAL_ADDRESS_BY_VERSION(0x6161BB, 0x0, 0x615DDB);
+    unsigned char *SpaceAddInstr = (unsigned char *)GLOBAL_ADDRESS_BY_VERSION(0x6161BB, 0x0, 0x615DDB);
     injector::MakeNOP(SpaceAddInstr, 6);
     injector::MakeNOP(SpaceAddInstr + 8);
     injector::MakeNOP(SpaceAddInstr + 0x22);

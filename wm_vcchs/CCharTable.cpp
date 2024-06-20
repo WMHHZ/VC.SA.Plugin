@@ -1,31 +1,30 @@
 ﻿#include "CCharTable.h"
 
-
 static std::array<CharPos, 0x10000> sTable;
 
 char CCharTable::datPath[260];
 
 const CharPos &CCharTable::GetCharPos(CharType chr)
 {
-	return sTable[chr];
+    return sTable[chr];
 }
 
 void CCharTable::ReadTable()
 {
-	sTable.fill({ 63, 63 });
+    sTable.fill({63, 63});
 
-	FILE *hfile = std::fopen(datPath, "rb");
+    FILE *hfile = std::fopen(datPath, "rb");
 
-	if (hfile != nullptr)
-	{
-		std::fseek(hfile, 0, SEEK_END);
+    if (hfile != nullptr)
+    {
+        std::fseek(hfile, 0, SEEK_END);
 
-		if (std::ftell(hfile) == 131072)
-		{
-			std::fseek(hfile, 0, SEEK_SET);
-			std::fread(sTable.data(), 2, 0x10000, hfile);
-		}
-		
-		std::fclose(hfile);
-	}
+        if (std::ftell(hfile) == 131072)
+        {
+            std::fseek(hfile, 0, SEEK_SET);
+            std::fread(sTable.data(), 2, 0x10000, hfile);
+        }
+
+        std::fclose(hfile);
+    }
 }

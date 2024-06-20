@@ -1,41 +1,40 @@
 ﻿#pragma once
 #include <CRGBA.h>
-#include <game_sa/CVector2D.h>
 #include <game_sa/CTheScripts.h>
+#include <game_sa/CVector2D.h>
 
 #include <game_sa/CFont.h>
 
 class CFontRenderState
 {
-public:
-    float		Useless;
-    CVector2D	Pos;
-    CVector2D	Scale;
-    CRGBA		Color;
-    float		JustifyWrap;
-    float		Slant;
-    CVector2D	SlantRefPoint;
-    bool		IsBlip;
-    char		FontStyle;
-    bool		Prop;
-    char		_pad1;
-    short		TextureID;
-    char		OutlineSize;
-    char		_pad2;
+  public:
+    float     Useless;
+    CVector2D Pos;
+    CVector2D Scale;
+    CRGBA     Color;
+    float     JustifyWrap;
+    float     Slant;
+    CVector2D SlantRefPoint;
+    bool      IsBlip;
+    char      FontStyle;
+    bool      Prop;
+    char      _pad1;
+    short     TextureID;
+    char      OutlineSize;
+    char      _pad2;
 };
 static_assert(sizeof(CFontRenderState) == 0x30, "Class CFontRenderState is wrong.");
 
-union FontBufferPointer
-{
+union FontBufferPointer {
     CFontRenderState *pdata;
-    char *ptext;
-    unsigned int addr;
+    char             *ptext;
+    unsigned int      addr;
 };
 static_assert(sizeof(FontBufferPointer) == 0x4, "Union FontBufferPointer is wrong.");
 
 class CFontPatch
 {
-public:
+  public:
     static float fix_value_2;
     static float fix_value_2_chs;
 
@@ -50,9 +49,9 @@ public:
 
     static CSprite2d m_ChsSprite;
 
-    static CFontRenderState *m_FontBuffer;
+    static CFontRenderState  *m_FontBuffer;
     static FontBufferPointer *m_FontBufferIter;
-    static CFontRenderState *RenderState;
+    static CFontRenderState  *RenderState;
 
     static unsigned char(__cdecl *FindSubFontCharacter)(unsigned char, unsigned char);
     static void(__cdecl *RenderString)(float, float, const char *, const char *, float);

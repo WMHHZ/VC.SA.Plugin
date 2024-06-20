@@ -3,7 +3,7 @@
 
 class WMVC
 {
-public:
+  public:
     static void MakeResourcePath(HMODULE module);
     static void PatchGame();
 };

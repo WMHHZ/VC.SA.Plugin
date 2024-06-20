@@ -1,7 +1,26 @@
-﻿GInput 1.11
-10007E50 加载贴图
-1000A740 一大堆Patch
-1003AD64 贴图对象指针
-1000C3CB 替换贴图位置
-1000C53A Patch CFont相关
-对于原版字符，调用原有PrintChar函数
+﻿GInputSA 1.11
+10009040 ParseToken
+1003AD60 按钮贴图
+1003B084 替换常量17.0
+100384D0 替换文本信息数组，单项大小40字节，共124个
+
+与CFont有关的Patch
+1000C3CB 718AE1 替换PrintChar按钮贴图
+1000C437 7189D9 卸载按钮贴图
+1000C464 7189DB 卸载按钮贴图
+1000C53F 719966 RenderFontBuffer中替换ParseToken
+1000C578 71A019 PrintString中替换ParseToken
+1000C5B1 71A2C5 GetNumberLines中替换ParseToken
+1000C5EA 71A181 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
+1000C616 71A185 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
+1000C643 71A187 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
+1000C683 71A18C GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
+1000C6AF 71A336 GetNumberLines中的Inline ASM
+1000C6EF 718A98 PrintChar中的常量17.0
+1000C71B 719A55 RenderFontBuffer中的常量17.0
+
+与文本有关的Patch
+1000A660 替换CText::Get
+
+GInputVC 1.11
+与CFont有关的Patch

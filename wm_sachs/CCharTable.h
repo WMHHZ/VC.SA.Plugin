@@ -2,17 +2,17 @@
 
 class CCharTable
 {
-public:
-	struct CharPos
-	{
-		unsigned char rowIndex;
-		unsigned char columnIndex;
-	};
+  public:
+    struct CharPos
+    {
+        unsigned char rowIndex;
+        unsigned char columnIndex;
+    };
 
-	static CharPos GetCharPos(unsigned int chr);
+    static CharPos GetCharPos(unsigned int chr);
 
-	static void InitTable();
+    static void InitTable();
 
-private:
-	static CharPos m_Table[];
+  private:
+    static CharPos m_Table[];
 };

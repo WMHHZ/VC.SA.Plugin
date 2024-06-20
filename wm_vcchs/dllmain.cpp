@@ -1,6 +1,7 @@
-﻿#include <windows.h>
+﻿#include "CCharTable.h"
 #include "WMVC.h"
-#include "CCharTable.h"
+#include <windows.h>
+
 
 BOOL WINAPI DllMain(HMODULE hDllHandle, DWORD dwReason, LPVOID lpreserved)
 {
