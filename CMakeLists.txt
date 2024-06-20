@@ -4,6 +4,6 @@ project(wmhhz_vcsa)
 
 add_subdirectory(SAGXTBuilder)
 add_subdirectory(VCGXTBuilder)
-add_subdirectory(ginput_patch)
+add_subdirectory(thirdparty/plugin-sdk-build)
 add_subdirectory(wm_vcchs)
 add_subdirectory(wm_sachs)

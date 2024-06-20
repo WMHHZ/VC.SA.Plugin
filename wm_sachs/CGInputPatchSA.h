@@ -1,4 +1,4 @@
 ﻿#pragma once
 
-class CGInputPatch
+class CGInputSAPatch
 {};
