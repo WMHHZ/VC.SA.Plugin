@@ -198,4 +198,4 @@ target_include_directories(plugin_vc_lib PUBLIC
     ${CMAKE_SOURCE_DIR}/thirdparty/plugin-sdk/shared/game
 )
 
-target_compile_definitions(plugin_vc_lib PUBLIC GTAVC RW)
+target_compile_definitions(plugin_vc_lib PUBLIC GTAVC RW PLUGIN_SGV_10EN)
