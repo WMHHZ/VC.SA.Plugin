@@ -3,13 +3,11 @@
 project(wm_vcchs)
 
 add_library(wm_vcchs SHARED
-    CCharTable.cpp
-    CFontPatch.cpp
-    dllmain.cpp
-    WMVC.cpp
+    FontPatch.cpp
+    Main.cpp
 )
 
-target_compile_definitions(wm_vcchs PRIVATE GINPUT_COMPILE_VC_VERSION)
+target_compile_definitions(wm_vcchs PRIVATE)
 
 target_link_libraries(wm_vcchs PRIVATE plugin_vc_lib)
 

@@ -1,4 +1,4 @@
-﻿GInputSA 1.11
+﻿GInputVC 1.11
 10009040 ParseToken
 1003AD60 按钮贴图
 1003B084 替换常量17.0
