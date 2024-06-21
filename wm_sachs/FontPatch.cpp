@@ -65,13 +65,14 @@ void(__cdecl *RenderString)(float, float, const char *, const char *, float) = i
 float     *GInput_SymbolWidth;
 CSprite2d *GInput_ButtonSprites;
 char *(__cdecl *GInput_ParseTokenFunc)(char *, CRGBA &, bool, char *);
+char *(__stdcall *GInput_SkipToken)(char *, float *);
 
 CharPos TheTable[0x10000];
 
 char texturePath[MAX_PATH];
 char textPath[MAX_PATH];
 
-char                   aRb[] = "rb";
+char aRb[] = "rb";
 __declspec(naked) void Hook_LoadGxt()
 {
     __asm
@@ -258,10 +259,7 @@ float GetStringWidth(const char *arg_text, bool bGetAll, bool bScript)
                 break;
             }
 
-            do
-            {
-                ++bufIter;
-            } while (*bufIter != '~');
+            bufIter = GInput_SkipToken(bufIter, &result);
 
             ++bufIter;
 
@@ -361,7 +359,7 @@ void PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
         rect.right  = RenderState->Scale.y * *GInput_SymbolWidth + arg_x;
         rect.bottom = RenderState->Scale.y * 19.0f + arg_y;
         rect.left   = arg_x;
-        CFont::ButtonSprite[CFont::m_nExtraFontSymbolId].Draw(rect, CRGBA(255, 255, 255, RenderState->Color.a));
+        GInput_ButtonSprites[CFont::m_nExtraFontSymbolId].Draw(rect, CRGBA(255, 255, 255, RenderState->Color.a));
         return;
     }
 
@@ -722,6 +720,7 @@ bool Init()
     GInput_SymbolWidth    = injector::auto_pointer(base + 0x3B084).get();
     GInput_ButtonSprites  = injector::auto_pointer(base + 0x3AD60).get();
     GInput_ParseTokenFunc = injector::auto_pointer(base + 0x9040).get();
+    GInput_SkipToken      = injector::auto_pointer(base + 0x99C0).get();
 
     // 计算贴图路径
     char pluginPath[MAX_PATH];

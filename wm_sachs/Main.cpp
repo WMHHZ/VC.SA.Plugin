@@ -6,7 +6,7 @@ class PluginSA
   public:
     PluginSA()
     {
-        plugin::Events::initGameEvent += []() { FontPatch::Init(); };
+        plugin::Events::initRwEvent += []() { FontPatch::Init(); };
     }
 
 } plugin_sa;
