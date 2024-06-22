@@ -72,7 +72,7 @@ CharPos TheTable[0x10000];
 char texturePath[MAX_PATH];
 char textPath[MAX_PATH];
 
-char                   aRb[] = "rb";
+char aRb[] = "rb";
 __declspec(naked) void Hook_LoadGxt()
 {
     __asm

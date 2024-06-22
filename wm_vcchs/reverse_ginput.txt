@@ -1,10 +1,16 @@
-﻿GInputVC 1.11
+﻿给PrintString增加绘制Token的分支
+
+GInputVC 1.11
 与文本有关的Patch
+10006060 绘制按钮，并返回宽度
 100071C0 替换CFont::ParseToken
 10007B60 跳过Token的函数
 10007C60 替换RenderFontBuffer的CSprite2d::SetRenderState
+10007CE0 插入的绘制按钮过程
 10008020 替换CText::Get
 1003F4A0 替换文本信息数组，单项大小40字节，共33个
+10040D36 按钮编号
+10040E80 按钮贴图数组，下标0表示非按钮
 
 与CFont有关的Patch
 

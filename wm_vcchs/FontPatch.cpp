@@ -98,7 +98,10 @@ CSprite2d         *Sprite;
 
 CharType *(__cdecl *fnGInput_ParseToken)(CharType *, CRGBA &, bool &, bool &);
 CharType *(__stdcall *fnGInput_SkipToken)(CharType *, float *);
-int(__thiscall *fnGInput_SetRenderState)(CSprite2d *);
+int(__fastcall *fnGInput_SetRenderState)(CSprite2d *);
+float(__cdecl *fnGInput_PrintSymbol)(float, float);
+char      *GInput_ButtonSymbol;
+CSprite2d *GInput_ButtonSprite;
 
 void(__cdecl *fnPrintChar)(float, float, CharType);
 CharType(__cdecl *fnFindNewCharacter)(CharType);
@@ -219,10 +222,8 @@ float GetStringWidth(CharType *arg_text, bool bGetAll)
         {
             if (result == 0.0f || bGetAll)
             {
-                do
-                {
-                    ++arg_text;
-                } while (*arg_text != '~');
+                arg_text = fnGInput_SkipToken(arg_text, &result);
+                result *= 2;
             }
             else
             {
@@ -262,12 +263,15 @@ CharType *GetNextSpace(CharType *arg_text)
         {
             if (temp == arg_text)
             {
-                do
-                {
-                    ++temp;
-                } while (*temp != '~');
-
+                float symbolWidth = 0.0f;
+                temp              = fnGInput_SkipToken(temp, &symbolWidth);
                 ++temp;
+
+                if (*GInput_ButtonSymbol != 0)
+                {
+                    break;
+                }
+
                 arg_text = temp;
                 continue;
             }
@@ -616,6 +620,11 @@ void PrintCharDispatcher(float arg_x, float arg_y, CharType arg_char)
     }
     else
     {
+        if (*GInput_ButtonSymbol != 0)
+        {
+            arg_x += fnGInput_PrintSymbol(arg_x, arg_y);
+        }
+
         PrintCHSChar(arg_x, arg_y, arg_char);
     }
 }
@@ -648,6 +657,8 @@ void RenderFontBuffer()
 
     while (pbuffer.addr < FontBufferIter->addr)
     {
+        float symbolWidth = 0.0f;
+
         if (*(pbuffer.ptext) == 0)
         {
             ++pbuffer.ptext;
@@ -674,7 +685,8 @@ void RenderFontBuffer()
 
         if (*pbuffer.ptext == '~')
         {
-            pbuffer.ptext = fnGInput_ParseToken(pbuffer.ptext, var_14, var_E, var_D);
+            auto uselessPointer = fnGInput_SkipToken(pbuffer.ptext, &symbolWidth);
+            pbuffer.ptext =fnGInput_ParseToken(pbuffer.ptext, var_14, var_E, var_D);
 
             if (var_E)
             {
@@ -742,6 +754,10 @@ void RenderFontBuffer()
         {
             pos.x += RenderState->fExtraSpace;
         }
+        else
+        {
+            pos.x += symbolWidth;
+        }
 
         ++pbuffer.ptext;
     }
@@ -760,7 +776,7 @@ __declspec(naked) void hook_load_gxt_mission()
     }
 }
 
-char                   aRb[] = "rb";
+char aRb[] = "rb";
 __declspec(naked) void hook_load_gxt()
 {
     __asm
@@ -788,6 +804,9 @@ bool Init()
     fnGInput_ParseToken     = injector::auto_pointer(base + 0x71C0);
     fnGInput_SkipToken      = injector::auto_pointer(base + 0x7B60);
     fnGInput_SetRenderState = injector::auto_pointer(base + 0x7C60);
+    fnGInput_PrintSymbol    = injector::auto_pointer(base + 0x6060);
+    GInput_ButtonSymbol     = injector::auto_pointer(base + 0x40D36);
+    GInput_ButtonSprite     = injector::auto_pointer(base + 0x40E80);
 
     // 计算资源路径
     char pluginPath[260];
