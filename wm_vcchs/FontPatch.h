@@ -7,4 +7,5 @@
 namespace FontPatch
 {
 bool Init();
+void Shutdown();
 } // namespace FontPatch

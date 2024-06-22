@@ -362,4 +362,4 @@ target_include_directories(plugin_sa_lib PUBLIC
     ${CMAKE_SOURCE_DIR}/thirdparty/plugin-sdk/shared/game
 )
 
-target_compile_definitions(plugin_sa_lib PUBLIC GTASA RW PLUGIN_SGV_10US)
+target_compile_definitions(plugin_sa_lib PUBLIC GTASA RW)

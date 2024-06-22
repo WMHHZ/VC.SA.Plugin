@@ -1,23 +1,56 @@
 ﻿GInputVC 1.11
-10009040 ParseToken
-1003AD60 按钮贴图
-1003B084 替换常量17.0
-100384D0 替换文本信息数组，单项大小40字节，共124个
+与文本有关的Patch
+100071C0 替换CFont::ParseToken
+10007B60 跳过Token的函数
+10007C60 替换RenderFontBuffer的CSprite2d::SetRenderState
+10008020 替换CText::Get
+1003F4A0 替换文本信息数组，单项大小40字节，共33个
 
 与CFont有关的Patch
-1000C3CB 718AE1 替换PrintChar按钮贴图
-1000C437 7189D9 卸载按钮贴图
-1000C464 7189DB 卸载按钮贴图
-1000C53F 719966 RenderFontBuffer中替换ParseToken
-1000C578 71A019 PrintString中替换ParseToken
-1000C5B1 71A2C5 GetNumberLines中替换ParseToken
-1000C5EA 71A181 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
-1000C616 71A185 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
-1000C643 71A187 GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
-1000C683 71A18C GetStringWidth中的Inline ASM 对应CFontPatch.cpp:171跳过Token的逻辑
-1000C6AF 71A336 GetNumberLines中的Inline ASM
-1000C6EF 718A98 PrintChar中的常量17.0
-1000C71B 719A55 RenderFontBuffer中的常量17.0
 
-与文本有关的Patch
-1000A660 替换CText::Get
+未冲突
+550644 替换ParseToken调用
+
+GetStringWidth[550650,550720)
+550676 跳过Token并处理宽度
+55067A 跳过Token并处理宽度
+
+GetTextRect[550720,550C70)
+550780 跳过Token并处理宽度
+550784 跳过Token并处理宽度
+5508F8 跳过Token并处理宽度
+5508FC 跳过Token并处理宽度
+5509B6 跳过Token并处理宽度
+5509BA 跳过Token并处理宽度
+
+GetNumberLines[550C70,551040)
+550CD0 跳过Token并处理宽度
+550CD4 跳过Token并处理宽度
+550E38 跳过Token并处理宽度
+550E3C 跳过Token并处理宽度
+550EF6 跳过Token并处理宽度
+550EFA 跳过Token并处理宽度
+
+PrintString[551040,551620)
+55114C 跳过Token并处理宽度
+551150 跳过Token并处理宽度
+551152 跳过Token并处理宽度
+551157 需要调试
+55115B 需要调试
+55139B 跳过Token并处理宽度
+55139F 跳过Token并处理宽度
+5513A1 需要调试
+5513A6 需要调试
+5514C6 跳过Token并处理宽度
+5514CA 跳过Token并处理宽度
+
+RenderFontBuffer[551A30,551E70)
+551A6F 替换要绘制的贴图
+551C9F 替换ParseToken调用
+
+PrintChar[551E70,5522B0)
+551EE5 插入按钮绘制过程
+
+未冲突
+552306 卸载按钮贴图
+552462 加载按钮贴图

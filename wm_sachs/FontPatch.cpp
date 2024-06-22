@@ -53,14 +53,14 @@ struct CharPos
     unsigned char columnIndex;
 };
 
-CFontRenderState  *m_FontBuffer     = injector::auto_pointer(0xC716B0).get();
-FontBufferPointer *m_FontBufferIter = injector::auto_pointer(0xC716A8).get();
-CFontRenderState  *RenderState      = injector::auto_pointer(0xC71AA0).get();
+CFontRenderState  *m_FontBuffer     = injector::auto_pointer(0xC716B0);
+FontBufferPointer *m_FontBufferIter = injector::auto_pointer(0xC716A8);
+CFontRenderState  *RenderState      = injector::auto_pointer(0xC71AA0);
 
 CSprite2d m_ChsSprite;
 
-unsigned char(__cdecl *FindSubFontCharacter)(unsigned char, unsigned char)   = injector::auto_pointer(0x7192C0).get();
-void(__cdecl *RenderString)(float, float, const char *, const char *, float) = injector::auto_pointer(0x719B40).get();
+unsigned char(__cdecl *FindSubFontCharacter)(unsigned char, unsigned char)   = injector::auto_pointer(0x7192C0);
+void(__cdecl *RenderString)(float, float, const char *, const char *, float) = injector::auto_pointer(0x719B40);
 
 float     *GInput_SymbolWidth;
 CSprite2d *GInput_ButtonSprites;
@@ -72,7 +72,7 @@ CharPos TheTable[0x10000];
 char texturePath[MAX_PATH];
 char textPath[MAX_PATH];
 
-char aRb[] = "rb";
+char                   aRb[] = "rb";
 __declspec(naked) void Hook_LoadGxt()
 {
     __asm
@@ -3744,5 +3744,10 @@ bool Init()
     TheTable[0xff5e] = {46, 25};
 
     return true;
+}
+
+void Shutdown()
+{
+    m_ChsSprite.Delete();
 }
 } // namespace FontPatch

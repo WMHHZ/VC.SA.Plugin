@@ -1,4 +1,7 @@
 ﻿GInputSA 1.11
+与文本有关的Patch
+1000A660 替换CText::Get
+
 10009040 ParseToken
 100099C0 跳过Token的函数
 1003AD60 按钮贴图
@@ -20,5 +23,3 @@
 1000C6EF 718A98 PrintChar中的常量17.0
 1000C71B 719A55 RenderFontBuffer中的常量17.0
 
-与文本有关的Patch
-1000A660 替换CText::Get
