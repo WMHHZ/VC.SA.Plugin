@@ -23,3 +23,4 @@
 1000C6EF 718A98 PrintChar中的常量17.0
 1000C71B 719A55 RenderFontBuffer中的常量17.0
 
+GetNumberLines遇到死循环，可能是GetStringWidth和GetNextSpace逻辑不统一

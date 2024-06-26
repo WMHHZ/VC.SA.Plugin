@@ -66,6 +66,7 @@ float     *GInput_SymbolWidth;
 CSprite2d *GInput_ButtonSprites;
 char *(__cdecl *GInput_ParseTokenFunc)(char *, CRGBA &, bool, char *);
 char *(__stdcall *GInput_SkipToken)(char *, float *);
+int *GInput_BackLength;
 
 CharPos TheTable[0x10000];
 
@@ -260,7 +261,7 @@ float GetStringWidth(const char *arg_text, bool bGetAll, bool bScript)
             }
 
             bufIter = GInput_SkipToken(bufIter, &result);
-
+            
             ++bufIter;
 
             if (succeeded || *bufIter == '~')
@@ -399,7 +400,7 @@ void PrintCHSChar(float arg_x, float arg_y, unsigned int arg_char)
     }
 }
 
-short ProcessCurrentString(bool print, float arg_x, float arg_y, char *arg_text)
+short GetNumberLines(bool print, float arg_x, float arg_y, char *arg_text)
 {
     char       *esi = arg_text;
     const char *ebp = esi;
@@ -507,7 +508,7 @@ short ProcessCurrentString(bool print, float arg_x, float arg_y, char *arg_text)
 
             if (CFont::m_nExtraFontSymbolId != 0)
             {
-                esi -= 3;
+                esi -= *GInput_BackLength;
             }
 
             edi = esi - 3;
@@ -721,6 +722,7 @@ bool Init()
     GInput_ButtonSprites  = injector::auto_pointer(base + 0x3AD60).get();
     GInput_ParseTokenFunc = injector::auto_pointer(base + 0x9040).get();
     GInput_SkipToken      = injector::auto_pointer(base + 0x99C0).get();
+    GInput_BackLength     = injector::auto_pointer(base + 0x3AE60).get();
 
     // 计算贴图路径
     char pluginPath[MAX_PATH];
@@ -760,11 +762,11 @@ bool Init()
     injector::MakeCALL(0x581512, GetStringWidth);
     injector::MakeCALL(0x58BCCC, GetStringWidth);
 
-    injector::MakeCALL(0x71A5F1, ProcessCurrentString);
-    injector::MakeCALL(0x71A611, ProcessCurrentString);
-    injector::MakeCALL(0x71A631, ProcessCurrentString);
-    injector::MakeCALL(0x71A802, ProcessCurrentString);
-    injector::MakeCALL(0x71A834, ProcessCurrentString);
+    injector::MakeCALL(0x71A5F1, GetNumberLines);
+    injector::MakeCALL(0x71A611, GetNumberLines);
+    injector::MakeCALL(0x71A631, GetNumberLines);
+    injector::MakeCALL(0x71A802, GetNumberLines);
+    injector::MakeCALL(0x71A834, GetNumberLines);
 
     injector::MakeCALL(0x57BF70, RenderFontBuffer);
     injector::MakeCALL(0x719B5D, RenderFontBuffer);
